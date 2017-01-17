@@ -8,7 +8,7 @@ export interface InsightResponse {
     code: number;
     body: {}; // the actual response
 }
-
+//
 export interface QueryRequest {
     // you can define your own structure that complies with the EBNF here
 }
