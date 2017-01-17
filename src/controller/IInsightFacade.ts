@@ -13,7 +13,7 @@ export interface QueryRequest {
     // you can define your own structure that complies with the EBNF here
 }
 
-export interface IInsightFacade {
+export interface IInsightFacade { //bjhbj
 
     /**
      * Add a dataset to UBCInsight.
