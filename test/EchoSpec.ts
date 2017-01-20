@@ -6,6 +6,9 @@ import Server from "../src/rest/Server";
 import {expect} from 'chai';
 import Log from "../src/Util";
 import {InsightResponse} from "../src/controller/IInsightFacade";
+import InsightFacade from "../src/controller/InsightFacade";
+var fs=require('fs');
+var JSZip=require('jszip');
 
 describe("EchoSpec", function () {
 
@@ -33,6 +36,8 @@ describe("EchoSpec", function () {
     });
 
     it("Should be able to echo", function () {
+
+
         let out = Server.performEcho('echo');
         Log.test(JSON.stringify(out));
         sanityCheck(out);
@@ -63,6 +68,26 @@ describe("EchoSpec", function () {
         expect(out.code).to.equal(400);
         expect(out.body).to.have.property('error');
         expect(out.body).to.deep.equal({error: 'Message not provided'});
+
+
+    });
+
+
+    it("Should be able to handle a null echo message sensibly", function () {
+
+
+
+        var zip=new JSZip();
+
+        var f=fs.readFileSync("./src/courses.zip",{encoding:"base64"});
+        console.log("a");
+        console.log(typeof f);
+
+
+        //console.log(typeof f);
+        var temp=new InsightFacade();
+        temp.addDataset("courses",f);
+
     });
 
 });
