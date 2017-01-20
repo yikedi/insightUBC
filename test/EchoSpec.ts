@@ -86,6 +86,7 @@ describe("EchoSpec", function () {
 
         //console.log(typeof f);
         var temp=new InsightFacade();
+
         temp.addDataset("courses",f).then(function (response) {
             console.log(response.code);
             console.log(response.body);
