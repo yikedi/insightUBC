@@ -88,15 +88,19 @@ describe("EchoSpec", function () {
         var temp=new InsightFacade();
 
         temp.addDataset("courses",f).then((response) => {
+            Log.test("inadddatasettest");
             console.log(response.code);
             console.log(JSON.stringify(response.body));
-            done();
+            //done();
+            setTimeout(done,200000);
         })
             .catch((err) => {
+            Log.test("incatch");
             done(err);
             });
 
 
+        Log.test("outsideasync");
     });
 
 });
