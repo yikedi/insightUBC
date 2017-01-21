@@ -79,7 +79,7 @@ describe("EchoSpec", function () {
 
         var zip=new JSZip();
 
-        var f=fs.readFileSync("./src/courses.zip",{encoding:"base64"});
+        var f=fs.readFileSync("./src/test1.zip",{encoding:"base64"});
         console.log("a");
         console.log(typeof f);
 
@@ -87,10 +87,9 @@ describe("EchoSpec", function () {
         //console.log(typeof f);
         var temp=new InsightFacade();
 
-        temp.addDataset("courses",f).then((response) => {
-            Log.test("inadddatasettest");
+        temp.addDataset("test1",f).then((response) => {
             console.log(response.code);
-            //console.log(JSON.stringify(response.body));
+            console.log(JSON.stringify(response.body));
             done();
         })
             .catch((err) => {

@@ -26,7 +26,6 @@ export default class InsightFacade implements IInsightFacade {
             exist=fs.existsSync("src/"+id+".txt");
 
             if (exist){
-                // what should be the encoding of string
                var file=fs.readFile("src/"+id+".txt",'utf-8',(err:Error,data:string)=>{
                    if (err) throw err;
                    ret_obj={code:201,body:data};
@@ -59,6 +58,11 @@ export default class InsightFacade implements IInsightFacade {
                             var i = 0;
 
                             for (let item of list) {
+                                var s=JSON.stringify(item);
+                                if (s.charAt(0)=="\""){
+                                    reject({code: 400, body: {"error": "invalid json"}});
+                                }
+
                                 if (i > 0) {
                                     var content = '{\"' + name_list[i] + '\":' + item + '},';
                                     final_string += content;
@@ -69,8 +73,11 @@ export default class InsightFacade implements IInsightFacade {
                             var j_objs = JSON.parse(final_string);
                             j_objs=JSON.stringify(j_objs);
 
-                            //console.log("2nd then");
-                            //console.log(fs);
+                            var s=JSON.stringify(j_objs);
+                            if (s.charAt(0)=="\""){
+                                reject({code: 400, body: {"error": "invalid json"}});
+                            }
+
                             fs.writeFile('src/'+id+'.txt', j_objs,(err:Error)=>{
                                 //console.log("inwritefile");
                                 if(err) reject(err);
