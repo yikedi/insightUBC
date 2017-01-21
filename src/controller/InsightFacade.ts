@@ -23,11 +23,11 @@ export default class InsightFacade implements IInsightFacade {
             var ret_obj=null;
 
             var exist :boolean=false;
-            // Todo :check if file with name id exist if so set exist to true else false;
+            exist=fs.existsSync("src/"+id+".txt");
 
             if (exist){
                 // what should be the encoding of string
-               var file=fs.readFile(""+id+".txt",(err:Error,data:string)=>{
+               var file=fs.readFile("src/"+id+".txt",'utf-8',(err:Error,data:string)=>{
                    if (err) throw err;
                    ret_obj={code:201,body:data};
                    fulfill(ret_obj);
@@ -55,33 +55,31 @@ export default class InsightFacade implements IInsightFacade {
                     Promise.all(promise_list)
                         .then(function (list) {
 
-                            console.log("in promise all");
+                            //console.log("in promise all");
                             var i = 0;
 
                             for (let item of list) {
                                 if (i > 0) {
-                                    //console.log(item);
                                     var content = '{\"' + name_list[i] + '\":' + item + '},';
                                     final_string += content;
                                 }
                                 i++;
                             }
                             final_string = final_string.substr(0, final_string.length - 1) + "]}";
-                            //var t=final_string.charAt(final_string.length-3);
                             var j_objs = JSON.parse(final_string);
                             j_objs=JSON.stringify(j_objs);
 
-                            console.log("2nd then");
-                            console.log(fs);
-                            fs.writeFile('/Users/douglas/WebstormProjects/cpsc310project_team132/src/'+id+'.txt', j_objs,(err:Error)=>{
-                                console.log("inwritefile");
+                            //console.log("2nd then");
+                            //console.log(fs);
+                            fs.writeFile('src/'+id+'.txt', j_objs,(err:Error)=>{
+                                //console.log("inwritefile");
                                 if(err) reject(err);
                                 ret_obj = {code: 204, body: j_objs};
-                                console.log(ret_obj);
+                                //console.log(ret_obj);
                                 fulfill(ret_obj);
                             });
 
-                            console.log("after write");
+                            //console.log("after write");
 
 
                         })
@@ -92,8 +90,8 @@ export default class InsightFacade implements IInsightFacade {
 
                 }).catch(function (err: any) {
                     // error message set code to 400
-                    console.log("error!!!!!!");
-                    err = {code: 400, body: {"error": "my text"}};
+                    //console.log("error!!!!!!");
+                    err = {code: 400, body: {"error": "file not exist"}};
                     reject(err);
                 });
             }

@@ -90,9 +90,8 @@ describe("EchoSpec", function () {
         temp.addDataset("courses",f).then((response) => {
             Log.test("inadddatasettest");
             console.log(response.code);
-            console.log(JSON.stringify(response.body));
-            //done();
-            setTimeout(done,200000);
+            //console.log(JSON.stringify(response.body));
+            done();
         })
             .catch((err) => {
             Log.test("incatch");
