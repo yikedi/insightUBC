@@ -58,31 +58,34 @@ export default class InsightFacade implements IInsightFacade {
                             var i = 0;
 
                             for (let item of list) {
-                                var s=JSON.stringify(item);
-                                if (s.charAt(0)=="\""){
-                                    reject({code: 400, body: {"error": "invalid json"}});
-                                }
 
-                                if (i > 0) {
-                                    var content = '{\"' + name_list[i] + '\":' + item + '},';
-                                    final_string += content;
-                                }
-                                i++;
+                                    if (i==0){
+                                        console.log(item);
+                                    }
+
+                                    if (i > 0) {
+
+                                        try {
+                                            var temp=JSON.parse(item);
+                                        }
+                                        catch (Error){
+                                            reject({code: 400, body: {"error": Error.message}});
+                                            break;
+                                        }
+
+                                        var content = '{\"' + name_list[i] + '\":' + item + '},';
+                                        final_string += content;
+                                    }
+                                    i++;
                             }
                             final_string = final_string.substr(0, final_string.length - 1) + "]}";
                             var j_objs = JSON.parse(final_string);
                             j_objs=JSON.stringify(j_objs);
 
-                            var s=JSON.stringify(j_objs);
-                            if (s.charAt(0)=="\""){
-                                reject({code: 400, body: {"error": "invalid json"}});
-                            }
 
                             fs.writeFile('src/'+id+'.txt', j_objs,(err:Error)=>{
-                                //console.log("inwritefile");
                                 if(err) reject(err);
                                 ret_obj = {code: 204, body: j_objs};
-                                //console.log(ret_obj);
                                 fulfill(ret_obj);
                             });
 
@@ -90,16 +93,16 @@ export default class InsightFacade implements IInsightFacade {
 
 
                         })
-                        .catch(function (err) {
+                        .catch(function (err:Error) {
+                            ret_obj = {code: 400, body: {"error": err}};
                             reject(err);
                         });
 
 
-                }).catch(function (err: any) {
-                    // error message set code to 400
-                    //console.log("error!!!!!!");
-                    err = {code: 400, body: {"error": "file not exist"}};
-                    reject(err);
+                }).catch(function (err:Error) {
+
+                    ret_obj = {code: 400, body: {"error": err}};
+                    reject(ret_obj);
                 });
             }
         });

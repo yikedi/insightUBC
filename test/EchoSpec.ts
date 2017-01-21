@@ -79,7 +79,7 @@ describe("EchoSpec", function () {
 
         var zip=new JSZip();
 
-        var f=fs.readFileSync("./src/test1.zip",{encoding:"base64"});
+        var f=fs.readFileSync("./src/courses.zip",{encoding:"base64"});
         console.log("a");
         console.log(typeof f);
 
@@ -87,14 +87,42 @@ describe("EchoSpec", function () {
         //console.log(typeof f);
         var temp=new InsightFacade();
 
-        temp.addDataset("test1",f).then((response) => {
+        temp.addDataset("courses",f).then((response) => {
             console.log(response.code);
-            console.log(JSON.stringify(response.body));
+            //console.log(JSON.stringify(response.body));
             done();
         })
             .catch((err) => {
             Log.test("incatch");
             done(err);
+            });
+
+
+        Log.test("outsideasync");
+    });
+
+    it("Should be able to handle a null echo message sensibly2", function (done) {
+
+
+
+        var zip=new JSZip();
+
+        var f=fs.readFileSync("./src/test2.zip",{encoding:"base64"});
+        console.log("a");
+        console.log(typeof f);
+
+
+        //console.log(typeof f);
+        var temp=new InsightFacade();
+
+        temp.addDataset("test2",f).then((response) => {
+            console.log(response.code);
+            //console.log(JSON.stringify(response.body));
+            done();
+        })
+            .catch((err) => {
+                Log.test("incatch");
+                done(err);
             });
 
 
