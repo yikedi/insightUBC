@@ -73,7 +73,7 @@ describe("EchoSpec", function () {
     });
 
 
-    it("Should be able to handle a null echo message sensibly", function () {
+    it("Should be able to handle a null echo message sensibly2", function (done) {
 
 
 
@@ -87,10 +87,14 @@ describe("EchoSpec", function () {
         //console.log(typeof f);
         var temp=new InsightFacade();
 
-        temp.addDataset("courses",f).then(function (response) {
+        temp.addDataset("courses",f).then((response) => {
             console.log(response.code);
-            console.log(response.body);
-        });
+            console.log(JSON.stringify(response.body));
+            done();
+        })
+            .catch((err) => {
+            done(err);
+            });
 
 
     });

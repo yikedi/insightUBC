@@ -22,75 +22,75 @@ export default class InsightFacade implements IInsightFacade {
 
             var ret_obj=null;
 
-            var exist :boolean=true;
-            // Todo :check if folder with name id exist if so set exist to true else false;
+            var exist :boolean=false;
+            // Todo :check if file with name id exist if so set exist to true else false;
 
+            if (exist){
+                // what should be the encoding of string
+               var file=fs.readFile(""+id+".txt",(err:Error,data:string)=>{
+                   if (err) throw err;
+                   ret_obj={code:201,body:data};
+                   fulfill(ret_obj);
+               });
 
-            zip.loadAsync(content,{"base64":true}).then(function (data: JSZip) {
-                // if folder exist then set code to 201 and set body to data
-
-                // what is the type of data now?
+            }
+            else {
+                zip.loadAsync(content, {"base64": true}).then(function (data: JSZip) {
 
                     console.log("in then");
 
 
-                    var promise_list:Promise<string>[]=[];
-                    var name_list:string[]=[];
+                    var promise_list: Promise<string>[] = [];
+                    var name_list: string[] = [];
 
-                    data.forEach(function (path,file) {
+                    data.forEach(function (path, file) {
                         name_list.push(file.name);
                         promise_list.push(file.async("string"));
 
                     });
 
-                    var final_string='{courses:[';
+                    var final_string = "{\"courses\":[";
+                    console.log(promise_list.length);
 
                     Promise.all(promise_list)
                         .then(function (list) {
 
-                        console.log("in promise all");
-                        var i=0;
+                            console.log("in promise all");
+                            var i = 0;
 
-                        for (let item of list){
-                            if (i>0) {
-                                console.log(item);
-                                var content = '{' + name_list[i] + ':' + item + '},';
-                                final_string+=content;
+                            for (let item of list) {
+                                if (i > 0) {
+                                    //console.log(item);
+                                    var content = '{' + name_list[i] + ':' + item + '},';
+                                    final_string += content;
+                                }
+                                i++;
                             }
-                        }
-                        final_string=final_string.substr(0,final_string.length-1)+']}';
-                        var j_objs=JSON.stringify(final_string);
-                        ret_obj={code:201,body:j_objs};
-                        fulfill(ret_obj);
-                    }).catch(function () {
-                        console.log("asdfasdfas");
-                    });
-                    //     .then(function (j_objs) {
-                    //     console.log(j_objs);
-                    //     ret_obj={code:201,body:j_objs};
-                    //     fulfill(ret_obj);
-                    //
-                    // });
+                            final_string = final_string.substr(0, final_string.length - 1) + "]}";
+                            var j_objs = JSON.stringify(eval("("+final_string+")"));
+
+                            return j_objs;
+                        }).then(function (j_objs) {
+
+                        //fs.writeFile('' + id + '.txt', j_objs);
+                            ret_obj = {code: 204, body: j_objs};
+                            console.log(ret_obj);
+                            fulfill(ret_obj);
+
+                    })
+                        .catch(function (err) {
+                            reject(err);
+                        });
 
 
-
-
-
-                console.log("after parseData");
-
-                //Todo: parse data of type JSZip into a data structure of our choice;
-                // 2D array or one big Json file contain all the courses
-
-
-
-            }).catch(function (err: any) {
-                // error message set code to 400
-                console.log("error!!!!!!");
-                ret_obj={code:400,body:{"error": "my text"}};
-                reject(ret_obj);
-            });
+                }).catch(function (err: any) {
+                    // error message set code to 400
+                    console.log("error!!!!!!");
+                    err = {code: 400, body: {"error": "my text"}};
+                    reject(err);
+                });
+            }
         });
-
 
 
     }
@@ -104,42 +104,3 @@ export default class InsightFacade implements IInsightFacade {
     }
 
 }
-
-    // function parseData(path: string,data: JSZip) : Promise<string> {
-    //
-    //     return new Promise(function (fulfill,reject) {
-    //
-    //     var promise_list:Promise<string>[]=[];
-    //     var name_list:string[]=[];
-    //
-    //     data.forEach(function (path,file) {
-    //         name_list.push(file.name);
-    //         promise_list.push(file.async("string"));
-    //
-    //     });
-    //
-    //
-    //     var final_string='{courses:[';
-    //
-    //     Promise.all(promise_list).then(function (list) {
-    //
-    //         console.log("in promise all");
-    //         var i=0;
-    //
-    //         for (let item of list){
-    //              if (i>0) {
-    //                  console.log(item);
-    //                  var content = '{' + name_list[i] + ':' + item + '},';
-    //                  final_string+=content;
-    //              }
-    //         }
-    //         final_string=final_string.substr(0,final_string.length-1)+']}';
-    //         var j_objs=JSON.stringify(final_string);
-    //         return j_objs;
-    //     }).then(function (j_objs) {
-    //
-    //     });
-    //
-    //
-    //     });
-    // }
