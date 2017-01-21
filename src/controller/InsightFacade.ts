@@ -94,14 +94,14 @@ export default class InsightFacade implements IInsightFacade {
 
                         })
                         .catch(function (err:Error) {
-                            ret_obj = {code: 400, body: {"error": err}};
+                            ret_obj = {code: 400, body: {"error": err.message}};
                             reject(err);
                         });
 
 
                 }).catch(function (err:Error) {
 
-                    ret_obj = {code: 400, body: {"error": err}};
+                    ret_obj = {code: 400, body: {"error": err.message}};
                     reject(ret_obj);
                 });
             }
