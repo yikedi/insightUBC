@@ -5,7 +5,7 @@
 import Server from "../src/rest/Server";
 import {expect} from 'chai';
 import Log from "../src/Util";
-import {InsightResponse} from "../src/controller/IInsightFacade";
+import {InsightResponse, QueryRequest} from "../src/controller/IInsightFacade";
 import InsightFacade from "../src/controller/InsightFacade";
 var fs=require('fs');
 var JSZip=require('jszip');
@@ -80,16 +80,16 @@ describe("EchoSpec", function () {
         var zip=new JSZip();
 
         var f=fs.readFileSync("./src/courses.zip",{encoding:"base64"});
-        console.log("a");
-        console.log(typeof f);
+        //console.log("a");
+        //console.log(typeof f);
 
 
         //console.log(typeof f);
         var temp=new InsightFacade();
 
         temp.addDataset("courses",f).then((response) => {
-            console.log(response.code);
-            //console.log(JSON.stringify(response.body));
+            //console.log(response.code);
+            //console.log(response.body);
             done();
         })
             .catch((err) => {
@@ -98,36 +98,64 @@ describe("EchoSpec", function () {
             });
 
 
-        Log.test("outsideasync");
+        //Log.test("outsideasync");
     });
 
-    it("remove test", function (done) {
+    it("query test", function (done) {
 
-
-
-        var zip=new JSZip();
-
-        var f=fs.readFileSync("./src/courses.zip",{encoding:"base64"});
-        console.log("a");
-        console.log(typeof f);
-
-
-        //console.log(typeof f);
         var temp=new InsightFacade();
+        var s = {
+            "WHERE":{
+                "GT":{
+                    "courses_avg":97
+                }
+            },
+            "OPTIONS":{
+                "COLUMNS":[
+                    "courses_dept",
+                    "courses_avg"
+                ],
+                "ORDER":"courses_avg",
+                "FORM":"TABLE"
+            }
+        };
+        var a=JSON.stringify(s);
+        var query={content:a};
+        //console.log(typeof JSON.parse(JSON.stringify(query)));
 
-        temp.removeDataset("courses").then((response) => {
-            console.log(response.code);
-            //console.log(JSON.stringify(response.body));
+        temp.performQuery(query).then(function () {
             done();
-        })
-            .catch((err) => {
-                Log.test("incatch");
-                done(err);
-            });
-
+        });
 
         Log.test("outsideasync");
     });
+
+    // it("remove test", function (done) {
+    //
+    //     var zip=new JSZip();
+    //
+    //     var f=fs.readFileSync("./src/courses.zip",{encoding:"base64"});
+    //     //console.log("a");
+    //     //console.log(typeof f);
+    //
+    //
+    //     //console.log(typeof f);
+    //     var temp=new InsightFacade();
+    //
+    //     temp.removeDataset("courses")
+    //         .then((response) => {
+    //             console.log(response.code);
+    //             //console.log(JSON.stringify(response.body));
+    //             done();
+    //         })
+    //         .catch((err) => {
+    //             Log.test("incatch");
+    //             done(err);
+    //         });
+    //
+    //
+    //     Log.test("outsideasync");
+    // });
 
     // it("Should be able to handle a null echo message sensibly2", function (done) {
     //

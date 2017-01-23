@@ -10,10 +10,11 @@ export interface InsightResponse {
 }
 //
 export interface QueryRequest {
-    // you can define your own structure that complies with the EBNF here
+    // you can define your own structure that complies with the EBNF hereQueryRequest
+    content: string;
 }
 
-export interface IInsightFacade { //bjhbjdfdf
+export interface IInsightFacade {
 
     /**
      * Add a dataset to UBCInsight.
