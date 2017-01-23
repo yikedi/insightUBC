@@ -101,13 +101,13 @@ describe("EchoSpec", function () {
         Log.test("outsideasync");
     });
 
-    it("Should be able to handle a null echo message sensibly2", function (done) {
+    it("remove test", function (done) {
 
 
 
         var zip=new JSZip();
 
-        var f=fs.readFileSync("./src/310testcase.zip",{encoding:"base64"});
+        var f=fs.readFileSync("./src/courses.zip",{encoding:"base64"});
         console.log("a");
         console.log(typeof f);
 
@@ -115,7 +115,7 @@ describe("EchoSpec", function () {
         //console.log(typeof f);
         var temp=new InsightFacade();
 
-        temp.addDataset("310testcase",f).then((response) => {
+        temp.removeDataset("courses").then((response) => {
             console.log(response.code);
             //console.log(JSON.stringify(response.body));
             done();
@@ -128,5 +128,33 @@ describe("EchoSpec", function () {
 
         Log.test("outsideasync");
     });
+
+    // it("Should be able to handle a null echo message sensibly2", function (done) {
+    //
+    //     //
+    //     //
+    //     // var zip=new JSZip();
+    //     //
+    //     // var f=fs.readFileSync("./src/310testcase.zip",{encoding:"base64"});
+    //     // console.log("a");
+    //     // console.log(typeof f);
+    //     //
+    //     //
+    //     // //console.log(typeof f);
+    //     // var temp=new InsightFacade();
+    //     //
+    //     // temp.addDataset("310testcase",f).then((response) => {
+    //     //     console.log(response.code);
+    //     //     //console.log(JSON.stringify(response.body));
+    //     //     done();
+    //     // })
+    //     //     .catch((err) => {
+    //     //         Log.test("incatch");
+    //     //         done(err);
+    //     //     });
+    //     //
+    //     //
+    //     // Log.test("outsideasync");
+    // });
 
 });

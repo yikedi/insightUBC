@@ -112,8 +112,19 @@ export default class InsightFacade implements IInsightFacade {
     }
 
     removeDataset(id: string): Promise<InsightResponse> {
-
-            return null;
+        return new Promise(function (fulfill,reject) {
+            var ret_obj=null;
+            var path="src/"+id+".txt";
+            fs.unlink(path,(err:Error)=>{
+                if (err){
+                    ret_obj = {code: 404, body: {"error": err.message}};
+                    reject(ret_obj);
+                }else{
+                    ret_obj = {code: 204, body: "The operation was successful"};
+                    fulfill (ret_obj);
+                }
+            });
+        });
     }
 
     performQuery(query: QueryRequest): Promise <InsightResponse> {
