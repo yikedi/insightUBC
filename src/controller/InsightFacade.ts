@@ -22,8 +22,7 @@ export default class InsightFacade implements IInsightFacade {
 
             var ret_obj=null;
 
-            var exist :boolean=false;
-            exist=fs.existsSync("src/"+id+".txt");
+            var exist :boolean=fs.existsSync("src/"+id+".txt");
 
             if (exist){
                var file=fs.readFile("src/"+id+".txt",'utf-8',(err:Error,data:string)=>{
@@ -59,9 +58,6 @@ export default class InsightFacade implements IInsightFacade {
 
                             for (let item of list) {
 
-                                    if (i==0){
-                                        console.log(item);
-                                    }
 
                                     if (i > 0) {
 
@@ -84,9 +80,14 @@ export default class InsightFacade implements IInsightFacade {
 
 
                             fs.writeFile('src/'+id+'.txt', j_objs,(err:Error)=>{
-                                if(err) reject(err);
-                                ret_obj = {code: 204, body: j_objs};
-                                fulfill(ret_obj);
+                                if(err){
+                                    ret_obj={code:400,body:err.message};
+                                    reject(ret_obj);
+                                }
+                                else {
+                                    ret_obj = {code: 204, body: j_objs};
+                                    fulfill(ret_obj);
+                                }
                             });
 
                             //console.log("after write");
@@ -95,7 +96,7 @@ export default class InsightFacade implements IInsightFacade {
                         })
                         .catch(function (err:Error) {
                             ret_obj = {code: 400, body: {"error": err.message}};
-                            reject(err);
+                            reject(ret_obj);
                         });
 
 
@@ -111,7 +112,8 @@ export default class InsightFacade implements IInsightFacade {
     }
 
     removeDataset(id: string): Promise<InsightResponse> {
-        return null;
+
+            return null;
     }
 
     performQuery(query: QueryRequest): Promise <InsightResponse> {

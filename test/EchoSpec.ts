@@ -107,7 +107,7 @@ describe("EchoSpec", function () {
 
         var zip=new JSZip();
 
-        var f=fs.readFileSync("./src/test2.zip",{encoding:"base64"});
+        var f=fs.readFileSync("./src/310testcase.zip",{encoding:"base64"});
         console.log("a");
         console.log(typeof f);
 
@@ -115,7 +115,7 @@ describe("EchoSpec", function () {
         //console.log(typeof f);
         var temp=new InsightFacade();
 
-        temp.addDataset("test2",f).then((response) => {
+        temp.addDataset("310testcase",f).then((response) => {
             console.log(response.code);
             //console.log(JSON.stringify(response.body));
             done();
