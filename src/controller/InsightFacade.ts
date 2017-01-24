@@ -25,11 +25,11 @@ export default class InsightFacade implements IInsightFacade {
             var exist :boolean=fs.existsSync("src/"+id+".txt");
 
             if (exist){
-                var file=fs.readFile("src/"+id+".txt",'utf-8',(err:Error,data:string)=>{
-                    if (err) throw err;
-                    ret_obj={code:201,body:data};
-                    fulfill(ret_obj);
-                });
+               var file=fs.readFile("src/"+id+".txt",'utf-8',(err:Error,data:string)=>{
+                   if (err) throw err;
+                   ret_obj={code:201,body:data};
+                   fulfill(ret_obj);
+               });
 
             }
             else {
@@ -59,20 +59,20 @@ export default class InsightFacade implements IInsightFacade {
                             for (let item of list) {
 
 
-                                if (i > 0) {
+                                    if (i > 0) {
 
-                                    try {
-                                        var temp=JSON.parse(item);
-                                    }
-                                    catch (Error){
-                                        reject({code: 400, body: {"error": Error.message}});
-                                        break;
-                                    }
+                                        try {
+                                            var temp=JSON.parse(item);
+                                        }
+                                        catch (Error){
+                                            reject({code: 400, body: {"error": Error.message}});
+                                            break;
+                                        }
 
-                                    var content = '{\"' + name_list[i] + '\":' + item + '},';
-                                    final_string += content;
-                                }
-                                i++;
+                                        var content = '{\"' + name_list[i] + '\":' + item + '},';
+                                        final_string += content;
+                                    }
+                                    i++;
                             }
                             final_string = final_string.substr(0, final_string.length - 1) + "]}";
                             var j_objs = JSON.parse(final_string);
@@ -183,18 +183,18 @@ export default class InsightFacade implements IInsightFacade {
 
                         //Todo: Do filter here, figure out how to dynamically access json key value
 
-                        var s=column[key];
-                        // var dictionary_keys=Object.values(dictionary);
-                        var target =dictionary[s];
-                        var keys_inner_1=Object.keys(course);
-                        var course_info=course[keys_inner_1[0]];
-                        var results=course_info["result"];
+                         var s=column[key];
+                         // var dictionary_keys=Object.values(dictionary);
+                         var target =dictionary[s];
+                         var keys_inner_1=Object.keys(course);
+                         var course_info=course[keys_inner_1[0]];
+                         var results=course_info["result"];
 
-                        // var length=results.length;
-                        for (let item of results){
+                         // var length=results.length;
+                         for (let item of results){
                             var target_value=item[target];
                             console.log(target_value);
-                        }
+                         }
 
                         // var target_value: string=course;
                         // console.log(target_value);
@@ -214,58 +214,59 @@ export default class InsightFacade implements IInsightFacade {
 
 }
 
-// function parseOption (query: QueryRequest){
-//     var j_query=query.content;
-//     var j_obj=JSON.parse(j_query);
-//     //console.log(j_obj);
-//     var options=j_obj["OPTIONS"];
-//
-//     console.log(options);
-//     var column=options["COLUMNS"];
-//     //console.log(column);
-//     var order=options["ORDER"];
-//     console.log(order);
-//     var form=options["FORM"];
-//
-//     var id="courses";
-//
-//     var dictionary={
-//         "courses_dept":"Subject",
-//         "courses_id":"course",
-//         "courses_avg":"Avg",
-//         "courses_instructor":"Professor",
-//         "courses_title":"Title",
-//         "courses_pass":"Pass",
-//         "courses_fail":"Auidt"
-//     };
-//
-//      var keys=Object.keys(column);
-//     for (let key of keys){
-//         console.log(column[key]);
-//     }
-//
-//     var dataSet=new InsightFacade();
-//     dataSet.addDataset(id,null).then(function (response:InsightResponse) {
-//         var temp=response["courses"];
-//         var courses=Object.keys(temp);
-//
-//         var keys=Object.keys(column);
-//         for (let key of keys){
-//             for (let course of courses){
-//                 var target=dictionary[column[key]];
-//                 var bar=course[target];
-//                 console.log(bar);
-//             }
-//             // console.log(column[key]);
-//
-//         }
-//         //Object.keys(response.body);
-//
-//     });
-//
-//
-//
-//
-//
-//
-// }
+    // function parseOption (query: QueryRequest){
+    //     var j_query=query.content;
+    //     var j_obj=JSON.parse(j_query);
+    //     //console.log(j_obj);
+    //     var options=j_obj["OPTIONS"];
+    //
+    //     console.log(options);
+    //     var column=options["COLUMNS"];
+    //     //console.log(column);
+    //     var order=options["ORDER"];
+    //     console.log(order);
+    //     var form=options["FORM"];
+    //
+    //     var id="courses";
+    //
+    //     var dictionary={
+    //         "courses_dept":"Subject",
+    //         "courses_id":"course",
+    //         "courses_avg":"Avg",
+    //         "courses_instructor":"Professor",
+    //         "courses_title":"Title",
+    //         "courses_pass":"Pass",
+    //         "courses_fail":"Auidt"
+    //     };
+    //
+    //      var keys=Object.keys(column);
+    //     for (let key of keys){
+    //         console.log(column[key]);
+    //     }
+    //
+    //     var dataSet=new InsightFacade();
+    //     dataSet.addDataset(id,null).then(function (response:InsightResponse) {
+    //         var temp=response["courses"];
+    //         var courses=Object.keys(temp);
+    //
+    //         var keys=Object.keys(column);
+    //         for (let key of keys){
+    //             for (let course of courses){
+    //                 var target=dictionary[column[key]];
+    //                 var bar=course[target];
+    //                 console.log(bar);
+    //             }
+    //             // console.log(column[key]);
+    //
+    //         }
+    //         //Object.keys(response.body);
+    //
+    //     });
+    //
+    //
+    //
+    //
+    //
+    //
+    // }
+

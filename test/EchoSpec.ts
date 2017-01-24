@@ -5,10 +5,10 @@
 import Server from "../src/rest/Server";
 import {expect} from 'chai';
 import Log from "../src/Util";
-import {InsightResponse, QueryRequest} from "../src/controller/IInsightFacade";
+import {InsightResponse} from "../src/controller/IInsightFacade";
 import InsightFacade from "../src/controller/InsightFacade";
-var fs=require('fs');
-var JSZip=require('jszip');
+var fs = require('fs');
+var JSZip = require('jszip');
 
 describe("EchoSpec", function () {
 
@@ -76,78 +76,90 @@ describe("EchoSpec", function () {
     it("Should be able to handle a null echo message sensibly2", function (done) {
 
 
+        var zip = new JSZip();
+        var f = "./src/courses.zip";
 
-        var zip=new JSZip();
+        var s1 = {
+            "WHERE": {
+                "GT": {
+                    "courses_avg": 97
+                }
+            },
+            "OPTIONS": {
+                "COLUMNS": [
+                    "courses_dept",
+                    "courses_avg"
+                ],
+                "ORDER": "courses_avg",
+                "FORM": "TABLE"
+            }
+        };
 
-        var f=fs.readFileSync("./src/courses.zip",{encoding:"base64"});
-        //console.log("a");
-        //console.log(typeof f);
+        var a=JSON.stringify(s1);
+        var query={content: a};
+        var temp = new InsightFacade();
 
-
-        //console.log(typeof f);
-        var temp=new InsightFacade();
-
-        temp.addDataset("courses",f).then((response) => {
-            //console.log(response.code);
+        temp.addDataset("courses", f).then((response) => {
+            console.log(response.code);
             //console.log(response.body);
             done();
         })
             .catch((err) => {
-            Log.test("incatch");
-            done(err);
+                Log.test("incatch");
+                done(err);
             });
 
 
-        //Log.test("outsideasync");
+        Log.test("outsideasync");
+
+
     });
 
-    it("query test", function (done) {
+    it("Should be able to handle a null echo message sensibly2", function (done) {
 
-        var temp=new InsightFacade();
-        var s = {
-            "WHERE":{
-                "GT":{
-                    "courses_avg":97
+        var temp = new InsightFacade();
+
+        var s1 = {
+            "WHERE": {
+                "GT": {
+                    "courses_avg": 97
                 }
             },
-            "OPTIONS":{
-                "COLUMNS":[
+            "OPTIONS": {
+                "COLUMNS": [
                     "courses_dept",
                     "courses_avg"
                 ],
-                "ORDER":"courses_avg",
-                "FORM":"TABLE"
+                "ORDER": "courses_avg",
+                "FORM": "TABLE"
             }
         };
-        var a=JSON.stringify(s);
-        var query={content:a};
-        //console.log(typeof JSON.parse(JSON.stringify(query)));
 
+        var a=JSON.stringify(s1);
+        var query={content: a};
         temp.performQuery(query).then(function () {
             done();
-        });
+        })
 
-        Log.test("outsideasync");
     });
 
     // it("remove test", function (done) {
     //
+    //
+    //
     //     var zip=new JSZip();
     //
     //     var f=fs.readFileSync("./src/courses.zip",{encoding:"base64"});
-    //     //console.log("a");
-    //     //console.log(typeof f);
     //
     //
     //     //console.log(typeof f);
     //     var temp=new InsightFacade();
     //
-    //     temp.removeDataset("courses")
-    //         .then((response) => {
-    //             console.log(response.code);
-    //             //console.log(JSON.stringify(response.body));
-    //             done();
-    //         })
+    //     temp.removeDataset("courses").then((response) => {
+    //         console.log(response.code);
+    //         //console.log(JSON.stringify(response.body));
+    //         done();
+    //     })
     //         .catch((err) => {
     //             Log.test("incatch");
     //             done(err);
@@ -184,5 +196,6 @@ describe("EchoSpec", function () {
     //     //
     //     // Log.test("outsideasync");
     // });
+
 
 });
