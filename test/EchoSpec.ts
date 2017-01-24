@@ -74,7 +74,7 @@ describe("EchoSpec", function () {
 
 
     it("Should be able to handle a null echo message sensibly2", function (done) {
-
+        this.timeout(15000000);
 
         var zip = new JSZip();
         var f = "./src/courses.zip";
@@ -101,7 +101,7 @@ describe("EchoSpec", function () {
 
         temp.addDataset("courses", f).then((response) => {
             console.log(response.code);
-            //console.log(response.body);
+            console.log(response.body);
             done();
         })
             .catch((err) => {
@@ -117,6 +117,8 @@ describe("EchoSpec", function () {
 
     it("Should be able to handle a null echo message sensibly2", function (done) {
 
+
+        this.timeout(1500000);
         var temp = new InsightFacade();
 
         var s1 = {
@@ -143,59 +145,6 @@ describe("EchoSpec", function () {
 
     });
 
-    // it("remove test", function (done) {
-    //
-    //
-    //
-    //     var zip=new JSZip();
-    //
-    //     var f=fs.readFileSync("./src/courses.zip",{encoding:"base64"});
-    //
-    //
-    //     //console.log(typeof f);
-    //     var temp=new InsightFacade();
-    //
-    //     temp.removeDataset("courses").then((response) => {
-    //         console.log(response.code);
-    //         //console.log(JSON.stringify(response.body));
-    //         done();
-    //     })
-    //         .catch((err) => {
-    //             Log.test("incatch");
-    //             done(err);
-    //         });
-    //
-    //
-    //     Log.test("outsideasync");
-    // });
-
-    // it("Should be able to handle a null echo message sensibly2", function (done) {
-    //
-    //     //
-    //     //
-    //     // var zip=new JSZip();
-    //     //
-    //     // var f=fs.readFileSync("./src/310testcase.zip",{encoding:"base64"});
-    //     // console.log("a");
-    //     // console.log(typeof f);
-    //     //
-    //     //
-    //     // //console.log(typeof f);
-    //     // var temp=new InsightFacade();
-    //     //
-    //     // temp.addDataset("310testcase",f).then((response) => {
-    //     //     console.log(response.code);
-    //     //     //console.log(JSON.stringify(response.body));
-    //     //     done();
-    //     // })
-    //     //     .catch((err) => {
-    //     //         Log.test("incatch");
-    //     //         done(err);
-    //     //     });
-    //     //
-    //     //
-    //     // Log.test("outsideasync");
-    // });
 
 
 });
