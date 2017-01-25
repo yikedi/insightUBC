@@ -228,41 +228,25 @@ export default class InsightFacade implements IInsightFacade {
     performQuery(query: QueryRequest): Promise <InsightResponse> {
 
         return new Promise(function (fulfill, reject) {
-
-            var j_query = query.content;
-            var j_obj = JSON.parse(j_query);
-            var options = j_obj["OPTIONS"];
-
-            console.log(options);
-            var column = options["COLUMNS"];
-            var order = options["ORDER"];
-            console.log(order);
-            var form = options["FORM"];
+            //
+            // var j_query = query.content;
+            // var j_obj = JSON.parse(j_query);
+            // var options = j_obj["OPTIONS"];
+            //
+            // console.log(options);
+            // var column = options["COLUMNS"];
+            // var order = options["ORDER"];
+            // console.log(order);
+            // var form = options["FORM"];
 
             var id = "courses";
 
-
-            let dictionary: {[index: string]: string} = {};
-
-            dictionary = {
-                "courses_dept": "Subject",
-                "courses_id": "course",
-                "courses_avg": "Avg",
-                "courses_instructor": "Professor",
-                "courses_title": "Title",
-                "courses_pass": "Pass",
-                "courses_fail": "fail",
-                "courses_audit": "Audit",
-                "courses_uuid": "id"
-            };
-
-
-
-            var keys = Object.keys(column);
-            for (let key of keys) {
-                console.log(column[key]);
-                console.log(typeof column[key]);
-            }
+            
+            // var keys = Object.keys(column);
+            // for (let key of keys) {
+            //     console.log(column[key]);
+            //     console.log(typeof column[key]);
+            // }
 
             var dataSet = new InsightFacade();
             dataSet.addDataset(id, null).then(function (response: InsightResponse) {
@@ -270,7 +254,10 @@ export default class InsightFacade implements IInsightFacade {
                 var table = build_table(response.body.toString());
                 var a = table[100];
                 console.log(a);
-                fulfill({code: 200, body: "nothing"});
+                var body =filter(table,query);
+                fulfill({code: 200, body: body});
+            }).catch(function (err:Error) {
+                reject({code:400, body:err.message});
             });
 
         });
@@ -300,7 +287,7 @@ function build_table(data: string): Array<Course_obj> {
 
             for (let s of interest_info) {
                 var value = item[s];
-                course.set(s,value)
+                course.set(s,value);
             }
 
             let course_class_obj=new Course_obj();
@@ -330,15 +317,36 @@ function filter(table: Array<Course_obj>, query: QueryRequest): Array<any> {
     var where=j_obj["WHERE"];
 
     var ret_table=filter_helper(table,where);
-    var column = options["COLUMNS"];
+    var columns = options["COLUMNS"];
     var order = options["ORDER"];
     var form = options["FORM"];
 
+    let ret_obj:{[index: string] : any}=[];
+    let dictionary: {[index: string]: string} = {};
 
+    dictionary = {
+        "courses_dept": "Subject",
+        "courses_id": "Course",
+        "courses_avg": "Avg",
+        "courses_instructor": "Professor",
+        "courses_title": "Title",
+        "courses_pass": "Pass",
+        "courses_fail": "fail",
+        "courses_audit": "Audit",
+        "courses_uuid": "id"
+    };
 
-    var id = "courses";
+    var ret_array : any =[];
 
-    return null;
+    for (let item of table){
+        for (let column of columns){
+            ret_obj[column]=item.get(dictionary[column]);
+        }
+        ret_array.push(ret_obj);
+    }
+
+    
+    return ret_array;
 }
 
 function filter_helper (table: Array<Course_obj>, query: QueryRequest): Array<Course_obj> {
