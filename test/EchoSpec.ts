@@ -73,11 +73,12 @@ describe("EchoSpec", function () {
     });
 
 
-    it("Should be able to handle a null echo message sensibly2", function (done) {
+    it("testest", function (done) {
         this.timeout(15000000);
 
         var zip = new JSZip();
-        var f = "./src/courses.zip";
+        var temp_1 = "./src/courses.zip";
+        var f=fs.readFileSync(temp_1,{encoding:"base64"});
 
         var s1 = {
             "WHERE": {
@@ -100,8 +101,8 @@ describe("EchoSpec", function () {
         var temp = new InsightFacade();
 
         temp.addDataset("courses", f).then((response) => {
-            console.log(response.code);
-            console.log(response.body);
+            //console.log(response.code);
+            //console.log(response.body);
             done();
         })
             .catch((err) => {
@@ -117,8 +118,25 @@ describe("EchoSpec", function () {
 
     it("Should be able to handle a null echo message sensibly2", function (done) {
 
-
         this.timeout(1500000);
+
+
+
+        //var mySet = new Set();
+        //mySet.add({});
+
+
+
+
+
+
+
+
+
+
+
+
+
         var temp = new InsightFacade();
 
         var s1 = {
