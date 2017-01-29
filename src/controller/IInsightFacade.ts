@@ -14,7 +14,112 @@ export interface QueryRequest {
     content: string;
 }
 
-export interface IInsightFacade { //bjhbjdfdf
+export class Course_obj{
+
+    Subject: string;
+    Course: string;
+    Avg :number;
+    Professor: string;
+    Title: string;
+    Pass: number;
+    Fail: number;
+    Audit: number;
+    id: number;
+
+    constructor(){
+        this.Subject = null;
+        this.Course= null;
+        this.Avg =null;
+        this.Professor=null;
+        this.Title=null;
+        this.Pass=null;
+        this.Fail=null;
+        this.Audit=null;
+        this.id=null;
+    };
+
+    getValue (target:string) :any{
+
+        switch (target){
+            case "Subject":{
+                return this.Subject;
+            }
+            case "Course":{
+                return this.Course;
+            }
+            case "Avg":{
+                return this.Avg;
+            }
+            case "Professor":{
+                return this.Professor;
+            }
+            case "Title":{
+                return this.Title;
+            }
+            case "Pass":{
+                return this.Pass;
+            }
+            case "Fail":{
+                return this.Fail;
+            }
+            case "Audit":{
+                return this.Audit;
+            }
+            case "id":{
+                return this .id;
+            }
+            default :
+                throw new Error ("invalid key");
+        }
+
+
+    }
+
+    setValue (target:string,value:string){
+        switch (target){
+            case "Subject":{
+                this.Subject=value;
+                break;
+            }
+            case "Course":{
+                this.Course=value;
+                break;
+            }
+            case "Avg":{
+                this.Avg=Number(value);
+                break;
+            }
+            case "Professor":{
+                this.Professor=value;
+                break;
+            }
+            case "Title":{
+                this.Title=value;
+                break;
+            }
+            case "Pass":{
+                this.Pass=Number(value);
+                break;
+            }
+            case "Fail":{
+                this.Fail=Number(value);
+                break;
+            }
+            case "Audit":{
+                this.Audit=Number(value);
+                break;
+            }
+            case "id":{
+                this.id=Number(value);
+                break;
+            }
+            default :
+                throw new Error ("invalid key");
+        }
+    }
+}
+
+export interface IInsightFacade {
 
     /**
      * Add a dataset to UBCInsight.
@@ -83,7 +188,8 @@ export interface IInsightFacade { //bjhbjdfdf
      *
      * 200: the query was successfully answered. The result should be sent in JSON according in the response body.
      * 400: the query failed; body should contain {"error": "my text"} providing extra detail.
-     * 424: the query failed because it depends on a resource that has not been PUT. The body should contain {"missing": ["id1", "id2"...]}.
+     * 424: the query failed because it depends on a resource that has not been PUT. The body should contain
+     * {"missing": ["id1", "id2"...]}.
      *
      */
     performQuery(query: QueryRequest): Promise<InsightResponse>;

@@ -1,7 +1,7 @@
 /**
  * This is the main programmatic entry point for the project.
  */
-import {IInsightFacade, InsightResponse, QueryRequest} from "./IInsightFacade";
+import {IInsightFacade, InsightResponse, QueryRequest, Course_obj} from "./IInsightFacade";
 
 import Log from "../Util";
 import {fullResponse} from "restify";
@@ -9,104 +9,6 @@ import {error} from "util";
 var JSZip = require('jszip');
 var fs = require('fs');
 var zip = new JSZip();
-
-
-class Course_obj{
-
-    // dictionary = {
-    //     "courses_dept": "Subject",
-    //     "courses_id": "course",
-    //     "courses_avg": "Avg",
-    //     "courses_instructor": "Professor",
-    //     "courses_title": "Title",
-    //     "courses_pass": "Pass",
-    //     "courses_fail": "fail",
-    //     "courses_audit": "Audit",
-    //     "courses_uuid": "id"
-    // };
-
-    Subject: string;
-    Course: string;
-    Avg :number;
-    Professor: string;
-    Title: string;
-    Pass: number;
-    Fail: number;
-    Audit: number;
-    id: number;
-
-    get (target:string) :any{
-
-        switch (target){
-            case "Subject":{
-                return this.Subject;
-            }
-            case "Course":{
-                return this.Course;
-            }
-            case "Avg":{
-                return this.Avg;
-            }
-            case "Professor":{
-                return this.Professor;
-            }
-            case "Title":{
-                return this.Title;
-            }
-            case "Pass":{
-                return this.Pass;
-            }
-            case "Fail":{
-                return this.Fail;
-            }
-            case "Audit":{
-                return this.Audit;
-            }
-            case "id":{
-                return this .id;
-            }
-            default :
-                throw new Error ("invalid key");
-        }
-
-
-    }
-
-    set (target:string,value:string):any{
-        switch (target){
-            case "Subject":{
-                this.Subject=value;
-            }
-            case "Course":{
-                this.Course=value;
-            }
-            case "Avg":{
-                this.Avg=Number(value);
-            }
-            case "Professor":{
-                this.Professor=value;
-            }
-            case "Title":{
-                this.Title=value;
-            }
-            case "Pass":{
-                this.Pass=Number(value);
-            }
-            case "Fail":{
-                this.Fail=Number(value);
-            }
-            case "Audit":{
-                this.Audit=Number(value);
-            }
-            case "id":{
-                this.id=Number(value);
-            }
-            default :
-                throw new Error ("invalid key");
-        }
-    }
-}
-
 
 export default class InsightFacade implements IInsightFacade {
 
@@ -253,7 +155,7 @@ export default class InsightFacade implements IInsightFacade {
 
                 var table = build_table(response.body.toString());
                 var a = table[100];
-                console.log(a);
+                //console.log(a);
                 var body =filter(table,query);
                 fulfill({code: 200, body: body});
             }).catch(function (err:Error) {
@@ -276,33 +178,24 @@ function build_table(data: string): Array<Course_obj> {
     var interest_info = ["Subject", "Course", "Avg", "Professor", "Title", "Pass", "Fail", "Audit", "id"];
 
     for (let course of courses) {
-
+        var each_course: Course_obj = new Course_obj();
         var keys_inner_1 = Object.keys(course);
         var course_info = course[keys_inner_1[0]];
         var results = course_info["result"];
 
         for (let item of results) {
 
-            let course_obj: {[index: string]:  string} = {};
-
-            for (let s of interest_info) {
-                var value = item[s];
-                course.set(s,value);
+            try {
+                for (let s of interest_info) {
+                    //console.log(typeof course);
+                    var value = item[s];
+                    each_course.setValue(s,value);
+                }
+            }catch (err){
+                console.log(err.toString());
             }
 
-            let course_class_obj=new Course_obj();
-            // course_class_obj.Audit=Number(course_obj["Audit"]);
-            // course_class_obj.Avg=Number(course_obj["Avg"]);
-            // course_class_obj.id=Number(course_obj["id"]);
-            // course_class_obj.Course=course_obj["Course"];
-            // course_class_obj.Fail=Number(course_obj["Fail"]);
-            // course_class_obj.Subject=course_obj["Subject"];
-            // course_class_obj.Pass=Number(course_obj["Pass"]);
-            // course_class_obj.Professor=course_obj["Professor"];
-            // course_class_obj.Title=course_obj["Title"];
-
-            course_list.push(course_class_obj);
-
+            course_list.push(each_course);
         }
     }
 
@@ -316,7 +209,11 @@ function filter(table: Array<Course_obj>, query: QueryRequest): Array<any> {
     var options = j_obj["OPTIONS"];
     var where=j_obj["WHERE"];
 
-    var ret_table=filter_helper(table,where);
+    var a=JSON.stringify(where);
+    var query={content: a};
+
+    var ret_table=filter_helper(table,query);
+    console.log(ret_table);
     var columns = options["COLUMNS"];
     var order = options["ORDER"];
     var form = options["FORM"];
@@ -340,7 +237,7 @@ function filter(table: Array<Course_obj>, query: QueryRequest): Array<any> {
 
     for (let item of table){
         for (let column of columns){
-            ret_obj[column]=item.get(dictionary[column]);
+            ret_obj[column]=item.getValue(dictionary[column]);
         }
         ret_array.push(ret_obj);
     }
@@ -372,156 +269,75 @@ function filter_helper (table: Array<Course_obj>, query: QueryRequest): Array<Co
         "courses_uuid": "id"
     };
 
-
-
-    //let temp_item :{[index: string] :any}={};
-    // var dictionary_keys=Object.keys(dictionary);
-
     if (key=="IS"){
         var inner_query=j_obj[key];
         var inner_keys=Object.keys(inner_query);
-        // var ret_array :Course_obj[]=[];
         for (let item of table ){
-
-            // temp_item["Subject"]=item.Subject;
-            // temp_item["id"]=item.id;
-            // temp_item["Audit"]=item.Audit;
-            // temp_item["Course"]=item.Course;
-            // temp_item["Avg"]=item.Avg;
-            // temp_item["Title"]=item.Title;
-            // temp_item["Professor"]=item.Professor;
-            // temp_item["Pass"]=item.Pass;
-            // temp_item["Fail"]=item.Fail;
-
-            var satisfy :boolean=false;
-            for (var j=0;i<inner_keys.length;j++){
-
-                var target=dictionary[inner_keys[j]];
-                if (item.get(target).toString==inner_query[inner_keys[i]]){
-                    satisfy=true;
+            for (var i=0;i<inner_keys.length;i++){
+                var target=dictionary[inner_keys[i]];
+                if (item.getValue(target) == inner_query[inner_keys[i]]){
+                    ret_array.push(item);
                 }
-                else {
-                    satisfy=false;
-                }
-            }
-
-            if (satisfy){
-                ret_array.push(item);
             }
         }
-
     }
     else if (key=="GT"){
         var inner_query=j_obj[key];
         var inner_keys=Object.keys(inner_query);
-        // var ret_array :Course_obj[]=[];
         for (let item of table ){
-
-            // temp_item["Subject"]=item.Subject;
-            // temp_item["id"]=item.id;
-            // temp_item["Audit"]=item.Audit;
-            // temp_item["Course"]=item.Course;
-            // temp_item["Avg"]=item.Avg;
-            // temp_item["Title"]=item.Title;
-            // temp_item["Professor"]=item.Professor;
-            // temp_item["Pass"]=item.Pass;
-            // temp_item["Fail"]=item.Fail;
-
-            var satisfy :boolean=false;
-            for (var j=0;i<inner_keys.length;j++){
-
-                var target=dictionary[inner_keys[j]];
-                if (item.get(target)>Number(inner_query[inner_keys[i]])){
-                    satisfy=true;
+            for (var i=0;i<inner_keys.length;i++){
+                var target=dictionary[inner_keys[i]];
+                if (item.getValue(target) > Number(inner_query[inner_keys[i]])){
+                    ret_array.push(item);
                 }
-                else {
-                    satisfy=false;
-                }
-            }
-
-            if (satisfy){
-                ret_array.push(item);
             }
         }
     }
     else if (key=="LT"){
         var inner_query=j_obj[key];
         var inner_keys=Object.keys(inner_query);
-        // var ret_array :Course_obj[]=[];
         for (let item of table ){
-
-            // temp_item["Subject"]=item.Subject;
-            // temp_item["id"]=item.id;
-            // temp_item["Audit"]=item.Audit;
-            // temp_item["Course"]=item.Course;
-            // temp_item["Avg"]=item.Avg;
-            // temp_item["Title"]=item.Title;
-            // temp_item["Professor"]=item.Professor;
-            // temp_item["Pass"]=item.Pass;
-            // temp_item["Fail"]=item.Fail;
-
-            var satisfy :boolean=false;
-            for (var j=0;i<inner_keys.length;j++){
-
-                var target=dictionary[inner_keys[j]];
-                if (item.get(target)<Number(inner_query[inner_keys[i]])){
-                    satisfy=true;
+            for (var i=0;i<inner_keys.length;i++){
+                var target=dictionary[inner_keys[i]];
+                if (item.getValue(target) < Number(inner_query[inner_keys[i]])){
+                    ret_array.push(item);
                 }
-                else {
-                    satisfy=false;
-                }
-            }
-
-            if (satisfy){
-                ret_array.push(item);
             }
         }
     }
     else if (key=="EQ"){
         var inner_query=j_obj[key];
         var inner_keys=Object.keys(inner_query);
-        // var ret_array :Course_obj[]=[];
         for (let item of table ){
-
-            // temp_item["Subject"]=item.Subject;
-            // temp_item["id"]=item.id;
-            // temp_item["Audit"]=item.Audit;
-            // temp_item["Course"]=item.Course;
-            // temp_item["Avg"]=item.Avg;
-            // temp_item["Title"]=item.Title;
-            // temp_item["Professor"]=item.Professor;
-            // temp_item["Pass"]=item.Pass;
-            // temp_item["Fail"]=item.Fail;
-
-            var satisfy :boolean=false;
-            for (var j=0;i<inner_keys.length;j++){
-
-                var target=dictionary[inner_keys[j]];
-                if (item.get(target)==Number(inner_query[inner_keys[i]])){
-                    satisfy=true;
+            for (var i=0;i<inner_keys.length;i++){
+                var target=dictionary[inner_keys[i]];
+                if (item.getValue(target) == Number(inner_query[inner_keys[i]])){
+                    ret_array.push(item);
                 }
-                else {
-                    satisfy=false;
-                }
-            }
-
-            if (satisfy){
-                ret_array.push(item);
             }
         }
     }
     else if (key=="AND"){
         var and_list=j_obj[key];
         var final_array: Course_obj[]=[];
-        // var ret_array:Course_obj[]=[];
         for (let item of and_list){
-            var temp=filter_helper(table,item);
-            final_array.concat(temp);
+            var a=JSON.stringify(item);
+            var query={content: a};
+            var temp=filter_helper(table,query);
+            console.log(temp);
+            final_array = final_array.concat(temp);
         }
+
+
         final_array.sort(compare);
         for (var i=0;i<final_array.length;i++){
             var in_intersection=false;
             for (var j=0;j<and_list.length;j++){
+                // if(i+and_list.length<final_array.length){
+                //     var index = i+and_list.length;
+                // }else{
+                //     index = final_array.length;
+                // }
                 if (final_array[i].id==final_array[i+j].id){
                     in_intersection=true;
                 }
@@ -533,6 +349,7 @@ function filter_helper (table: Array<Course_obj>, query: QueryRequest): Array<Co
                 ret_array.push(final_array[i]);
             }
         }
+        console.log(ret_array.length);
         //return ret_array;
     }
     else if (key=="OR"){

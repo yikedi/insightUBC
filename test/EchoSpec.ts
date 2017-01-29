@@ -141,9 +141,18 @@ describe("EchoSpec", function () {
 
         var s1 = {
             "WHERE": {
-                "GT": {
-                    "courses_avg": 97
-                }
+                "AND":[
+                    {
+                        "GT":{
+                            "courses_avg":97
+                        }
+                    },
+                    {
+                        "IS":{
+                            "courses_dept":"adhe"
+                        }
+                    }
+                ]
             },
             "OPTIONS": {
                 "COLUMNS": [
