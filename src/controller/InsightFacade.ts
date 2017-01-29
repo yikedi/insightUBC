@@ -158,6 +158,7 @@ export default class InsightFacade implements IInsightFacade {
                 //console.log(a);
                 try {
                     var body = filter(table, query);
+                    //console.log(body);
                 }catch(err){
                     throw err;
                 }
@@ -226,7 +227,7 @@ function filter(table: Array<Course_obj>, query: QueryRequest): Array<any> {
     var order = options["ORDER"];
     var form = options["FORM"];
 
-    let ret_obj: {[index: string]: any} = [];
+
     let dictionary: {[index: string]: string} = {};
 
     dictionary = {
@@ -243,10 +244,12 @@ function filter(table: Array<Course_obj>, query: QueryRequest): Array<any> {
 
     var ret_array: any = [];
 
-    for (let item of table) {
+    for (let item of ret_table) {
+        let ret_obj: {[index: string]: any} = {};
         for (let column of columns) {
             try {
                 ret_obj[column] = item.getValue(dictionary[column]);
+                //console.log(ret_obj);
             }catch(err){
                 throw err;
             }
@@ -377,7 +380,7 @@ function filter_helper(table: Array<Course_obj>, query: QueryRequest): Array<Cou
                 ret_array.push(final_array[i]);
             }
         }
-        console.log(ret_array.length);
+        //console.log(ret_array.length);
         //return ret_array;
     }
     else if (key == "OR") {
