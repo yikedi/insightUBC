@@ -331,8 +331,6 @@ function filter_helper(table: Array<Course_obj>, query: QueryRequest): Array<Cou
             //console.log(temp);
             final_array = final_array.concat(temp);
         }
-
-
         final_array.sort(compare);
         for (var i = 0; i < final_array.length; i++) {
             var in_intersection = false;
@@ -358,10 +356,12 @@ function filter_helper(table: Array<Course_obj>, query: QueryRequest): Array<Cou
     else if (key == "OR") {
         var or_list = j_obj[key];
         var final_array: Course_obj[] = [];
-        // var ret_array:Course_obj[]=[];
+
         for (let item of or_list) {
-            var temp = filter_helper(table, item);
-            final_array.concat(temp);
+            var a = JSON.stringify(item);
+            var query = {content: a};
+            var temp = filter_helper(table, query);
+            final_array = final_array.concat(temp);
         }
         final_array.sort(compare);
         ret_array.push(final_array[0]);
