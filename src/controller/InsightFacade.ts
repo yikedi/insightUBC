@@ -378,7 +378,7 @@ function filter_helper(table: Array<Course_obj>, query: QueryRequest): Array<Cou
         var a = JSON.stringify(inner_query);
         var query = {content: a};
         var before_negate = filter_helper(table, query);
-        // var ret_array :Course_obj[]=[];
+        // var ret_array :Course_obj[]=[];  
         for (var i = 0; i < before_negate.length; i++) {
 
             if (!table.includes(before_negate[i])) {
