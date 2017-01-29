@@ -144,12 +144,12 @@ describe("EchoSpec", function () {
                 "AND":[
                     {
                         "GT":{
-                            "courses_avg":97
+                            "courses_avg":99
                         }
                     },
                     {
                         "IS":{
-                            "courses_dept":"adhe"
+                            "courses_dept":"math"
                         }
                     }
                 ]

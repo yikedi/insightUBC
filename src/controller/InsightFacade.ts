@@ -143,7 +143,7 @@ export default class InsightFacade implements IInsightFacade {
 
             var id = "courses";
 
-            
+
             // var keys = Object.keys(column);
             // for (let key of keys) {
             //     console.log(column[key]);
@@ -156,10 +156,10 @@ export default class InsightFacade implements IInsightFacade {
                 var table = build_table(response.body.toString());
                 var a = table[100];
                 //console.log(a);
-                var body =filter(table,query);
+                var body = filter(table, query);
                 fulfill({code: 200, body: body});
-            }).catch(function (err:Error) {
-                reject({code:400, body:err.message});
+            }).catch(function (err: Error) {
+                reject({code: 400, body: err.message});
             });
 
         });
@@ -178,20 +178,21 @@ function build_table(data: string): Array<Course_obj> {
     var interest_info = ["Subject", "Course", "Avg", "Professor", "Title", "Pass", "Fail", "Audit", "id"];
 
     for (let course of courses) {
-        var each_course: Course_obj = new Course_obj();
+
         var keys_inner_1 = Object.keys(course);
         var course_info = course[keys_inner_1[0]];
         var results = course_info["result"];
 
         for (let item of results) {
+            var each_course: Course_obj = new Course_obj();
 
             try {
                 for (let s of interest_info) {
                     //console.log(typeof course);
                     var value = item[s];
-                    each_course.setValue(s,value);
+                    each_course.setValue(s, value);
                 }
-            }catch (err){
+            } catch (err) {
                 console.log(err.toString());
             }
 
@@ -204,21 +205,21 @@ function build_table(data: string): Array<Course_obj> {
 
 function filter(table: Array<Course_obj>, query: QueryRequest): Array<any> {
 
-    var j_query=query.content;
+    var j_query = query.content;
     var j_obj = JSON.parse(j_query);
     var options = j_obj["OPTIONS"];
-    var where=j_obj["WHERE"];
+    var where = j_obj["WHERE"];
 
-    var a=JSON.stringify(where);
-    var query={content: a};
+    var a = JSON.stringify(where);
+    var query = {content: a};
 
-    var ret_table=filter_helper(table,query);
+    var ret_table = filter_helper(table, query);
     console.log(ret_table);
     var columns = options["COLUMNS"];
     var order = options["ORDER"];
     var form = options["FORM"];
 
-    let ret_obj:{[index: string] : any}=[];
+    let ret_obj: {[index: string]: any} = [];
     let dictionary: {[index: string]: string} = {};
 
     dictionary = {
@@ -233,26 +234,26 @@ function filter(table: Array<Course_obj>, query: QueryRequest): Array<any> {
         "courses_uuid": "id"
     };
 
-    var ret_array : any =[];
+    var ret_array: any = [];
 
-    for (let item of table){
-        for (let column of columns){
-            ret_obj[column]=item.getValue(dictionary[column]);
+    for (let item of table) {
+        for (let column of columns) {
+            ret_obj[column] = item.getValue(dictionary[column]);
         }
         ret_array.push(ret_obj);
     }
 
-    
+
     return ret_array;
 }
 
-function filter_helper (table: Array<Course_obj>, query: QueryRequest): Array<Course_obj> {
+function filter_helper(table: Array<Course_obj>, query: QueryRequest): Array<Course_obj> {
 
-    var j_query=query.content;
+    var j_query = query.content;
     var j_obj = JSON.parse(j_query);
-    var keys=Object.keys(j_obj);
-    var key=keys[0];
-    var ret_array:Course_obj[]=[];
+    var keys = Object.keys(j_obj);
+    var key = keys[0];
+    var ret_array: Course_obj[] = [];
 
 
     let dictionary: {[index: string]: string} = {};
@@ -269,101 +270,103 @@ function filter_helper (table: Array<Course_obj>, query: QueryRequest): Array<Co
         "courses_uuid": "id"
     };
 
-    if (key=="IS"){
-        var inner_query=j_obj[key];
-        var inner_keys=Object.keys(inner_query);
-        for (let item of table ){
-            for (var i=0;i<inner_keys.length;i++){
-                var target=dictionary[inner_keys[i]];
-                if (item.getValue(target) == inner_query[inner_keys[i]]){
+    if (key == "IS") {
+        var inner_query = j_obj[key];
+        var inner_keys = Object.keys(inner_query);
+        for (let item of table) {
+            for (var i = 0; i < inner_keys.length; i++) {
+                var target = dictionary[inner_keys[i]];
+                if (item.getValue(target) == inner_query[inner_keys[i]]) {
                     ret_array.push(item);
                 }
             }
         }
     }
-    else if (key=="GT"){
-        var inner_query=j_obj[key];
-        var inner_keys=Object.keys(inner_query);
-        for (let item of table ){
-            for (var i=0;i<inner_keys.length;i++){
-                var target=dictionary[inner_keys[i]];
-                if (item.getValue(target) > Number(inner_query[inner_keys[i]])){
+    else if (key == "GT") {
+        var inner_query = j_obj[key];
+        var inner_keys = Object.keys(inner_query);
+        for (let item of table) {
+            if (item.id == 86963) {
+                // console.log(item);
+            }
+            for (var i = 0; i < inner_keys.length; i++) {
+                var target = dictionary[inner_keys[i]];
+                if (item.getValue(target) > Number(inner_query[inner_keys[i]])) {
                     ret_array.push(item);
                 }
             }
         }
     }
-    else if (key=="LT"){
-        var inner_query=j_obj[key];
-        var inner_keys=Object.keys(inner_query);
-        for (let item of table ){
-            for (var i=0;i<inner_keys.length;i++){
-                var target=dictionary[inner_keys[i]];
-                if (item.getValue(target) < Number(inner_query[inner_keys[i]])){
+    else if (key == "LT") {
+        var inner_query = j_obj[key];
+        var inner_keys = Object.keys(inner_query);
+        for (let item of table) {
+            for (var i = 0; i < inner_keys.length; i++) {
+                var target = dictionary[inner_keys[i]];
+                if (item.getValue(target) < Number(inner_query[inner_keys[i]])) {
                     ret_array.push(item);
                 }
             }
         }
     }
-    else if (key=="EQ"){
-        var inner_query=j_obj[key];
-        var inner_keys=Object.keys(inner_query);
-        for (let item of table ){
-            for (var i=0;i<inner_keys.length;i++){
-                var target=dictionary[inner_keys[i]];
-                if (item.getValue(target) == Number(inner_query[inner_keys[i]])){
+    else if (key == "EQ") {
+        var inner_query = j_obj[key];
+        var inner_keys = Object.keys(inner_query);
+        for (let item of table) {
+            for (var i = 0; i < inner_keys.length; i++) {
+                var target = dictionary[inner_keys[i]];
+                if (item.getValue(target) == Number(inner_query[inner_keys[i]])) {
                     ret_array.push(item);
                 }
             }
         }
     }
-    else if (key=="AND"){
-        var and_list=j_obj[key];
-        var final_array: Course_obj[]=[];
-        for (let item of and_list){
-            var a=JSON.stringify(item);
-            var query={content: a};
-            var temp=filter_helper(table,query);
-            console.log(temp);
+    else if (key == "AND") {
+        var and_list = j_obj[key];
+        var final_array: Course_obj[] = [];
+        for (let item of and_list) {
+            var a = JSON.stringify(item);
+            var query = {content: a};
+            var temp = filter_helper(table, query);
+            //console.log(temp);
             final_array = final_array.concat(temp);
         }
 
 
         final_array.sort(compare);
-        for (var i=0;i<final_array.length;i++){
-            var in_intersection=false;
-            for (var j=0;j<and_list.length;j++){
-                // if(i+and_list.length<final_array.length){
-                //     var index = i+and_list.length;
-                // }else{
-                //     index = final_array.length;
-                // }
-                if (final_array[i].id==final_array[i+j].id){
-                    in_intersection=true;
-                }
-                else {
-                    in_intersection=false;
+        for (var i = 0; i < final_array.length; i++) {
+            var in_intersection = false;
+            //for (var j=0;j<and_list.length;j++){
+            if (i + and_list.length < final_array.length) {
+                var index = i + and_list.length - 1;
+
+                if (final_array[i].id == final_array[index].id) {
+                    in_intersection = true;
                 }
             }
-            if (in_intersection){
+            else {
+                in_intersection = false;
+            }
+            //}
+            if (in_intersection) {
                 ret_array.push(final_array[i]);
             }
         }
         console.log(ret_array.length);
         //return ret_array;
     }
-    else if (key=="OR"){
-        var or_list=j_obj[key];
-        var final_array: Course_obj[]=[];
+    else if (key == "OR") {
+        var or_list = j_obj[key];
+        var final_array: Course_obj[] = [];
         // var ret_array:Course_obj[]=[];
-        for (let item of or_list){
-            var temp=filter_helper(table,item);
+        for (let item of or_list) {
+            var temp = filter_helper(table, item);
             final_array.concat(temp);
         }
         final_array.sort(compare);
         ret_array.push(final_array[0]);
-        for (var i=1;i<final_array.length;i++){
-            if (final_array[i].id!=ret_array[i-1].id){
+        for (var i = 1; i < final_array.length; i++) {
+            if (final_array[i].id != ret_array[i - 1].id) {
                 ret_array.push(final_array[i]);
             }
         }
@@ -371,14 +374,14 @@ function filter_helper (table: Array<Course_obj>, query: QueryRequest): Array<Co
         // return ret_array;
 
     }
-    else if (key=="NOT"){
+    else if (key == "NOT") {
 
-        var inner_query=j_obj[key];
-        var before_negate=filter_helper(table,inner_query);
+        var inner_query = j_obj[key];
+        var before_negate = filter_helper(table, inner_query);
         // var ret_array :Course_obj[]=[];
-        for (var i=0;i<before_negate.length;i++){
+        for (var i = 0; i < before_negate.length; i++) {
 
-            if(! table.includes(before_negate[i])){
+            if (!table.includes(before_negate[i])) {
                 ret_array.push(before_negate[i]);
             }
         }
@@ -387,12 +390,11 @@ function filter_helper (table: Array<Course_obj>, query: QueryRequest): Array<Co
     }
 
 
-
     return ret_array;
 }
 
-function compare (a :Course_obj, b:Course_obj): number{
-    return a.id-b.id;
+function compare(a: Course_obj, b: Course_obj): number {
+    return a.id - b.id;
 }
 
 
