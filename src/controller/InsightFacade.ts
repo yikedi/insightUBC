@@ -364,20 +364,20 @@ function filter_helper(table: Array<Course_obj>, query: QueryRequest): Array<Cou
             final_array = final_array.concat(temp);
         }
         final_array.sort(compare);
+
         ret_array.push(final_array[0]);
         for (var i = 1; i < final_array.length; i++) {
             if (final_array[i].id != ret_array[i - 1].id) {
                 ret_array.push(final_array[i]);
             }
         }
-
-        // return ret_array;
-
     }
     else if (key == "NOT") {
 
         var inner_query = j_obj[key];
-        var before_negate = filter_helper(table, inner_query);
+        var a = JSON.stringify(inner_query);
+        var query = {content: a};
+        var before_negate = filter_helper(table, query);
         // var ret_array :Course_obj[]=[];
         for (var i = 0; i < before_negate.length; i++) {
 
