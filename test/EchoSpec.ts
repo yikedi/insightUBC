@@ -121,22 +121,6 @@ describe("EchoSpec", function () {
         this.timeout(1500000);
 
 
-
-        //var mySet = new Set();
-        //mySet.add({});
-
-
-
-
-
-
-
-
-
-
-
-
-
         var temp = new InsightFacade();
 
         var s1 = {
@@ -161,7 +145,9 @@ describe("EchoSpec", function () {
 
         var a=JSON.stringify(s1);
         var query={content: a};
-        temp.performQuery(query).then(function () {
+        temp.performQuery(query).then(function (body) {
+            console.log(body.code);
+            console.log(body.body);
             done();
         })
 

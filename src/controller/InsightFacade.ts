@@ -156,7 +156,11 @@ export default class InsightFacade implements IInsightFacade {
                 var table = build_table(response.body.toString());
                 var a = table[100];
                 //console.log(a);
-                var body = filter(table, query);
+                try {
+                    var body = filter(table, query);
+                }catch(err){
+                    throw err;
+                }
                 fulfill({code: 200, body: body});
             }).catch(function (err: Error) {
                 reject({code: 400, body: err.message});
@@ -212,9 +216,12 @@ function filter(table: Array<Course_obj>, query: QueryRequest): Array<any> {
 
     var a = JSON.stringify(where);
     var query = {content: a};
-
-    var ret_table = filter_helper(table, query);
-    console.log(ret_table);
+    try {
+        var ret_table = filter_helper(table, query);
+    }catch(err){
+        throw err;
+    }
+    //console.log(ret_table);
     var columns = options["COLUMNS"];
     var order = options["ORDER"];
     var form = options["FORM"];
@@ -238,7 +245,11 @@ function filter(table: Array<Course_obj>, query: QueryRequest): Array<any> {
 
     for (let item of table) {
         for (let column of columns) {
-            ret_obj[column] = item.getValue(dictionary[column]);
+            try {
+                ret_obj[column] = item.getValue(dictionary[column]);
+            }catch(err){
+                throw err;
+            }
         }
         ret_array.push(ret_obj);
     }
@@ -276,8 +287,12 @@ function filter_helper(table: Array<Course_obj>, query: QueryRequest): Array<Cou
         for (let item of table) {
             for (var i = 0; i < inner_keys.length; i++) {
                 var target = dictionary[inner_keys[i]];
-                if (item.getValue(target) == inner_query[inner_keys[i]]) {
-                    ret_array.push(item);
+                try {
+                    if (item.getValue(target) == inner_query[inner_keys[i]]) {
+                        ret_array.push(item);
+                    }
+                }catch(err){
+                    throw err;
                 }
             }
         }
@@ -291,8 +306,12 @@ function filter_helper(table: Array<Course_obj>, query: QueryRequest): Array<Cou
             }
             for (var i = 0; i < inner_keys.length; i++) {
                 var target = dictionary[inner_keys[i]];
-                if (item.getValue(target) > Number(inner_query[inner_keys[i]])) {
-                    ret_array.push(item);
+                try {
+                    if (item.getValue(target) > Number(inner_query[inner_keys[i]])) {
+                        ret_array.push(item);
+                    }
+                }catch(err){
+                    throw err;
                 }
             }
         }
@@ -303,8 +322,12 @@ function filter_helper(table: Array<Course_obj>, query: QueryRequest): Array<Cou
         for (let item of table) {
             for (var i = 0; i < inner_keys.length; i++) {
                 var target = dictionary[inner_keys[i]];
-                if (item.getValue(target) < Number(inner_query[inner_keys[i]])) {
-                    ret_array.push(item);
+                try {
+                    if (item.getValue(target) < Number(inner_query[inner_keys[i]])) {
+                        ret_array.push(item);
+                    }
+                }catch(err){
+                    throw err;
                 }
             }
         }
@@ -315,8 +338,12 @@ function filter_helper(table: Array<Course_obj>, query: QueryRequest): Array<Cou
         for (let item of table) {
             for (var i = 0; i < inner_keys.length; i++) {
                 var target = dictionary[inner_keys[i]];
-                if (item.getValue(target) == Number(inner_query[inner_keys[i]])) {
-                    ret_array.push(item);
+                try {
+                    if (item.getValue(target) == Number(inner_query[inner_keys[i]])) {
+                        ret_array.push(item);
+                    }
+                }catch(err){
+                    throw err;
                 }
             }
         }
@@ -378,14 +405,21 @@ function filter_helper(table: Array<Course_obj>, query: QueryRequest): Array<Cou
         var a = JSON.stringify(inner_query);
         var query = {content: a};
         var before_negate = filter_helper(table, query);
-        // var ret_array :Course_obj[]=[];  
-        for (var i = 0; i < before_negate.length; i++) {
 
-            if (!table.includes(before_negate[i])) {
-                ret_array.push(before_negate[i]);
+        var final_array = before_negate.concat(table);
+        final_array.sort(compare);
+
+        var element_1 = final_array[0];
+        for (var i = 1; i < final_array.length; i++) {
+            var element_2 = final_array[i];
+            if (element_2.id != element_1.id) {
+                ret_array.push(element_1);
+                element_1 = final_array[i];
+            }else if ((i+1)<final_array.length){
+                element_1 = final_array[i+1];
+                i++;
             }
         }
-        //return ret_array;
 
     }
 

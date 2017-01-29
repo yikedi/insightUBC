@@ -69,7 +69,7 @@ export class Course_obj{
                 return this .id;
             }
             default :
-                throw new Error ("invalid key");
+                throw new Error (target);
         }
 
 
@@ -114,7 +114,7 @@ export class Course_obj{
                 break;
             }
             default :
-                throw new Error ("invalid key");
+                throw new Error (target);
         }
     }
 }
