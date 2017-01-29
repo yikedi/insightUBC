@@ -170,8 +170,9 @@ export default class InsightFacade implements IInsightFacade {
 
                 var table = build_table(response.body.toString());
 
-                var missing_col: string[] = [];
                 //after this line
+                var missing_col: string[] = [];
+
                 var j_query = query.content;
                 var j_obj = JSON.parse(j_query);
                 var options = j_obj["OPTIONS"];
@@ -184,6 +185,7 @@ export default class InsightFacade implements IInsightFacade {
                 if(missing_col.length>0)
                     reject ({code: 424, body: {"missing": missing_col}});
                 //before this line
+
                 try {
                     var body = filter(table, query);
                     //console.log(body);
@@ -304,9 +306,6 @@ function filter_helper(table: Array<Course_obj>, query: QueryRequest): Array<Cou
         var inner_query = j_obj[key];
         var inner_keys = Object.keys(inner_query);
         for (let item of table) {
-            if (item.id == 86963) {
-                // console.log(item);
-            }
             for (var i = 0; i < inner_keys.length; i++) {
                 var target = dictionary[inner_keys[i]];
                 try {
