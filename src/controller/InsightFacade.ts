@@ -6,9 +6,24 @@ import {IInsightFacade, InsightResponse, QueryRequest, Course_obj} from "./IInsi
 import Log from "../Util";
 import {fullResponse} from "restify";
 import {error} from "util";
+import {isUndefined} from "util";
+import {throws} from "assert";
 var JSZip = require('jszip');
 var fs = require('fs');
 var zip = new JSZip();
+
+let dictionary: {[index: string]: string} = {};
+dictionary = {
+    "courses_dept": "Subject",
+    "courses_id": "Course",
+    "courses_avg": "Avg",
+    "courses_instructor": "Professor",
+    "courses_title": "Title",
+    "courses_pass": "Pass",
+    "courses_fail": "fail",
+    "courses_audit": "Audit",
+    "courses_uuid": "id"
+};
 
 export default class InsightFacade implements IInsightFacade {
 
@@ -154,8 +169,21 @@ export default class InsightFacade implements IInsightFacade {
             dataSet.addDataset(id, null).then(function (response: InsightResponse) {
 
                 var table = build_table(response.body.toString());
-                var a = table[100];
-                //console.log(a);
+
+                var missing_col: string[] = [];
+                //after this line
+                var j_query = query.content;
+                var j_obj = JSON.parse(j_query);
+                var options = j_obj["OPTIONS"];
+                var columns = options["COLUMNS"];
+                for(let column of columns){
+                    var value = dictionary[column];
+                    if(isUndefined(value))
+                        missing_col.push(column);
+                }
+                if(missing_col.length>0)
+                    reject ({code: 424, body: {"missing": missing_col}});
+                //before this line
                 try {
                     var body = filter(table, query);
                     //console.log(body);
@@ -224,23 +252,10 @@ function filter(table: Array<Course_obj>, query: QueryRequest): Array<any> {
     }
     //console.log(ret_table);
     var columns = options["COLUMNS"];
+    //console.log(columns);
     var order = options["ORDER"];
     var form = options["FORM"];
 
-
-    let dictionary: {[index: string]: string} = {};
-
-    dictionary = {
-        "courses_dept": "Subject",
-        "courses_id": "Course",
-        "courses_avg": "Avg",
-        "courses_instructor": "Professor",
-        "courses_title": "Title",
-        "courses_pass": "Pass",
-        "courses_fail": "fail",
-        "courses_audit": "Audit",
-        "courses_uuid": "id"
-    };
 
     var ret_array: any = [];
 
@@ -268,21 +283,6 @@ function filter_helper(table: Array<Course_obj>, query: QueryRequest): Array<Cou
     var keys = Object.keys(j_obj);
     var key = keys[0];
     var ret_array: Course_obj[] = [];
-
-
-    let dictionary: {[index: string]: string} = {};
-
-    dictionary = {
-        "courses_dept": "Subject",
-        "courses_id": "Course",
-        "courses_avg": "Avg",
-        "courses_instructor": "Professor",
-        "courses_title": "Title",
-        "courses_pass": "Pass",
-        "courses_fail": "fail",
-        "courses_audit": "Audit",
-        "courses_uuid": "id"
-    };
 
     if (key == "IS") {
         var inner_query = j_obj[key];

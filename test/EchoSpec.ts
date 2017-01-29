@@ -149,6 +149,10 @@ describe("EchoSpec", function () {
             console.log(body.code);
             console.log(body.body);
             done();
+        }).catch(function(err){
+            console.log(err.code);
+            console.log(err.body);
+            done();
         })
 
     });
