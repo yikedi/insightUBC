@@ -368,9 +368,9 @@ function filter(table: Array<Course_obj>, query: QueryRequest): Array<any> {
 
     ret_table.sort((a:Course_obj, b:Course_obj)=>{
         if(typeof b.getValue(dictionary[order]) =="number")
-            return b.getValue(dictionary[order])-a.getValue(dictionary[order])
+            return a.getValue(dictionary[order])-b.getValue(dictionary[order])
         else
-            return b.getValue(dictionary[order]).localeCompare(a.getValue(dictionary[order]))
+            return a.getValue(dictionary[order]).localeCompare(b.getValue(dictionary[order]))
     });
 
 
