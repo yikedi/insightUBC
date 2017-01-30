@@ -127,8 +127,8 @@ describe("EchoSpec", function () {
             "WHERE": {
                 "NOT":
                     {
-                        "LT":{
-                            "courses_avg":99
+                        "GT":{
+                            "courses_avg":49
                         }
                     }
 
@@ -138,7 +138,7 @@ describe("EchoSpec", function () {
                     "courses_dept",
                     "courses_avg"
                 ],
-                "ORDER": "courses_avg",
+                "ORDER": "courses_dept",
                 "FORM": "TABLE"
             }
         };
