@@ -1,7 +1,7 @@
 /**
  * This is the main programmatic entry point for the project.
  */
-import {IInsightFacade, InsightResponse, QueryRequest, Course_obj} from "./IInsightFacade";
+import {IInsightFacade, InsightResponse, QueryRequest} from "./IInsightFacade";
 
 import Log from "../Util";
 import {fullResponse} from "restify";
@@ -24,6 +24,111 @@ dictionary = {
     "courses_audit": "Audit",
     "courses_uuid": "id"
 };
+
+class Course_obj{
+
+    Subject: string;
+    Course: string;
+    Avg :number;
+    Professor: string;
+    Title: string;
+    Pass: number;
+    Fail: number;
+    Audit: number;
+    id: number;
+
+    constructor(){
+        this.Subject = null;
+        this.Course= null;
+        this.Avg =null;
+        this.Professor=null;
+        this.Title=null;
+        this.Pass=null;
+        this.Fail=null;
+        this.Audit=null;
+        this.id=null;
+    };
+
+    getValue (target:string) :any{
+
+        switch (target){
+            case "Subject":{
+                return this.Subject;
+            }
+            case "Course":{
+                return this.Course;
+            }
+            case "Avg":{
+                return this.Avg;
+            }
+            case "Professor":{
+                return this.Professor;
+            }
+            case "Title":{
+                return this.Title;
+            }
+            case "Pass":{
+                return this.Pass;
+            }
+            case "Fail":{
+                return this.Fail;
+            }
+            case "Audit":{
+                return this.Audit;
+            }
+            case "id":{
+                return this .id;
+            }
+            default :
+                throw new Error (target);
+        }
+
+
+    }
+
+    setValue (target:string,value:string){
+        switch (target){
+            case "Subject":{
+                this.Subject=value;
+                break;
+            }
+            case "Course":{
+                this.Course=value;
+                break;
+            }
+            case "Avg":{
+                this.Avg=Number(value);
+                break;
+            }
+            case "Professor":{
+                this.Professor=value;
+                break;
+            }
+            case "Title":{
+                this.Title=value;
+                break;
+            }
+            case "Pass":{
+                this.Pass=Number(value);
+                break;
+            }
+            case "Fail":{
+                this.Fail=Number(value);
+                break;
+            }
+            case "Audit":{
+                this.Audit=Number(value);
+                break;
+            }
+            case "id":{
+                this.id=Number(value);
+                break;
+            }
+            default :
+                throw new Error (target);
+        }
+    }
+}
 
 export default class InsightFacade implements IInsightFacade {
 
@@ -75,9 +180,9 @@ export default class InsightFacade implements IInsightFacade {
 
 
                                 if (i > 0) {
-
+                                    var temp;
                                     try {
-                                        var temp = JSON.parse(item);
+                                        temp = JSON.parse(item);
                                     }
                                     catch (Error) {
                                         reject({code: 400, body: {"error": Error.message}});
@@ -177,20 +282,22 @@ export default class InsightFacade implements IInsightFacade {
                 var j_obj = JSON.parse(j_query);
                 var options = j_obj["OPTIONS"];
                 var columns = options["COLUMNS"];
+
                 for(let column of columns){
                     var value = dictionary[column];
                     if(isUndefined(value))
                         missing_col.push(column);
                 }
+
                 if(missing_col.length>0)
                     reject ({code: 424, body: {"missing": missing_col}});
                 //before this line
-
+                var body=null;
                 try {
-                    var body = filter(table, query);
+                    body = filter(table, query);
                     //console.log(body);
                 }catch(err){
-                    throw err;
+                    reject({code: 400, body: err.message});
                 }
                 fulfill({code: 200, body: body});
             }).catch(function (err: Error) {
@@ -247,8 +354,9 @@ function filter(table: Array<Course_obj>, query: QueryRequest): Array<any> {
 
     var a = JSON.stringify(where);
     var query = {content: a};
+    var ret_table;
     try {
-        var ret_table = filter_helper(table, query);
+        ret_table = filter_helper(table, query);
     }catch(err){
         throw err;
     }
@@ -257,6 +365,8 @@ function filter(table: Array<Course_obj>, query: QueryRequest): Array<any> {
     //console.log(columns);
     var order = options["ORDER"];
     var form = options["FORM"];
+
+    //ret_table.sort((a:Course_obj, b:Course_obj)=>{return b.getValue(order)-a.getValue(order)});
 
 
     var ret_array: any = [];
@@ -432,6 +542,7 @@ function filter_helper(table: Array<Course_obj>, query: QueryRequest): Array<Cou
 function compare(a: Course_obj, b: Course_obj): number {
     return a.id - b.id;
 }
+
 
 
 
