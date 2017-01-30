@@ -366,7 +366,7 @@ function filter(table: Array<Course_obj>, query: QueryRequest): Array<any> {
     var order = options["ORDER"];
     var form = options["FORM"];
 
-    //ret_table.sort((a:Course_obj, b:Course_obj)=>{return b.getValue(order)-a.getValue(order)});
+    ret_table.sort((a:Course_obj, b:Course_obj)=>{return b.getValue(dictionary[order])-a.getValue(dictionary[order])});
 
 
     var ret_array: any = [];
