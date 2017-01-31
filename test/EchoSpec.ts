@@ -74,11 +74,11 @@ describe("EchoSpec", function () {
 
 
     it("testest", function (done) {
-        this.timeout(15000000);
+        //this.timeout(50000)
 
         var zip = new JSZip();
         var temp_1 = "./src/courses.zip";
-        var f=fs.readFileSync(temp_1,{encoding:"base64"});
+        var f = fs.readFileSync(temp_1, {encoding: "base64"});
 
         var s1 = {
             "WHERE": {
@@ -96,8 +96,8 @@ describe("EchoSpec", function () {
             }
         };
 
-        var a=JSON.stringify(s1);
-        var query={content: a};
+        var a = JSON.stringify(s1);
+        var query = {content: a};
         var temp = new InsightFacade();
 
         temp.addDataset("courses", f).then((response) => {
@@ -117,8 +117,7 @@ describe("EchoSpec", function () {
     });
 
     it("test remove", function (done) {
-        this.timeout(15000000);
-
+        //this.timeout(50000)
 
 
         var s1 = {
@@ -137,8 +136,8 @@ describe("EchoSpec", function () {
             }
         };
 
-        var a=JSON.stringify(s1);
-        var query={content: a};
+        var a = JSON.stringify(s1);
+        var query = {content: a};
         var temp = new InsightFacade();
 
         temp.removeDataset("courses").then(function (result) {
@@ -159,7 +158,7 @@ describe("EchoSpec", function () {
     });
 
     it("test double remove", function (done) {
-        this.timeout(15000000);
+        //this.timeout(50000)
 
         var temp = new InsightFacade();
 
@@ -181,19 +180,18 @@ describe("EchoSpec", function () {
 
     it("test performquery after remove", function (done) {
 
-        this.timeout(1500000);
+        //this.timeout(500000);
 
 
         var temp = new InsightFacade();
 
         var s1 = {
             "WHERE": {
-                "NOT":
-                    {
-                        "GT":{
-                            "courses_avg":49
-                        }
+                "NOT": {
+                    "GT": {
+                        "courses_avg": 49
                     }
+                }
 
             },
             "OPTIONS": {
@@ -206,13 +204,13 @@ describe("EchoSpec", function () {
             }
         };
 
-        var a=JSON.stringify(s1);
-        var query={content: a};
+        var a = JSON.stringify(s1);
+        var query = {content: a};
         temp.performQuery(query).then(function (body) {
             console.log(body.code);
             console.log(body.body);
             done();
-        }).catch(function(err){
+        }).catch(function (err) {
             console.log(err.code);
             console.log(err.body);
             done();
@@ -221,11 +219,11 @@ describe("EchoSpec", function () {
     });
 
     it("test perform query after remove and add", function (done) {
-        this.timeout(15000000);
+        this.timeout(50000)
 
         var zip = new JSZip();
         var temp_1 = "./src/courses.zip";
-        var f=fs.readFileSync(temp_1,{encoding:"base64"});
+        var f = fs.readFileSync(temp_1, {encoding: "base64"});
 
         var s1 = {
 
@@ -239,8 +237,8 @@ describe("EchoSpec", function () {
             }
         };
 
-        var a=JSON.stringify(s1);
-        var query={content: a};
+        var a = JSON.stringify(s1);
+        var query = {content: a};
         var temp = new InsightFacade();
 
         temp.addDataset("courses", f).then((response) => {
@@ -262,10 +260,112 @@ describe("EchoSpec", function () {
     });
 
 
+    it("test invalid json", function (done) {
+        this.timeout(50000)
+
+        var zip = new JSZip();
+        var temp_1 = "./src/courses1.txt.zip";
+        var f = fs.readFileSync(temp_1, {encoding: "base64"});
+
+        var s1 = {
+
+            "OPTIONS": {
+                "COLUMNS": [
+                    "courses_dept",
+                    "courses_avg"
+                ],
+                "ORDER": "courses_avg",
+                "FORM": "TABLE"
+            }
+        };
+
+        var a = JSON.stringify(s1);
+        var query = {content: a};
+        var temp = new InsightFacade();
+
+        temp.addDataset("courses", f).then((response) => {
+            temp.performQuery(query).then(function (result) {
+                console.log(result.code);
+                console.log(result.body);
+                done();
+            }).catch(function (result) {
+                console.log(result.code);
+                console.log(result.body);
+                done();
+            });
+
+        });
+
+
+
+    });
+
+    it("test complex qurey", function (done) {
+        this.timeout(50000);
+
+        var zip = new JSZip();
+        var temp_1 = "./src/courses.zip";
+        var f = fs.readFileSync(temp_1, {encoding: "base64"});
+
+        var s1 = {
+            "WHERE":{
+                "OR":[
+                    {
+                        "AND":[
+                            {
+                                "GT":{
+                                    "courses_avg":90
+                                }
+                            },
+                            {
+                                "IS":{
+                                    "courses_dept":"adhe"
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "EQ":{
+                            "courses_avg":95
+                        }
+                    }
+                ]
+            },
+            "OPTIONS":{
+                "COLUMNS":[
+                    "courses_dept",
+                    "courses_id",
+                    "courses_avg"
+                ],
+                "ORDER":"courses_avg",
+                "FORM":"TABLE"
+            }
+        }
+
+        var a = JSON.stringify(s1);
+        var query = {content: a};
+        var temp = new InsightFacade();
+
+        temp.addDataset("courses", f).then((response) => {
+            temp.performQuery(query).then(function (result) {
+                console.log(result.code);
+                console.log(result.body);
+                done();
+            }).catch(function (result) {
+                console.log(result.code);
+                console.log(result.body);
+                done();
+            });
+
+        });
+
+    });
+
+
     //
     // it("Should be able to handle a null echo message sensibly2", function (done) {
     //
-    //     this.timeout(1500000);
+    //     //this.timeout(1500000);
     //
     //
     //     var temp = new InsightFacade();
@@ -303,7 +403,6 @@ describe("EchoSpec", function () {
     //     })
     //
     // });
-
 
 
 });

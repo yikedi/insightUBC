@@ -168,12 +168,10 @@ export default class InsightFacade implements IInsightFacade {
                     });
 
                     var final_string = "{\""+id+"\":[";
-                    //console.log(promise_list.length);
 
                     Promise.all(promise_list)
                         .then(function (list) {
 
-                            //console.log("in promise all");
                             var i = 0;
 
                             for (let item of list) {
@@ -208,9 +206,6 @@ export default class InsightFacade implements IInsightFacade {
                                     return fulfill(ret_obj);
                                 }
                             });
-
-                            //console.log("after write");
-
 
                         })
                         .catch(function (err: Error) {
@@ -255,32 +250,16 @@ export default class InsightFacade implements IInsightFacade {
     performQuery(query: QueryRequest): Promise <InsightResponse> {
 
         return new Promise(function (fulfill, reject) {
-            //
-            // var j_query = query.content;
-            // var j_obj = JSON.parse(j_query);
-            // var options = j_obj["OPTIONS"];
-            //
-            // console.log(options);
-            // var column = options["COLUMNS"];
-            // var order = options["ORDER"];
-            // console.log(order);
-            // var form = options["FORM"];
 
+            /*******/
             var id = "courses";
 
-
-            // var keys = Object.keys(column);
-            // for (let key of keys) {
-            //     console.log(column[key]);
-            //     console.log(typeof column[key]);
-            // }
 
             var dataSet = new InsightFacade();
             dataSet.addDataset(id, null).then(function (response: InsightResponse) {
 
                 var table = build_table(response.body.toString());
 
-                //after this line
                 var missing_col: string[] = [];
 
                 var j_query = query.content;
@@ -296,11 +275,9 @@ export default class InsightFacade implements IInsightFacade {
 
                 if(missing_col.length>0)
                     return reject ({code: 424, body: {"missing": missing_col}});
-                //before this line
                 var body=null;
                 try {
                     body = filter(table, query);
-                    //console.log(body);
                 }catch(err){
                     return reject({code: 400, body: err.message});
                 }
@@ -335,7 +312,6 @@ function build_table(data: string): Array<Course_obj> {
 
             try {
                 for (let s of interest_info) {
-                    //console.log(typeof course);
                     var value = item[s];
                     each_course.setValue(s, value);
                 }
@@ -350,7 +326,7 @@ function build_table(data: string): Array<Course_obj> {
     return course_list;
 }
 
-function filter(table: Array<Course_obj>, query: QueryRequest): Array<any> {
+function filter(table: Array<Course_obj>, query: QueryRequest): any {
 
     var j_query = query.content;
     var j_obj = JSON.parse(j_query);
@@ -365,9 +341,8 @@ function filter(table: Array<Course_obj>, query: QueryRequest): Array<any> {
     }catch(err){
         throw err;
     }
-    //console.log(ret_table);
+
     var columns = options["COLUMNS"];
-    //console.log(columns);
     var order = options["ORDER"];
     var form = options["FORM"];
 
@@ -386,7 +361,6 @@ function filter(table: Array<Course_obj>, query: QueryRequest): Array<any> {
         for (let column of columns) {
             try {
                 ret_obj[column] = item.getValue(dictionary[column]);
-                //console.log(ret_obj);
             }catch(err){
                 throw err;
             }
@@ -394,8 +368,9 @@ function filter(table: Array<Course_obj>, query: QueryRequest): Array<any> {
         ret_array.push(ret_obj);
     }
 
+    var ret_obj={render: form,result: ret_array};
 
-    return ret_array;
+    return ret_obj;
 }
 
 function filter_helper(table: Array<Course_obj>, query: QueryRequest): Array<Course_obj> {
@@ -477,13 +452,11 @@ function filter_helper(table: Array<Course_obj>, query: QueryRequest): Array<Cou
             var a = JSON.stringify(item);
             var query = {content: a};
             var temp = filter_helper(table, query);
-            //console.log(temp);
             final_array = final_array.concat(temp);
         }
         final_array.sort(compare);
         for (var i = 0; i < final_array.length; i++) {
             var in_intersection = false;
-            //for (var j=0;j<and_list.length;j++){
             if (i + and_list.length < final_array.length) {
                 var index = i + and_list.length - 1;
 
@@ -494,13 +467,12 @@ function filter_helper(table: Array<Course_obj>, query: QueryRequest): Array<Cou
             else {
                 in_intersection = false;
             }
-            //}
+
             if (in_intersection) {
                 ret_array.push(final_array[i]);
             }
         }
-        //console.log(ret_array.length);
-        //return ret_array;
+
     }
     else if (key == "OR") {
         var or_list = j_obj[key];
@@ -544,7 +516,6 @@ function filter_helper(table: Array<Course_obj>, query: QueryRequest): Array<Cou
         }
 
     }
-
 
     return ret_array;
 }
