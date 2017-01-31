@@ -150,7 +150,7 @@ export default class InsightFacade implements IInsightFacade {
                 var file = fs.readFile("src/" + id + ".txt", 'utf-8', (err: Error, data: string) => {
                     if (err) throw err;
                     ret_obj = {code: 201, body: data};
-                    fulfill(ret_obj);
+                    return fulfill(ret_obj);
                 });
 
             }
@@ -185,8 +185,7 @@ export default class InsightFacade implements IInsightFacade {
                                         temp = JSON.parse(item);
                                     }
                                     catch (Error) {
-                                        reject({code: 400, body: {"error": Error.message}});
-                                        break;
+                                        return reject({code: 400, body: {"error": Error.message}});
                                     }
 
                                     var content = '{\"' + name_list[i] + '\":' + item + '},';
@@ -202,11 +201,11 @@ export default class InsightFacade implements IInsightFacade {
                             fs.writeFile('src/' + id + '.txt', j_objs, (err: Error) => {
                                 if (err) {
                                     ret_obj = {code: 400, body: err.message};
-                                    reject(ret_obj);
+                                    return reject(ret_obj);
                                 }
                                 else {
                                     ret_obj = {code: 204, body: j_objs};
-                                    fulfill(ret_obj);
+                                    return fulfill(ret_obj);
                                 }
                             });
 
@@ -216,14 +215,14 @@ export default class InsightFacade implements IInsightFacade {
                         })
                         .catch(function (err: Error) {
                             ret_obj = {code: 400, body: {"error": err.message}};
-                            reject(ret_obj);
+                            return reject(ret_obj);
                         });
 
 
                 }).catch(function (err: Error) {
 
                     ret_obj = {code: 400, body: {"error": err.message}};
-                    reject(ret_obj);
+                    return reject(ret_obj);
                 });
             }
         });
@@ -238,10 +237,10 @@ export default class InsightFacade implements IInsightFacade {
             fs.unlink(path, (err: Error) => {
                 if (err) {
                     ret_obj = {code: 404, body: {"error": err.message}};
-                    reject(ret_obj);
+                    return reject(ret_obj);
                 } else {
                     ret_obj = {code: 204, body: "The operation was successful"};
-                    fulfill(ret_obj);
+                    return fulfill(ret_obj);
                 }
             });
         });
@@ -290,18 +289,18 @@ export default class InsightFacade implements IInsightFacade {
                 }
 
                 if(missing_col.length>0)
-                    reject ({code: 424, body: {"missing": missing_col}});
+                    return reject ({code: 424, body: {"missing": missing_col}});
                 //before this line
                 var body=null;
                 try {
                     body = filter(table, query);
                     //console.log(body);
                 }catch(err){
-                    reject({code: 400, body: err.message});
+                    return reject({code: 400, body: err.message});
                 }
-                fulfill({code: 200, body: body});
+                return fulfill({code: 200, body: body});
             }).catch(function (err: Error) {
-                reject({code: 400, body: err.message});
+                return reject({code: 400, body: err.message});
             });
 
         });
