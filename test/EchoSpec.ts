@@ -300,7 +300,7 @@ describe("EchoSpec", function () {
 
     });
 
-    it("test complex qurey", function (done) {
+    it("test complex query", function (done) {
         this.timeout(50000);
 
         var zip = new JSZip();
@@ -361,6 +361,129 @@ describe("EchoSpec", function () {
 
     });
 
+
+    it("test complex query with missing value at order ", function (done) {
+        this.timeout(50000);
+
+
+
+        var s1 = {
+            "WHERE":{
+                "NOT": {
+                    "OR": [
+                        {
+                            "AND": [
+                                {
+                                    "GT": {
+                                        "courses_avg": 90
+                                    }
+                                },
+                                {
+                                    "IS": {
+                                        "courses_dept": "adhe"
+                                    }
+                                }
+                            ]
+                        },
+                        {
+                            "EQ": {
+                                "courses_avg": 95
+                            }
+                        }
+                    ]
+                }
+            },
+            "OPTIONS":{
+                "COLUMNS":[
+                    "courses_dept",
+                    "courses_id",
+                    "courses_avg"
+                ],
+                "ORDER":"courses_avg",
+                "FORM":"TABLE"
+            }
+        };
+
+        var a = JSON.stringify(s1);
+        var query = {content: a};
+        var temp = new InsightFacade();
+
+
+            temp.performQuery(query).then(function (result) {
+                console.log(result.code);
+                console.log(result.body);
+                done();
+            }).catch(function (result) {
+                console.log(result.code);
+                console.log(result.body);
+                done();
+            });
+
+
+
+    });
+
+
+    it("test complex query with missing value at order ", function (done) {
+        this.timeout(50000);
+
+
+
+        var s1 = {
+            "WHERE":{
+
+                    "OR": [
+                        {
+                            "AND": [
+                                {
+                                    "GT": {
+                                        "courses_avg": 90
+                                    }
+                                },
+                                {
+                                    "IS": {
+                                        "courses_dept": "adhe"
+                                    }
+                                }
+                            ]
+                        },
+                        {
+                            "EQ": {
+                                "courses_avg": 95
+                            }
+                        }
+                    ]
+
+            },
+            "OPTIONS":{
+                "COLUMNS":[
+                    "courses_dept",
+                    "courses_id",
+                    "courses_avg"
+                ],
+                "ORDER":"courses_avg",
+                "FORM":"TABLE"
+            }
+        };
+
+        var a = JSON.stringify(s1);
+        var query = {content: a};
+        var temp = new InsightFacade();
+
+
+        temp.performQuery(query).then(function (result) {
+            console.log(result.code);
+            console.log(result.body);
+            done();
+        }).catch(function (result) {
+            console.log(result.code);
+            console.log(result.body);
+            done();
+        });
+
+
+
+    });
 
     //
     // it("Should be able to handle a null echo message sensibly2", function (done) {
