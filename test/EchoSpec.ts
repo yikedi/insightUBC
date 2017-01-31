@@ -340,7 +340,7 @@ describe("EchoSpec", function () {
                 "ORDER":"courses_avg",
                 "FORM":"TABLE"
             }
-        }
+        };
 
         var a = JSON.stringify(s1);
         var query = {content: a};
