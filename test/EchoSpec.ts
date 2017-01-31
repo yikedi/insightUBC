@@ -116,46 +116,146 @@ describe("EchoSpec", function () {
 
     });
 
-    it("Should be able to handle a null echo message sensibly2", function (done) {
+    it("testest1", function (done) {
+        this.timeout(15000000);
 
-        this.timeout(1500000);
 
-
-        var temp = new InsightFacade();
 
         var s1 = {
             "WHERE": {
-                "NOT":
-                    {
-                        "GT":{
-                            "courses_avg":49
-                        }
-                    }
-
+                "GT": {
+                    "courses_avg": 97
+                }
             },
             "OPTIONS": {
                 "COLUMNS": [
                     "courses_dept",
                     "courses_avg"
                 ],
-                "ORDER": "courses_dept",
+                "ORDER": "courses_avg",
                 "FORM": "TABLE"
             }
         };
 
         var a=JSON.stringify(s1);
         var query={content: a};
-        temp.performQuery(query).then(function (body) {
-            console.log(body.code);
-            console.log(body.body);
+        var temp = new InsightFacade();
+
+        temp.removeDataset("courses").then(function (result) {
+            console.log(result.code);
+            console.log(result.body);
             done();
-        }).catch(function(err){
-            console.log(err.code);
-            console.log(err.body);
-            done();
-        })
+        });
+
+        // temp.performQuery(query).then(function (result) {
+        //    console.log(result.code);
+        //    console.log(result.body);
+        //    done();
+        // });
+
+        Log.test("outsideasync");
+
 
     });
+
+    it("testest1", function (done) {
+        this.timeout(15000000);
+
+        var temp = new InsightFacade();
+
+        temp.removeDataset("courses").then(function (result) {
+            console.log(result.code);
+            console.log(result.body);
+            done();
+        });
+
+
+        Log.test("outsideasync");
+
+
+    });
+
+    // it("Should be able to handle a null echo message sensibly2", function (done) {
+    //
+    //     this.timeout(1500000);
+    //
+    //
+    //     var temp = new InsightFacade();
+    //
+    //     var s1 = {
+    //         "WHERE": {
+    //             "NOT":
+    //                 {
+    //                     "GT":{
+    //                         "courses_avg":49
+    //                     }
+    //                 }
+    //
+    //         },
+    //         "OPTIONS": {
+    //             "COLUMNS": [
+    //                 "courses_dept",
+    //                 "courses_avg"
+    //             ],
+    //             "ORDER": "courses_dept",
+    //             "FORM": "TABLE"
+    //         }
+    //     };
+    //
+    //     var a=JSON.stringify(s1);
+    //     var query={content: a};
+    //     temp.performQuery(query).then(function (body) {
+    //         console.log(body.code);
+    //         console.log(body.body);
+    //         done();
+    //     }).catch(function(err){
+    //         console.log(err.code);
+    //         console.log(err.body);
+    //         done();
+    //     })
+    //
+    // });
+    //
+    // it("Should be able to handle a null echo message sensibly2", function (done) {
+    //
+    //     this.timeout(1500000);
+    //
+    //
+    //     var temp = new InsightFacade();
+    //
+    //     var s1 = {
+    //         "WHERE": {
+    //             "NOT":
+    //                 {
+    //                     "GT":{
+    //                         "courses_avg":49
+    //                     }
+    //                 }
+    //
+    //         },
+    //         "OPTIONS": {
+    //             "COLUMNS": [
+    //                 "courses_dept",
+    //                 "courses_avg"
+    //             ],
+    //             "ORDER": "courses_dept",
+    //             "FORM": "TABLE"
+    //         }
+    //     };
+    //
+    //     var a=JSON.stringify(s1);
+    //     var query={content: a};
+    //     temp.performQuery(query).then(function (body) {
+    //         console.log(body.code);
+    //         console.log(body.body);
+    //         done();
+    //     }).catch(function(err){
+    //         console.log(err.code);
+    //         console.log(err.body);
+    //         done();
+    //     })
+    //
+    // });
 
 
 

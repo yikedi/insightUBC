@@ -234,6 +234,12 @@ export default class InsightFacade implements IInsightFacade {
         return new Promise(function (fulfill, reject) {
             var ret_obj = null;
             var path = "src/" + id + ".txt";
+            var exist: boolean = fs.existsSync("src/" + id + ".txt");
+            if (!exist){
+                ret_obj = {code: 404, body: "The operation was unsuccessful because the dataset was already removed before"};
+                reject(ret_obj);
+            }
+
             fs.unlink(path, (err: Error) => {
                 if (err) {
                     ret_obj = {code: 404, body: {"error": err.message}};
