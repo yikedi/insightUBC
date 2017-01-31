@@ -337,7 +337,7 @@ describe("EchoSpec", function () {
                     "courses_id",
                     "courses_avg"
                 ],
-                "ORDER":"courses_avg",
+                "ORDER":"courses_av",
                 "FORM":"TABLE"
             }
         };

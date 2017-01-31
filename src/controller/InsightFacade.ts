@@ -266,12 +266,17 @@ export default class InsightFacade implements IInsightFacade {
                 var j_obj = JSON.parse(j_query);
                 var options = j_obj["OPTIONS"];
                 var columns = options["COLUMNS"];
+                var order = options["ORDER"];
 
                 for(let column of columns){
                     var value = dictionary[column];
                     if(isUndefined(value))
                         missing_col.push(column);
                 }
+
+                var order_check = dictionary[order];
+                if(isUndefined(order_check))
+                    missing_col.push(order);
 
                 if(missing_col.length>0)
                     return reject ({code: 424, body: {"missing": missing_col}});
