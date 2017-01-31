@@ -168,7 +168,6 @@ export default class InsightFacade implements IInsightFacade {
                     });
 
                     var final_string = "{\""+id+"\":[";
-                    //console.log(promise_list.length);
 
                     Promise.all(promise_list)
                         .then(function (list) {
