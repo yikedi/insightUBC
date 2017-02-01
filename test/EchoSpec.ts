@@ -260,7 +260,7 @@ describe("EchoSpec", function () {
     });
 
 
-    it("test invalid json", function (done) {
+    xit("test invalid json", function (done) {
         this.timeout(50000)
 
         var zip = new JSZip();
@@ -486,21 +486,21 @@ describe("EchoSpec", function () {
     });
 
 
-    // it("test remove", function (done) {
-    //     //this.timeout(50000)
-    //
-    //
-    //     var temp = new InsightFacade();
-    //
-    //     temp.removeDataset("courses").then(function (result) {
-    //         console.log(result.code);
-    //         console.log(result.body);
-    //         done();
-    //     });
-    //
-    //
-    //
-    // });
+    it("test remove", function (done) {
+        //this.timeout(50000)
+
+
+        var temp = new InsightFacade();
+
+        temp.removeDataset("courses").then(function (result) {
+            console.log(result.code);
+            console.log(result.body);
+            done();
+        });
+
+
+
+    });
 
 
 

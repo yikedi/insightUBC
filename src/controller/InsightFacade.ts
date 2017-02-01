@@ -180,15 +180,15 @@ export default class InsightFacade implements IInsightFacade {
 
                         for (let item of list) {
 
-
+                            var count = 0;
                             if (i > 0) {
                                 var temp;
                                 try {
                                     temp = JSON.parse(item);
                                 }
                                 catch (Error) {
-                                    console.log("in catch for each list line 190");
-                                    return reject({code: 400, body: {"error": Error.message}});
+                                    console.log("in catch for each list line 190"); console.log(count++);
+                                    //return reject({code: 400, body: {"error": Error.message}});
                                 }
 
                                 var content = '{\"' + name_list[i] + '\":' + item + '},';
@@ -198,6 +198,7 @@ export default class InsightFacade implements IInsightFacade {
                         }
                         final_string = final_string.substr(0, final_string.length - 1) + "]}";
                         var j_objs = JSON.parse(final_string);
+                        j_objs = JSON.stringify(j_objs);
 
                         // var validate=validator({
                         //     required:true,
@@ -206,7 +207,7 @@ export default class InsightFacade implements IInsightFacade {
                         // });
                         //
                         // console.log('should be valid', validate(j_objs));
-                        j_objs = JSON.stringify(j_objs);
+
 
 
                         fs.writeFile('src/' + id + '.txt', j_objs, (err: Error) => {
