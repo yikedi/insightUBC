@@ -10,6 +10,8 @@ import {isUndefined} from "util";
 import {throws} from "assert";
 var JSZip = require('jszip');
 var fs = require('fs');
+var validator=require('is-my-json-valid');
+
 var zip = new JSZip();
 
 let dictionary: {[index: string]: string} = {};
@@ -169,8 +171,7 @@ export default class InsightFacade implements IInsightFacade {
 
                     var final_string = "{\""+id+"\":[";
 
-                    Promise.all(promise_list)
-                        .then(function (list) {
+                    Promise.all(promise_list).then(function (list) {
 
                             var i = 0;
 
@@ -193,12 +194,20 @@ export default class InsightFacade implements IInsightFacade {
                             }
                             final_string = final_string.substr(0, final_string.length - 1) + "]}";
                             var j_objs = JSON.parse(final_string);
+
+                            // var validate=validator({
+                            //     required:true,
+                            //     type:'object',
+                            //
+                            // });
+                            //
+                            // console.log('should be valid', validate(j_objs));
                             j_objs = JSON.stringify(j_objs);
 
 
                             fs.writeFile('src/' + id + '.txt', j_objs, (err: Error) => {
                                 if (err) {
-                                    ret_obj = {code: 400, body: err.message};
+                                    ret_obj = {code: 400, body: {"error": err.message}};
                                     return reject(ret_obj);
                                 }
                                 else {
@@ -278,14 +287,16 @@ export default class InsightFacade implements IInsightFacade {
                 if(isUndefined(order_check))
                     missing_col.push(order);
 
-                if(missing_col.length>0)
-                    return reject ({code: 424, body: {"missing": missing_col}});
+
                 var body=null;
                 try {
-                    body = filter(table, query);
+                    body = filter(table, query,missing_col);
                 }catch(err){
                     return reject({code: 400, body: err.message});
                 }
+                if(missing_col.length>0)
+                    return reject ({code: 424, body: {"missing": missing_col}});
+
                 return fulfill({code: 200, body: body});
             }).catch(function (err: Error) {
                 return reject({code: 400, body: err.message});
@@ -331,7 +342,7 @@ function build_table(data: string): Array<Course_obj> {
     return course_list;
 }
 
-function filter(table: Array<Course_obj>, query: QueryRequest): any {
+function filter(table: Array<Course_obj>, query: QueryRequest, missing_col:string []): any {
 
     var j_query = query.content;
     var j_obj = JSON.parse(j_query);
@@ -342,7 +353,7 @@ function filter(table: Array<Course_obj>, query: QueryRequest): any {
     var query = {content: a};
     var ret_table;
     try {
-        ret_table = filter_helper(table, query);
+        ret_table = filter_helper(table, query,missing_col);
     }catch(err){
         throw err;
     }
@@ -378,7 +389,7 @@ function filter(table: Array<Course_obj>, query: QueryRequest): any {
     return ret_obj;
 }
 
-function filter_helper(table: Array<Course_obj>, query: QueryRequest): Array<Course_obj> {
+function filter_helper(table: Array<Course_obj>, query: QueryRequest,missing_col: string[]): Array<Course_obj> {
 
     var j_query = query.content;
     var j_obj = JSON.parse(j_query);
@@ -389,9 +400,20 @@ function filter_helper(table: Array<Course_obj>, query: QueryRequest): Array<Cou
     if (key == "IS") {
         var inner_query = j_obj[key];
         var inner_keys = Object.keys(inner_query);
+
+        var missing: boolean=false;
+        for (var i=0;i<inner_keys.length;i++){
+            var val=dictionary[inner_keys[i]];
+            if (isUndefined(val)){
+                missing_col.push(inner_keys[i]);
+                missing=true;
+            }
+        }
+
         for (let item of table) {
             for (var i = 0; i < inner_keys.length; i++) {
                 var target = dictionary[inner_keys[i]];
+
                 try {
                     if (item.getValue(target) == inner_query[inner_keys[i]]) {
                         ret_array.push(item);
@@ -456,7 +478,7 @@ function filter_helper(table: Array<Course_obj>, query: QueryRequest): Array<Cou
         for (let item of and_list) {
             var a = JSON.stringify(item);
             var query = {content: a};
-            var temp = filter_helper(table, query);
+            var temp = filter_helper(table, query,missing_col);
             final_array = final_array.concat(temp);
         }
         final_array.sort(compare);
@@ -486,7 +508,7 @@ function filter_helper(table: Array<Course_obj>, query: QueryRequest): Array<Cou
         for (let item of or_list) {
             var a = JSON.stringify(item);
             var query = {content: a};
-            var temp = filter_helper(table, query);
+            var temp = filter_helper(table, query,missing_col);
             final_array = final_array.concat(temp);
         }
         final_array.sort(compare);
@@ -503,7 +525,7 @@ function filter_helper(table: Array<Course_obj>, query: QueryRequest): Array<Cou
         var inner_query = j_obj[key];
         var a = JSON.stringify(inner_query);
         var query = {content: a};
-        var before_negate = filter_helper(table, query);
+        var before_negate = filter_helper(table, query,missing_col);
 
         var final_array = before_negate.concat(table);
         final_array.sort(compare);
@@ -529,6 +551,17 @@ function compare(a: Course_obj, b: Course_obj): number {
     return a.id - b.id;
 }
 
+function  check_missing(keys: any,missing_col :string []) : boolean {
+    var missing :boolean=false;
 
+    for (var i=0;i<keys.length;i++){
+        var val=dictionary[keys[i]];
+        if (isUndefined(val)){
+            missing_col.push(keys[i]);
+            missing=true;
+        }
+    }
+    return missing;
+}
 
 

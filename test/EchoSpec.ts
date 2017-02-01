@@ -74,7 +74,7 @@ describe("EchoSpec", function () {
 
 
     it("testest", function (done) {
-        //this.timeout(50000)
+        this.timeout(50000)
 
         var zip = new JSZip();
         var temp_1 = "./src/courses.zip";
@@ -101,7 +101,7 @@ describe("EchoSpec", function () {
         var temp = new InsightFacade();
 
         temp.addDataset("courses", f).then((response) => {
-            //console.log(response.code);
+            console.log(response.code);
             //console.log(response.body);
             done();
         })
@@ -485,47 +485,23 @@ describe("EchoSpec", function () {
 
     });
 
-    //
-    // it("Should be able to handle a null echo message sensibly2", function (done) {
-    //
-    //     //this.timeout(1500000);
+
+    // it("test remove", function (done) {
+    //     //this.timeout(50000)
     //
     //
     //     var temp = new InsightFacade();
     //
-    //     var s1 = {
-    //         "WHERE": {
-    //             "NOT":
-    //                 {
-    //                     "GT":{
-    //                         "courses_avg":49
-    //                     }
-    //                 }
-    //
-    //         },
-    //         "OPTIONS": {
-    //             "COLUMNS": [
-    //                 "courses_dept",
-    //                 "courses_avg"
-    //             ],
-    //             "ORDER": "courses_dept",
-    //             "FORM": "TABLE"
-    //         }
-    //     };
-    //
-    //     var a=JSON.stringify(s1);
-    //     var query={content: a};
-    //     temp.performQuery(query).then(function (body) {
-    //         console.log(body.code);
-    //         console.log(body.body);
+    //     temp.removeDataset("courses").then(function (result) {
+    //         console.log(result.code);
+    //         console.log(result.body);
     //         done();
-    //     }).catch(function(err){
-    //         console.log(err.code);
-    //         console.log(err.body);
-    //         done();
-    //     })
+    //     });
+    //
+    //
     //
     // });
+
 
 
 });
