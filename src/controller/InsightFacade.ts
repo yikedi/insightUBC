@@ -402,13 +402,7 @@ function filter_helper(table: Array<Course_obj>, query: QueryRequest,missing_col
         var inner_keys = Object.keys(inner_query);
 
         var missing: boolean=false;
-        for (var i=0;i<inner_keys.length;i++){
-            var val=dictionary[inner_keys[i]];
-            if (isUndefined(val)){
-                missing_col.push(inner_keys[i]);
-                missing=true;
-            }
-        }
+        missing=check_missing(inner_keys,missing_col);
 
         for (let item of table) {
             for (var i = 0; i < inner_keys.length; i++) {
