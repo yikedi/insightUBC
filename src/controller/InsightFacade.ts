@@ -292,6 +292,18 @@ export default class InsightFacade implements IInsightFacade {
                 try {
                     body = filter(table, query,missing_col);
                 }catch(err){
+                    if(missing_col.length>0) {
+                        missing_col.sort();
+                        var missing_col_no_duplicate: string[]=[];
+                        missing_col_no_duplicate.push(missing_col[0]);
+                        for (var i=1; i<missing_col.length;i++){
+                            if (missing_col[i]!=missing_col_no_duplicate[i-1]){
+                                missing_col_no_duplicate.push(missing_col[i]);
+                            }
+                        }
+                        return reject({code: 424, body: {"missing": missing_col_no_duplicate}});
+                    }
+                    else
                     return reject({code: 400, body: err.message});
                 }
                 if(missing_col.length>0)
@@ -398,11 +410,14 @@ function filter_helper(table: Array<Course_obj>, query: QueryRequest,missing_col
     var ret_array: Course_obj[] = [];
 
     if (key == "IS") {
+
         var inner_query = j_obj[key];
         var inner_keys = Object.keys(inner_query);
 
-        var missing: boolean=false;
-        missing=check_missing(inner_keys,missing_col);
+        var missing: boolean = false;
+        missing = check_missing(inner_keys, missing_col);
+
+        if (!missing) {
 
         for (let item of table) {
             for (var i = 0; i < inner_keys.length; i++) {
@@ -412,24 +427,32 @@ function filter_helper(table: Array<Course_obj>, query: QueryRequest,missing_col
                     if (item.getValue(target) == inner_query[inner_keys[i]]) {
                         ret_array.push(item);
                     }
-                }catch(err){
+                } catch (err) {
                     throw err;
                 }
             }
         }
     }
+    }
     else if (key == "GT") {
+
         var inner_query = j_obj[key];
         var inner_keys = Object.keys(inner_query);
-        for (let item of table) {
-            for (var i = 0; i < inner_keys.length; i++) {
-                var target = dictionary[inner_keys[i]];
-                try {
-                    if (item.getValue(target) > Number(inner_query[inner_keys[i]])) {
-                        ret_array.push(item);
+
+        var missing: boolean = false;
+        missing = check_missing(inner_keys, missing_col);
+
+        if (!missing) {
+            for (let item of table) {
+                for (var i = 0; i < inner_keys.length; i++) {
+                    var target = dictionary[inner_keys[i]];
+                    try {
+                        if (item.getValue(target) > Number(inner_query[inner_keys[i]])) {
+                            ret_array.push(item);
+                        }
+                    } catch (err) {
+                        throw err;
                     }
-                }catch(err){
-                    throw err;
                 }
             }
         }
@@ -437,15 +460,21 @@ function filter_helper(table: Array<Course_obj>, query: QueryRequest,missing_col
     else if (key == "LT") {
         var inner_query = j_obj[key];
         var inner_keys = Object.keys(inner_query);
-        for (let item of table) {
-            for (var i = 0; i < inner_keys.length; i++) {
-                var target = dictionary[inner_keys[i]];
-                try {
-                    if (item.getValue(target) < Number(inner_query[inner_keys[i]])) {
-                        ret_array.push(item);
+
+        var missing: boolean = false;
+        missing = check_missing(inner_keys, missing_col);
+
+        if (!missing) {
+            for (let item of table) {
+                for (var i = 0; i < inner_keys.length; i++) {
+                    var target = dictionary[inner_keys[i]];
+                    try {
+                        if (item.getValue(target) < Number(inner_query[inner_keys[i]])) {
+                            ret_array.push(item);
+                        }
+                    } catch (err) {
+                        throw err;
                     }
-                }catch(err){
-                    throw err;
                 }
             }
         }
@@ -453,15 +482,21 @@ function filter_helper(table: Array<Course_obj>, query: QueryRequest,missing_col
     else if (key == "EQ") {
         var inner_query = j_obj[key];
         var inner_keys = Object.keys(inner_query);
-        for (let item of table) {
-            for (var i = 0; i < inner_keys.length; i++) {
-                var target = dictionary[inner_keys[i]];
-                try {
-                    if (item.getValue(target) == Number(inner_query[inner_keys[i]])) {
-                        ret_array.push(item);
+
+        var missing: boolean = false;
+        missing = check_missing(inner_keys, missing_col);
+
+        if (!missing) {
+            for (let item of table) {
+                for (var i = 0; i < inner_keys.length; i++) {
+                    var target = dictionary[inner_keys[i]];
+                    try {
+                        if (item.getValue(target) == Number(inner_query[inner_keys[i]])) {
+                            ret_array.push(item);
+                        }
+                    } catch (err) {
+                        throw err;
                     }
-                }catch(err){
-                    throw err;
                 }
             }
         }

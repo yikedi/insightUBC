@@ -314,19 +314,19 @@ describe("EchoSpec", function () {
                         "AND":[
                             {
                                 "GT":{
-                                    "courses_avg":90
+                                    "courses_av":90
                                 }
                             },
                             {
                                 "IS":{
-                                    "courses_dept":"adhe"
+                                    "courses_dpt":"adhe"
                                 }
                             }
                         ]
                     },
                     {
                         "EQ":{
-                            "courses_avg":95
+                            "pourses_avg":95
                         }
                     }
                 ]
