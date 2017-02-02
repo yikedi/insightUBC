@@ -157,6 +157,11 @@ describe("EchoSpec", function () {
 
     });
 
+
+
+
+
+
     it("test double remove", function (done) {
         //this.timeout(50000)
 
@@ -487,62 +492,62 @@ describe("EchoSpec", function () {
     });
     //
     //
-    // it("test all with other zip file ", function (done) {
-    //     this.timeout(50000)
-    //
-    //
-    //     var zip = new JSZip();
-    //     var temp_1 = "./src/testfile.zip";
-    //     var f = fs.readFileSync(temp_1, {encoding: "base64"});
-    //
-    //     var s1 = {
-    //         "WHERE":{
-    //             "OR":[
-    //                 {
-    //                     "AND":[
-    //                         {
-    //                             "GT":{
-    //                                 "courses_avg":90
-    //                             }
-    //                         },
-    //                         {
-    //                             "IS":{
-    //                                 "courses_dept":"adhe"
-    //                             }
-    //                         }
-    //                     ]
-    //                 },
-    //                 {
-    //                     "EQ":{
-    //                         "courses_avg":95
-    //                     }
-    //                 }
-    //             ]
-    //         },
-    //         "OPTIONS":{
-    //             "COLUMNS":[
-    //                 "courses_dept",
-    //                 "courses_id",
-    //                 "courses_avg"
-    //             ],
-    //             "ORDER":"courses_avg",
-    //             "FORM":"TABLE"
-    //         }
-    //     };
-    //
-    //     var a = JSON.stringify(s1);
-    //     var query = {content: a};
-    //     var temp = new InsightFacade();
-    //
-    //     temp.addDataset("testfile", f).then((response) => {
-    //
-    //         console.log(response.code);
-    //         done();
-    //     });
-    //
-    //
-    //
-    // });
+    it("test all with other zip file ", function (done) {
+        this.timeout(50000)
+
+
+        var zip = new JSZip();
+        var temp_1 = "./src/testfile 3.zip";
+        var f = fs.readFileSync(temp_1, {encoding: "base64"});
+
+        var s1 = {
+            "WHERE":{
+                "OR":[
+                    {
+                        "AND":[
+                            {
+                                "GT":{
+                                    "courses_avg":90
+                                }
+                            },
+                            {
+                                "IS":{
+                                    "courses_dept":"adhe"
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "EQ":{
+                            "courses_avg":95
+                        }
+                    }
+                ]
+            },
+            "OPTIONS":{
+                "COLUMNS":[
+                    "courses_dept",
+                    "courses_id",
+                    "courses_avg"
+                ],
+                "ORDER":"courses_avg",
+                "FORM":"TABLE"
+            }
+        };
+
+        var a = JSON.stringify(s1);
+        var query = {content: a};
+        var temp = new InsightFacade();
+
+        temp.addDataset("courses", f).then((response) => {
+
+            console.log(response.code);
+            done();
+        });
+
+
+
+    });
     //
     // it("test remove testfile", function (done) {
     //     //this.timeout(50000)

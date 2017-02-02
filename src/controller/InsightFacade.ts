@@ -356,59 +356,9 @@ export default class InsightFacade implements IInsightFacade {
 
             }
             else {
-                var ret_obj={code: 400, body:{"error":"file not exist"}};
-                return reject({ret_obj});
+                var ret_obj={code:400, body:{"error":"file not exist"}};
+                return reject(ret_obj);
             }
-
-            // var dataSet = new InsightFacade();
-            // dataSet.addDataset(id, null).then(function (response: InsightResponse) {
-            //
-            //     var table = build_table(response.body.toString());
-            //
-            //     var missing_col: string[] = [];
-            //
-            //     var j_query = query.content;
-            //     var j_obj = JSON.parse(j_query);
-            //     var options = j_obj["OPTIONS"];
-            //     var columns = options["COLUMNS"];
-            //     var order = options["ORDER"];
-            //
-            //     for(let column of columns){
-            //         var value = dictionary[column];
-            //         if(isUndefined(value))
-            //             missing_col.push(column);
-            //     }
-            //
-            //     var order_check = dictionary[order];
-            //     if(isUndefined(order_check))
-            //         missing_col.push(order);
-            //
-            //
-            //     var body=null;
-            //     try {
-            //         body = filter(table, query,missing_col);
-            //     }catch(err){
-            //         if(missing_col.length>0) {
-            //             missing_col.sort();
-            //             var missing_col_no_duplicate: string[]=[];
-            //             missing_col_no_duplicate.push(missing_col[0]);
-            //             for (var i=1; i<missing_col.length;i++){
-            //                 if (missing_col[i]!=missing_col_no_duplicate[i-1]){
-            //                     missing_col_no_duplicate.push(missing_col[i]);
-            //                 }
-            //             }
-            //             return reject({code: 424, body: {"missing": missing_col_no_duplicate}});
-            //         }
-            //         else
-            //         return reject({code: 400, body: err.message});
-            //     }
-            //     if(missing_col.length>0)
-            //         return reject ({code: 424, body: {"missing": missing_col}});
-            //
-            //     return fulfill({code: 200, body: body});
-            // }).catch(function (err: Error) {
-            //     return reject({code: 400, body: err.message});
-            // });
 
         });
 
