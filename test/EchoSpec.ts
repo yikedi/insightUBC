@@ -73,7 +73,7 @@ describe("EchoSpec", function () {
     });
 
 
-    it("testest", function (done) {
+    xit("testest", function (done) {
         this.timeout(50000)
 
         var zip = new JSZip();
@@ -116,7 +116,7 @@ describe("EchoSpec", function () {
 
     });
 
-    it("test remove", function (done) {
+    xit("test remove", function (done) {
         //this.timeout(50000)
 
 
@@ -162,7 +162,7 @@ describe("EchoSpec", function () {
 
 
 
-    it("test double remove", function (done) {
+    xit("test double remove", function (done) {
         //this.timeout(50000)
 
         var temp = new InsightFacade();
@@ -183,7 +183,7 @@ describe("EchoSpec", function () {
 
     });
 
-    it("test performquery after remove", function (done) {
+    xit("test performquery after remove", function (done) {
 
         this.timeout(500000);
 
@@ -224,7 +224,7 @@ describe("EchoSpec", function () {
 
     });
 
-    it("test perform query after remove and add", function (done) {
+    xit("test perform query after remove and add", function (done) {
         this.timeout(50000)
 
         var zip = new JSZip();
@@ -306,7 +306,7 @@ describe("EchoSpec", function () {
 
     });
 
-    it("test complex query", function (done) {
+    xit("test complex query", function (done) {
         this.timeout(50000);
 
         var zip = new JSZip();
@@ -368,7 +368,7 @@ describe("EchoSpec", function () {
     });
 
 
-    it("test complex query with missing value at order ", function (done) {
+    xit("test complex query with missing value at order ", function (done) {
         this.timeout(50000);
 
 
@@ -430,7 +430,7 @@ describe("EchoSpec", function () {
     });
 
 
-    it("test complex query with missing value at order ", function (done) {
+    xit("test complex query with missing value at order ", function (done) {
         this.timeout(50000);
 
 
@@ -507,12 +507,12 @@ describe("EchoSpec", function () {
                         "AND":[
                             {
                                 "GT":{
-                                    "courses_avg":90
+                                    "courses_avg":100
                                 }
                             },
                             {
                                 "IS":{
-                                    "courses_dept":"adhe"
+                                    "courses_dept":"cpsc"
                                 }
                             }
                         ]
@@ -541,9 +541,21 @@ describe("EchoSpec", function () {
 
         temp.addDataset("courses", f).then((response) => {
 
-            console.log(response.code);
-            done();
-        });
+            console.log(response.code+"here");
+        }).catch(function (err){
+            console.log(err.code);
+        }).then(function (){
+            temp.performQuery(query).then(function (result) {
+                console.log(result.code);
+                console.log(result.body);
+                done();
+            }).catch(function (err) {
+                console.log(err.code+"here");
+                done();
+            })
+
+        })
+
 
 
 

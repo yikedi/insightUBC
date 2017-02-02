@@ -241,8 +241,7 @@ export default class InsightFacade implements IInsightFacade {
                             }
                         });
 
-                    })
-                        .catch(function (err: Error) {
+                    }).catch(function (err: Error) {
                             console.log("in write file catch line 228");
                             ret_obj = {code: 400, body: {"error": err.message}};
                             return reject(ret_obj);
@@ -409,7 +408,7 @@ function filter(table: Array<Course_obj>, query: QueryRequest, missing_col:strin
 
     var a = JSON.stringify(where);
     var query = {content: a};
-    var ret_table;
+    var ret_table=[];
     try {
         ret_table = filter_helper(table, query,missing_col);
     }catch(err){
@@ -589,7 +588,8 @@ function filter_helper(table: Array<Course_obj>, query: QueryRequest,missing_col
         }
         final_array.sort(compare);
 
-        ret_array.push(final_array[0]);
+        if(!isUndefined(final_array[0]))
+            ret_array.push(final_array[0]);
         for (var i = 1; i < final_array.length; i++) {
             if (final_array[i].id != ret_array[i - 1].id) {
                 ret_array.push(final_array[i]);
