@@ -72,7 +72,7 @@ describe("EchoSpec", function () {
 
     });
 
-
+    /**
     xit("testest", function (done) {
         this.timeout(50000)
 
@@ -505,11 +505,7 @@ describe("EchoSpec", function () {
                 "OR":[
                     {
                         "AND":[
-                            {
-                                "GT":{
-                                    "courses_avg":100
-                                }
-                            },
+
                             {
                                 "IS":{
                                     "courses_dept":"cpsc"
@@ -582,6 +578,6 @@ describe("EchoSpec", function () {
 
 
 
-
+     **/
 
 });
