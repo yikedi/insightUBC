@@ -181,25 +181,37 @@ export default class InsightFacade implements IInsightFacade {
 
                         for (let item of list) {
 
-                            var count = 0;
                             if (i > 0) {
                                 var temp;
                                 try {
                                     temp = JSON.parse(item);
+                                    var content = '{\"' + name_list[i] + '\":' + item + '},';
+                                    final_string += content;
                                 }
                                 catch (Error) {
-                                    console.log("in catch for each list line 190"); console.log(count++);
+                                    console.log("in catch for each list line 190");
                                     //return reject({code: 400, body: {"error": Error.message}});
                                 }
 
-                                var content = '{\"' + name_list[i] + '\":' + item + '},';
-                                final_string += content;
                             }
                             i++;
                         }
                         final_string = final_string.substr(0, final_string.length - 1) + "]}";
-                        var j_objs = JSON.parse(final_string);
-                        j_objs = JSON.stringify(j_objs);
+                        var j_objs: any=null;
+                        try {
+                            j_objs = JSON.parse(final_string);
+                            if (j_objs[id].length==0){
+                                ret_obj={code:400,body: {"error": "No valid json object exist"}};
+                            }
+
+                            j_objs = JSON.stringify(j_objs);
+
+                        }
+                        catch (err){
+                            ret_obj={code:400,body: {"error": err.message}};
+                            return reject(ret_obj)
+                        }
+
 
                         // var validate=validator({
                         //     required:true,
@@ -208,7 +220,6 @@ export default class InsightFacade implements IInsightFacade {
                         // });
                         //
                         // console.log('should be valid', validate(j_objs));
-
 
 
                         fs.writeFile('src/' + id + '.txt', j_objs, (err: Error) => {
@@ -276,7 +287,6 @@ export default class InsightFacade implements IInsightFacade {
 
             /*******/
             var id = "courses";
-
 
             var dataSet = new InsightFacade();
             dataSet.addDataset(id, null).then(function (response: InsightResponse) {
