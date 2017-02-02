@@ -15,6 +15,7 @@ var validator=require('is-my-json-valid');
 var zip = new JSZip();
 
 let dictionary: {[index: string]: string} = {};
+
 dictionary = {
     "courses_dept": "Subject",
     "courses_id": "Course",

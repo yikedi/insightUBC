@@ -260,11 +260,11 @@ describe("EchoSpec", function () {
     });
 
 
-    xit("test invalid json", function (done) {
+    it("test invalid json", function (done) {
         this.timeout(50000)
 
         var zip = new JSZip();
-        var temp_1 = "./src/courses1.zip";
+        var temp_1 = "./src/courses1.txt.zip";
         var f = fs.readFileSync(temp_1, {encoding: "base64"});
 
         var s1 = {
@@ -486,21 +486,70 @@ describe("EchoSpec", function () {
     });
 
 
-    it("test remove", function (done) {
-        //this.timeout(50000)
+    it("test all with other zip file ", function (done) {
+        this.timeout(50000)
 
 
+        var zip = new JSZip();
+        var temp_1 = "./src/testfile.zip";
+        var f = fs.readFileSync(temp_1, {encoding: "base64"});
+
+        var s1 = {
+            "WHERE":{
+                "OR":[
+                    {
+                        "AND":[
+                            {
+                                "GT":{
+                                    "courses_av":90
+                                }
+                            },
+                            {
+                                "IS":{
+                                    "courses_dpt":"adhe"
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "EQ":{
+                            "pourses_avg":95
+                        }
+                    }
+                ]
+            },
+            "OPTIONS":{
+                "COLUMNS":[
+                    "courses_dept",
+                    "courses_id",
+                    "courses_avg"
+                ],
+                "ORDER":"courses_av",
+                "FORM":"TABLE"
+            }
+        };
+
+        var a = JSON.stringify(s1);
+        var query = {content: a};
         var temp = new InsightFacade();
 
-        temp.removeDataset("courses").then(function (result) {
-            console.log(result.code);
-            console.log(result.body);
-            done();
+        temp.addDataset("testfile", f).then((response) => {
+            temp.performQuery(query).then(function (result) {
+                console.log(result.code);
+                console.log(result.body);
+                done();
+            }).catch(function (result) {
+                console.log(result.code);
+                console.log(result.body);
+                done();
+            });
+
         });
 
 
 
     });
+
 
 
 
