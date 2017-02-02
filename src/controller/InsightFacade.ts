@@ -10,7 +10,7 @@ import {isUndefined} from "util";
 import {throws} from "assert";
 var JSZip = require('jszip');
 var fs = require('fs');
-var validator=require('is-my-json-valid');
+var validator = require('is-my-json-valid');
 
 var zip = new JSZip();
 
@@ -28,11 +28,11 @@ dictionary = {
     "courses_uuid": "id"
 };
 
-class Course_obj{
+class Course_obj {
 
     Subject: string;
     Course: string;
-    Avg :number;
+    Avg: number;
     Professor: string;
     Title: string;
     Pass: number;
@@ -40,95 +40,95 @@ class Course_obj{
     Audit: number;
     id: number;
 
-    constructor(){
+    constructor() {
         this.Subject = null;
-        this.Course= null;
-        this.Avg =null;
-        this.Professor=null;
-        this.Title=null;
-        this.Pass=null;
-        this.Fail=null;
-        this.Audit=null;
-        this.id=null;
+        this.Course = null;
+        this.Avg = null;
+        this.Professor = null;
+        this.Title = null;
+        this.Pass = null;
+        this.Fail = null;
+        this.Audit = null;
+        this.id = null;
     };
 
-    getValue (target:string) :any{
+    getValue(target: string): any {
 
-        switch (target){
-            case "Subject":{
+        switch (target) {
+            case "Subject": {
                 return this.Subject;
             }
-            case "Course":{
+            case "Course": {
                 return this.Course;
             }
-            case "Avg":{
+            case "Avg": {
                 return this.Avg;
             }
-            case "Professor":{
+            case "Professor": {
                 return this.Professor;
             }
-            case "Title":{
+            case "Title": {
                 return this.Title;
             }
-            case "Pass":{
+            case "Pass": {
                 return this.Pass;
             }
-            case "Fail":{
+            case "Fail": {
                 return this.Fail;
             }
-            case "Audit":{
+            case "Audit": {
                 return this.Audit;
             }
-            case "id":{
-                return this .id;
+            case "id": {
+                return this.id;
             }
             default :
-                throw new Error (target);
+                throw new Error(target);
         }
 
 
     }
 
-    setValue (target:string,value:string){
-        switch (target){
-            case "Subject":{
-                this.Subject=value;
+    setValue(target: string, value: string) {
+        switch (target) {
+            case "Subject": {
+                this.Subject = value;
                 break;
             }
-            case "Course":{
-                this.Course=value;
+            case "Course": {
+                this.Course = value;
                 break;
             }
-            case "Avg":{
-                this.Avg=Number(value);
+            case "Avg": {
+                this.Avg = Number(value);
                 break;
             }
-            case "Professor":{
-                this.Professor=value;
+            case "Professor": {
+                this.Professor = value;
                 break;
             }
-            case "Title":{
-                this.Title=value;
+            case "Title": {
+                this.Title = value;
                 break;
             }
-            case "Pass":{
-                this.Pass=Number(value);
+            case "Pass": {
+                this.Pass = Number(value);
                 break;
             }
-            case "Fail":{
-                this.Fail=Number(value);
+            case "Fail": {
+                this.Fail = Number(value);
                 break;
             }
-            case "Audit":{
-                this.Audit=Number(value);
+            case "Audit": {
+                this.Audit = Number(value);
                 break;
             }
-            case "id":{
-                this.id=Number(value);
+            case "id": {
+                this.id = Number(value);
                 break;
             }
             default :
-                throw new Error (target);
+                throw new Error(target);
         }
     }
 }
@@ -161,7 +161,8 @@ export default class InsightFacade implements IInsightFacade {
             //
             // }
             //else {
-                zip.loadAsync(content, {"base64": true}).then(function (data: JSZip) {
+            zip.loadAsync(content, {"base64": true})
+                .then(function (data: JSZip) {
 
 
                     var promise_list: Promise<string>[] = [];
@@ -185,6 +186,11 @@ export default class InsightFacade implements IInsightFacade {
                                 var temp;
                                 try {
                                     temp = JSON.parse(item);
+                                    //console.log(temp["result"]);
+                                    if (temp["result"].length == 0) {
+                                        i++;
+                                        continue;
+                                    }
                                     var content = '{\"' + name_list[i] + '\":' + item + '},';
                                     final_string += content;
                                 }
@@ -197,18 +203,18 @@ export default class InsightFacade implements IInsightFacade {
                             i++;
                         }
                         final_string = final_string.substr(0, final_string.length - 1) + "]}";
-                        var j_objs: any=null;
+                        var j_objs: any = null;
                         try {
                             j_objs = JSON.parse(final_string);
-                            if (j_objs[id].length==0){
-                                ret_obj={code:400,body: {"error": "No valid json object exist"}};
+                            if (j_objs[id].length == 0) {
+                                ret_obj = {code: 400, body: {"error": "No valid json object exist"}};
                             }
 
                             j_objs = JSON.stringify(j_objs);
 
                         }
-                        catch (err){
-                            ret_obj={code:400,body: {"error": err.message}};
+                        catch (err) {
+                            ret_obj = {code: 400, body: {"error": err.message}};
                             return reject(ret_obj)
                         }
 
@@ -231,8 +237,8 @@ export default class InsightFacade implements IInsightFacade {
                             }
                             else {
                                 console.log("write file error else line 220");
-                                if (exist){
-                                    ret_obj={code:201, body:j_objs};
+                                if (exist) {
+                                    ret_obj = {code: 201, body: j_objs};
                                 }
                                 else {
                                     ret_obj = {code: 204, body: j_objs};
@@ -242,17 +248,17 @@ export default class InsightFacade implements IInsightFacade {
                         });
 
                     }).catch(function (err: Error) {
-                            console.log("in write file catch line 228");
-                            ret_obj = {code: 400, body: {"error": err.message}};
-                            return reject(ret_obj);
-                        });
+                        console.log("in write file catch line 228");
+                        ret_obj = {code: 400, body: {"error": err.message}};
+                        return reject(ret_obj);
+                    });
 
 
                 }).catch(function (err: Error) {
-                    console.log("in JSZip catch line 235");
-                    ret_obj = {code: 400, body: {"error": err.message}};
-                    return reject(ret_obj);
-                });
+                console.log("in JSZip catch line 235");
+                ret_obj = {code: 400, body: {"error": err.message}};
+                return reject(ret_obj);
+            });
             //}
         });
 
@@ -298,11 +304,11 @@ export default class InsightFacade implements IInsightFacade {
                 var file = fs.readFile("src/" + id + ".txt", 'utf-8', (err: Error, data: string) => {
                     if (err) {
                         console.log("in exist err line 154");
-                        return reject({code: 400, body:{"error":err.message}});
+                        return reject({code: 400, body: {"error": err.message}});
                     }
                     else {
 
-                        var table=build_table(data);
+                        var table = build_table(data);
 
                         var missing_col: string[] = [];
 
@@ -312,27 +318,27 @@ export default class InsightFacade implements IInsightFacade {
                         var columns = options["COLUMNS"];
                         var order = options["ORDER"];
 
-                        for(let column of columns){
+                        for (let column of columns) {
                             var value = dictionary[column];
-                            if(isUndefined(value))
+                            if (isUndefined(value))
                                 missing_col.push(column);
                         }
 
                         var order_check = dictionary[order];
-                        if(isUndefined(order_check))
+                        if (isUndefined(order_check))
                             missing_col.push(order);
 
 
-                        var body=null;
+                        var body = null;
                         try {
-                            body = filter(table, query,missing_col);
-                        }catch(err){
-                            if(missing_col.length>0) {
+                            body = filter(table, query, missing_col);
+                        } catch (err) {
+                            if (missing_col.length > 0) {
                                 missing_col.sort();
-                                var missing_col_no_duplicate: string[]=[];
+                                var missing_col_no_duplicate: string[] = [];
                                 missing_col_no_duplicate.push(missing_col[0]);
-                                for (var i=1; i<missing_col.length;i++){
-                                    if (missing_col[i]!=missing_col_no_duplicate[i-1]){
+                                for (var i = 1; i < missing_col.length; i++) {
+                                    if (missing_col[i] != missing_col_no_duplicate[i - 1]) {
                                         missing_col_no_duplicate.push(missing_col[i]);
                                     }
                                 }
@@ -341,8 +347,8 @@ export default class InsightFacade implements IInsightFacade {
                             else
                                 return reject({code: 400, body: err.message});
                         }
-                        if(missing_col.length>0)
-                            return reject ({code: 424, body: {"missing": missing_col}});
+                        if (missing_col.length > 0)
+                            return reject({code: 424, body: {"missing": missing_col}});
 
                         return fulfill({code: 200, body: body});
 
@@ -350,19 +356,18 @@ export default class InsightFacade implements IInsightFacade {
                     }
 
 
-
                 });
 
             }
             else {
-                var ret_obj={code:400, body:{"error":"file not exist"}};
+                var ret_obj = {code: 400, body: {"error": "file not exist"}};
                 return reject(ret_obj);
             }
 
         });
 
-     }
- }
+    }
+}
 
 function build_table(data: string): Array<Course_obj> {
 
@@ -399,7 +404,7 @@ function build_table(data: string): Array<Course_obj> {
     return course_list;
 }
 
-function filter(table: Array<Course_obj>, query: QueryRequest, missing_col:string []): any {
+function filter(table: Array<Course_obj>, query: QueryRequest, missing_col: string []): any {
 
     var j_query = query.content;
     var j_obj = JSON.parse(j_query);
@@ -408,10 +413,10 @@ function filter(table: Array<Course_obj>, query: QueryRequest, missing_col:strin
 
     var a = JSON.stringify(where);
     var query = {content: a};
-    var ret_table=[];
+    var ret_table = [];
     try {
-        ret_table = filter_helper(table, query,missing_col);
-    }catch(err){
+        ret_table = filter_helper(table, query, missing_col);
+    } catch (err) {
         throw err;
     }
 
@@ -419,9 +424,9 @@ function filter(table: Array<Course_obj>, query: QueryRequest, missing_col:strin
     var order = options["ORDER"];
     var form = options["FORM"];
 
-    ret_table.sort((a:Course_obj, b:Course_obj)=>{
-        if(typeof b.getValue(dictionary[order]) =="number")
-            return a.getValue(dictionary[order])-b.getValue(dictionary[order])
+    ret_table.sort((a: Course_obj, b: Course_obj) => {
+        if (typeof b.getValue(dictionary[order]) == "number")
+            return a.getValue(dictionary[order]) - b.getValue(dictionary[order])
         else
             return a.getValue(dictionary[order]).localeCompare(b.getValue(dictionary[order]))
     });
@@ -434,19 +439,19 @@ function filter(table: Array<Course_obj>, query: QueryRequest, missing_col:strin
         for (let column of columns) {
             try {
                 ret_obj[column] = item.getValue(dictionary[column]);
-            }catch(err){
+            } catch (err) {
                 throw err;
             }
         }
         ret_array.push(ret_obj);
     }
 
-    var ret_obj={render: form,result: ret_array};
+    var ret_obj = {render: form, result: ret_array};
 
     return ret_obj;
 }
 
-function filter_helper(table: Array<Course_obj>, query: QueryRequest,missing_col: string[]): Array<Course_obj> {
+function filter_helper(table: Array<Course_obj>, query: QueryRequest, missing_col: string[]): Array<Course_obj> {
 
     var j_query = query.content;
     var j_obj = JSON.parse(j_query);
@@ -465,20 +470,20 @@ function filter_helper(table: Array<Course_obj>, query: QueryRequest,missing_col
         if (!missing) {
 
 
-        for (let item of table) {
-            for (var i = 0; i < inner_keys.length; i++) {
-                var target = dictionary[inner_keys[i]];
+            for (let item of table) {
+                for (var i = 0; i < inner_keys.length; i++) {
+                    var target = dictionary[inner_keys[i]];
 
-                try {
-                    if (item.getValue(target) == inner_query[inner_keys[i]]) {
-                        ret_array.push(item);
+                    try {
+                        if (item.getValue(target) == inner_query[inner_keys[i]]) {
+                            ret_array.push(item);
+                        }
+                    } catch (err) {
+                        throw err;
                     }
-                } catch (err) {
-                    throw err;
                 }
             }
         }
-    }
     }
     else if (key == "GT") {
 
@@ -550,10 +555,12 @@ function filter_helper(table: Array<Course_obj>, query: QueryRequest,missing_col
     else if (key == "AND") {
         var and_list = j_obj[key];
         var final_array: Course_obj[] = [];
+        if(and_list.length == 0)
+            throw new Error("empty AND");
         for (let item of and_list) {
             var a = JSON.stringify(item);
             var query = {content: a};
-            var temp = filter_helper(table, query,missing_col);
+            var temp = filter_helper(table, query, missing_col);
             final_array = final_array.concat(temp);
         }
         final_array.sort(compare);
@@ -583,12 +590,12 @@ function filter_helper(table: Array<Course_obj>, query: QueryRequest,missing_col
         for (let item of or_list) {
             var a = JSON.stringify(item);
             var query = {content: a};
-            var temp = filter_helper(table, query,missing_col);
+            var temp = filter_helper(table, query, missing_col);
             final_array = final_array.concat(temp);
         }
         final_array.sort(compare);
 
-        if(!isUndefined(final_array[0]))
+        if (!isUndefined(final_array[0]))
             ret_array.push(final_array[0]);
         for (var i = 1; i < final_array.length; i++) {
             if (final_array[i].id != ret_array[i - 1].id) {
@@ -601,7 +608,7 @@ function filter_helper(table: Array<Course_obj>, query: QueryRequest,missing_col
         var inner_query = j_obj[key];
         var a = JSON.stringify(inner_query);
         var query = {content: a};
-        var before_negate = filter_helper(table, query,missing_col);
+        var before_negate = filter_helper(table, query, missing_col);
 
         var final_array = before_negate.concat(table);
         final_array.sort(compare);
@@ -612,8 +619,8 @@ function filter_helper(table: Array<Course_obj>, query: QueryRequest,missing_col
             if (element_2.id != element_1.id) {
                 ret_array.push(element_1);
                 element_1 = final_array[i];
-            }else if ((i+1)<final_array.length){
-                element_1 = final_array[i+1];
+            } else if ((i + 1) < final_array.length) {
+                element_1 = final_array[i + 1];
                 i++;
             }
         }
@@ -627,14 +634,14 @@ function compare(a: Course_obj, b: Course_obj): number {
     return a.id - b.id;
 }
 
-function  check_missing(keys: any,missing_col :string []) : boolean {
-    var missing :boolean=false;
+function check_missing(keys: any, missing_col: string []): boolean {
+    var missing: boolean = false;
 
-    for (var i=0;i<keys.length;i++){
-        var val=dictionary[keys[i]];
-        if (isUndefined(val)){
+    for (var i = 0; i < keys.length; i++) {
+        var val = dictionary[keys[i]];
+        if (isUndefined(val)) {
             missing_col.push(keys[i]);
-            missing=true;
+            missing = true;
         }
     }
     return missing;
