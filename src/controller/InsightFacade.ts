@@ -149,18 +149,18 @@ export default class InsightFacade implements IInsightFacade {
 
             var exist: boolean = fs.existsSync("src/" + id + ".txt");
 
-            if (exist) {
-                var file = fs.readFile("src/" + id + ".txt", 'utf-8', (err: Error, data: string) => {
-                    if (err) {
-                        console.log("in exist err line 154");
-                        throw err;
-                    }
-                    ret_obj = {code: 201, body: data};
-                    return fulfill(ret_obj);
-                });
-
-            }
-            else {
+            // if (exist) {
+            //     var file = fs.readFile("src/" + id + ".txt", 'utf-8', (err: Error, data: string) => {
+            //         if (err) {
+            //             console.log("in exist err line 154");
+            //             throw err;
+            //         }
+            //         ret_obj = {code: 201, body: data};
+            //         return fulfill(ret_obj);
+            //     });
+            //
+            // }
+            //else {
                 zip.loadAsync(content, {"base64": true}).then(function (data: JSZip) {
 
 
@@ -231,7 +231,12 @@ export default class InsightFacade implements IInsightFacade {
                             }
                             else {
                                 console.log("write file error else line 220");
-                                ret_obj = {code: 204, body: j_objs};
+                                if (exist){
+                                    ret_obj={code:201, body:j_objs};
+                                }
+                                else {
+                                    ret_obj = {code: 204, body: j_objs};
+                                }
                                 return fulfill(ret_obj);
                             }
                         });
@@ -249,7 +254,7 @@ export default class InsightFacade implements IInsightFacade {
                     ret_obj = {code: 400, body: {"error": err.message}};
                     return reject(ret_obj);
                 });
-            }
+            //}
         });
 
 
@@ -288,55 +293,122 @@ export default class InsightFacade implements IInsightFacade {
             /*******/
             var id = "courses";
 
-            var dataSet = new InsightFacade();
-            dataSet.addDataset(id, null).then(function (response: InsightResponse) {
+            var exist: boolean = fs.existsSync("src/" + id + ".txt");
 
-                var table = build_table(response.body.toString());
-
-                var missing_col: string[] = [];
-
-                var j_query = query.content;
-                var j_obj = JSON.parse(j_query);
-                var options = j_obj["OPTIONS"];
-                var columns = options["COLUMNS"];
-                var order = options["ORDER"];
-
-                for(let column of columns){
-                    var value = dictionary[column];
-                    if(isUndefined(value))
-                        missing_col.push(column);
-                }
-
-                var order_check = dictionary[order];
-                if(isUndefined(order_check))
-                    missing_col.push(order);
-
-
-                var body=null;
-                try {
-                    body = filter(table, query,missing_col);
-                }catch(err){
-                    if(missing_col.length>0) {
-                        missing_col.sort();
-                        var missing_col_no_duplicate: string[]=[];
-                        missing_col_no_duplicate.push(missing_col[0]);
-                        for (var i=1; i<missing_col.length;i++){
-                            if (missing_col[i]!=missing_col_no_duplicate[i-1]){
-                                missing_col_no_duplicate.push(missing_col[i]);
-                            }
-                        }
-                        return reject({code: 424, body: {"missing": missing_col_no_duplicate}});
+            if (exist) {
+                var file = fs.readFile("src/" + id + ".txt", 'utf-8', (err: Error, data: string) => {
+                    if (err) {
+                        console.log("in exist err line 154");
+                        return reject({code: 400, body:{"error":err.message}});
                     }
-                    else
-                    return reject({code: 400, body: err.message});
-                }
-                if(missing_col.length>0)
-                    return reject ({code: 424, body: {"missing": missing_col}});
+                    else {
 
-                return fulfill({code: 200, body: body});
-            }).catch(function (err: Error) {
-                return reject({code: 400, body: err.message});
-            });
+                        var table=build_table(data);
+
+                        var missing_col: string[] = [];
+
+                        var j_query = query.content;
+                        var j_obj = JSON.parse(j_query);
+                        var options = j_obj["OPTIONS"];
+                        var columns = options["COLUMNS"];
+                        var order = options["ORDER"];
+
+                        for(let column of columns){
+                            var value = dictionary[column];
+                            if(isUndefined(value))
+                                missing_col.push(column);
+                        }
+
+                        var order_check = dictionary[order];
+                        if(isUndefined(order_check))
+                            missing_col.push(order);
+
+
+                        var body=null;
+                        try {
+                            body = filter(table, query,missing_col);
+                        }catch(err){
+                            if(missing_col.length>0) {
+                                missing_col.sort();
+                                var missing_col_no_duplicate: string[]=[];
+                                missing_col_no_duplicate.push(missing_col[0]);
+                                for (var i=1; i<missing_col.length;i++){
+                                    if (missing_col[i]!=missing_col_no_duplicate[i-1]){
+                                        missing_col_no_duplicate.push(missing_col[i]);
+                                    }
+                                }
+                                return reject({code: 424, body: {"missing": missing_col_no_duplicate}});
+                            }
+                            else
+                                return reject({code: 400, body: err.message});
+                        }
+                        if(missing_col.length>0)
+                            return reject ({code: 424, body: {"missing": missing_col}});
+
+                        return fulfill({code: 200, body: body});
+
+
+                    }
+
+
+
+                });
+
+            }
+            else {
+                var ret_obj={code: 400, body:{"error":"file not exist"}};
+                return reject({ret_obj});
+            }
+
+            // var dataSet = new InsightFacade();
+            // dataSet.addDataset(id, null).then(function (response: InsightResponse) {
+            //
+            //     var table = build_table(response.body.toString());
+            //
+            //     var missing_col: string[] = [];
+            //
+            //     var j_query = query.content;
+            //     var j_obj = JSON.parse(j_query);
+            //     var options = j_obj["OPTIONS"];
+            //     var columns = options["COLUMNS"];
+            //     var order = options["ORDER"];
+            //
+            //     for(let column of columns){
+            //         var value = dictionary[column];
+            //         if(isUndefined(value))
+            //             missing_col.push(column);
+            //     }
+            //
+            //     var order_check = dictionary[order];
+            //     if(isUndefined(order_check))
+            //         missing_col.push(order);
+            //
+            //
+            //     var body=null;
+            //     try {
+            //         body = filter(table, query,missing_col);
+            //     }catch(err){
+            //         if(missing_col.length>0) {
+            //             missing_col.sort();
+            //             var missing_col_no_duplicate: string[]=[];
+            //             missing_col_no_duplicate.push(missing_col[0]);
+            //             for (var i=1; i<missing_col.length;i++){
+            //                 if (missing_col[i]!=missing_col_no_duplicate[i-1]){
+            //                     missing_col_no_duplicate.push(missing_col[i]);
+            //                 }
+            //             }
+            //             return reject({code: 424, body: {"missing": missing_col_no_duplicate}});
+            //         }
+            //         else
+            //         return reject({code: 400, body: err.message});
+            //     }
+            //     if(missing_col.length>0)
+            //         return reject ({code: 424, body: {"missing": missing_col}});
+            //
+            //     return fulfill({code: 200, body: body});
+            // }).catch(function (err: Error) {
+            //     return reject({code: 400, body: err.message});
+            // });
 
         });
 
