@@ -292,9 +292,13 @@ export default class InsightFacade implements IInsightFacade {
 
                         var j_query = query.content;
                         var j_obj = JSON.parse(j_query);
+
+
                         var options = j_obj["OPTIONS"];
                         var columns = options["COLUMNS"];
                         var order = options["ORDER"];
+                        var form = options["FORM"];
+
 
                         for (let column of columns) {
                             var value = dictionary[column];
@@ -306,29 +310,61 @@ export default class InsightFacade implements IInsightFacade {
                         if (isUndefined(order_check))
                             missing_col.push(order);
 
+                        if (form == "TABLE") {
+                            missing_col.push(form);
+                        }
 
+                        if (missing_col.length > 0) {
+                            return reject({code: 400, body: {"error": "invalid query 315"}});
+                        }
+
+                        missing_col = [];
                         var body = null;
                         try {
                             body = filter(table, query, missing_col);
                         } catch (err) {
-                            if (missing_col.length > 0) {
-                                missing_col.sort();
-                                var missing_col_no_duplicate: string[] = [];
-                                missing_col_no_duplicate.push(missing_col[0]);
-                                for (var i = 1; i < missing_col.length; i++) {
-                                    if (missing_col[i] != missing_col_no_duplicate[i - 1]) {
-                                        missing_col_no_duplicate.push(missing_col[i]);
+                            return reject({code: 400, body: err.message});
+                            // if (missing_col.length > 0) {
+                            //     missing_col.sort();
+                            //     var missing_col_no_duplicate: string[] = [];
+                            //     missing_col_no_duplicate.push(missing_col[0]);
+                            //     for (var i = 1; i < missing_col.length; i++) {
+                            //         if (missing_col[i] != missing_col_no_duplicate[i - 1]) {
+                            //             missing_col_no_duplicate.push(missing_col[i]);
+                            //         }
+                            //     }
+                            //     return reject({code: 424, body: {"missing": missing_col_no_duplicate}});
+                            // }
+                            // else
+                            //     return reject({code: 400, body: err.message});
+                        }
+
+                        if (missing_col.length > 0) {
+                            var missing_ids: string[] = [];
+                            for (let missing_item of missing_col) {
+                                try {
+                                    var vals = missing_item.toString();
+                                    var missing_id = vals.substring(0, vals.indexOf("_"));
+                                    var exist: boolean = fs.existsSync("src/" + missing_id + ".txt");
+                                    if (!exist) {
+                                        missing_ids.push(missing_id);
                                     }
                                 }
-                                return reject({code: 424, body: {"missing": missing_col_no_duplicate}});
+                                catch (err) {
+                                    return reject({code: 400, body: err.message});
+                                }
                             }
-                            else
-                                return reject({code: 400, body: err.message});
-                        }
-                        if (missing_col.length > 0)
-                            return reject({code: 424, body: {"missing": missing_col}});
 
-                        return fulfill({code: 200, body: body});
+                            if (missing_ids.length == 0) {
+                                return reject({code: 400, body: {"error": "invalid query"}});
+                            } else {
+                                return reject({code: 424, body: {"missing": missing_col}});
+                            }
+
+                        }
+
+                        var ret_obj={render:form,result:body};
+                        return fulfill({code: 200, body: ret_obj});
 
 
                     }
@@ -401,13 +437,14 @@ function filter(table: Array<Course_obj>, query: QueryRequest, missing_col: stri
 
     var columns = options["COLUMNS"];
     var order = options["ORDER"];
-
-    ret_table.sort((a: Course_obj, b: Course_obj) => {
-        if (typeof b.getValue(dictionary[order]) == "number")
-            return a.getValue(dictionary[order]) - b.getValue(dictionary[order])
-        else
-            return a.getValue(dictionary[order]).localeCompare(b.getValue(dictionary[order]))
-    });
+    if (!isUndefined(order)) {
+        ret_table.sort((a: Course_obj, b: Course_obj) => {
+            if (typeof b.getValue(dictionary[order]) == "number")
+                return a.getValue(dictionary[order]) - b.getValue(dictionary[order])
+            else
+                return a.getValue(dictionary[order]).localeCompare(b.getValue(dictionary[order]))
+        });
+    }
 
 
     var ret_array: any = [];
