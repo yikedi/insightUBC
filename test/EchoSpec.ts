@@ -218,11 +218,11 @@ describe("EchoSpec", function () {
             "WHERE": {
                 "AND": [{
                     "GT": {
-                        "courses_avg": "90"
+
                     }
                 }, {
                     "EQ": {
-                        "courss_avg": 77
+                        "courss_avg": "77"
                     }
 
                 }, {
@@ -231,6 +231,7 @@ describe("EchoSpec", function () {
                     }
 
                 }
+
                 ]
 
             },

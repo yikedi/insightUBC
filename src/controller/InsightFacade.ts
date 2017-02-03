@@ -480,7 +480,7 @@ function filter_helper(table: Array<Course_obj>, query: QueryRequest, missing_co
 
         var inner_query = j_obj[key];
         var inner_keys = Object.keys(inner_query);
-        if (Object.keys(inner_query) == []) {
+        if (Object.keys(inner_query).length == 0) {
             throw new Error("empty IS");
         }
         if (inner_keys.length>1){
@@ -519,7 +519,7 @@ function filter_helper(table: Array<Course_obj>, query: QueryRequest, missing_co
 
 
 
-        if (Object.keys(inner_query) == []) {
+        if (Object.keys(inner_query).length == 0) {
             throw new Error("empty GT");
         }
 
@@ -559,7 +559,7 @@ function filter_helper(table: Array<Course_obj>, query: QueryRequest, missing_co
             throw new Error("too many parameters");
         }
 
-        if (Object.keys(inner_query) == []) {
+        if (Object.keys(inner_query).length ==0) {
             throw new Error("empty LT");
         }
         var missing: boolean = false;
@@ -593,7 +593,7 @@ function filter_helper(table: Array<Course_obj>, query: QueryRequest, missing_co
         }
 
 
-        if (Object.keys(inner_query) == []) {
+        if (Object.keys(inner_query).length==0) {
             throw new Error("empty EQ");
         }
         var missing: boolean = false;
