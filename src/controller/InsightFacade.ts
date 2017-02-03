@@ -716,7 +716,7 @@ function check_missing(keys: any, missing_col: string []): boolean {
     for (var i = 0; i < keys.length; i++) {
         var val = dictionary[keys[i]];
         if (isUndefined(val)) {
-            var vals: string = val.toString();
+            var vals: string = keys[i].toString();
             missing_col.push(keys[i]);
             missing = true;
         }
