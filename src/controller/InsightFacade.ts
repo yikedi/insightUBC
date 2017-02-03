@@ -291,8 +291,10 @@ export default class InsightFacade implements IInsightFacade {
 
                         var table = build_table(data);
 
-                        var missing_col: string[] = [];
+                        var missing_id: string[] = [];
+                        var invalid_qurey: string[]=[];
 
+                        
                         var j_query = query.content;
                         var j_obj = JSON.parse(j_query);
                         var options = j_obj["OPTIONS"];
@@ -302,34 +304,34 @@ export default class InsightFacade implements IInsightFacade {
                         for (let column of columns) {
                             var value = dictionary[column];
                             if (isUndefined(value))
-                                missing_col.push(column);
+                                missing_id.push(column);
                         }
 
                         var order_check = dictionary[order];
                         if (isUndefined(order_check))
-                            missing_col.push(order);
+                            missing_id.push(order);
 
 
                         var body = null;
                         try {
-                            body = filter(table, query, missing_col);
+                            body = filter(table, query, missing_id);
                         } catch (err) {
-                            if (missing_col.length > 0) {
-                                missing_col.sort();
-                                var missing_col_no_duplicate: string[] = [];
-                                missing_col_no_duplicate.push(missing_col[0]);
-                                for (var i = 1; i < missing_col.length; i++) {
-                                    if (missing_col[i] != missing_col_no_duplicate[i - 1]) {
-                                        missing_col_no_duplicate.push(missing_col[i]);
+                            if (missing_id.length > 0) {
+                                missing_id.sort();
+                                var missing_id_no_duplicate: string[] = [];
+                                missing_id_no_duplicate.push(missing_id[0]);
+                                for (var i = 1; i < missing_id.length; i++) {
+                                    if (missing_id[i] != missing_id_no_duplicate[i - 1]) {
+                                        missing_id_no_duplicate.push(missing_id[i]);
                                     }
                                 }
-                                return reject({code: 424, body: {"missing": missing_col_no_duplicate}});
+                                return reject({code: 424, body: {"missing": missing_id_no_duplicate}});
                             }
                             else
                                 return reject({code: 400, body: err.message});
                         }
-                        if (missing_col.length > 0)
-                            return reject({code: 424, body: {"missing": missing_col}});
+                        if (missing_id.length > 0)
+                            return reject({code: 424, body: {"missing": missing_id}});
 
                         return fulfill({code: 200, body: body});
 
@@ -385,7 +387,7 @@ function build_table(data: string): Array<Course_obj> {
     return course_list;
 }
 
-function filter(table: Array<Course_obj>, query: QueryRequest, missing_col: string []): any {
+function filter(table: Array<Course_obj>, query: QueryRequest, missing_id: string []): any {
 
     var j_query = query.content;
     var j_obj = JSON.parse(j_query);
@@ -396,7 +398,7 @@ function filter(table: Array<Course_obj>, query: QueryRequest, missing_col: stri
     var query = {content: a};
     var ret_table = [];
     try {
-        ret_table = filter_helper(table, query, missing_col);
+        ret_table = filter_helper(table, query, missing_id);
     } catch (err) {
         throw err;
     }
@@ -432,7 +434,7 @@ function filter(table: Array<Course_obj>, query: QueryRequest, missing_col: stri
     return ret_obj;
 }
 
-function filter_helper(table: Array<Course_obj>, query: QueryRequest, missing_col: string[]): Array<Course_obj> {
+function filter_helper(table: Array<Course_obj>, query: QueryRequest, missing_id: string[],invalid_query:string[]): Array<Course_obj> {
 
     var j_query = query.content;
     var j_obj = JSON.parse(j_query);
@@ -444,12 +446,14 @@ function filter_helper(table: Array<Course_obj>, query: QueryRequest, missing_co
 
         var inner_query = j_obj[key];
         var inner_keys = Object.keys(inner_query);
+        if (Object.keys(inner_query)==[]){
+            throw new Error("empty IS");
+        }
 
-        var missing: boolean = false;
-        missing = check_missing(inner_keys, missing_col);
+        var missing: boolean[] = [];
+        missing = check_missing(inner_keys, missing_id,invalid_query);
 
-        if (!missing) {
-
+        if (!missing[0] && !missing[1]) {
 
             for (let item of table) {
                 for (var i = 0; i < inner_keys.length; i++) {
@@ -470,9 +474,12 @@ function filter_helper(table: Array<Course_obj>, query: QueryRequest, missing_co
 
         var inner_query = j_obj[key];
         var inner_keys = Object.keys(inner_query);
+        if (Object.keys(inner_query)==[]){
+            throw new Error("empty GT");
+        }
 
         var missing: boolean = false;
-        missing = check_missing(inner_keys, missing_col);
+        missing = check_missing(inner_keys, missing_id);
 
         if (!missing) {
             for (let item of table) {
@@ -492,9 +499,11 @@ function filter_helper(table: Array<Course_obj>, query: QueryRequest, missing_co
     else if (key == "LT") {
         var inner_query = j_obj[key];
         var inner_keys = Object.keys(inner_query);
-
+        if (Object.keys(inner_query)==[]){
+            throw new Error("empty LT");
+        }
         var missing: boolean = false;
-        missing = check_missing(inner_keys, missing_col);
+        missing = check_missing(inner_keys, missing_id);
 
         if (!missing) {
             for (let item of table) {
@@ -514,9 +523,12 @@ function filter_helper(table: Array<Course_obj>, query: QueryRequest, missing_co
     else if (key == "EQ") {
         var inner_query = j_obj[key];
         var inner_keys = Object.keys(inner_query);
+        if (Object.keys(inner_query)==[]){
+            throw new Error("empty EQ");
+        }
 
         var missing: boolean = false;
-        missing = check_missing(inner_keys, missing_col);
+        missing = check_missing(inner_keys, missing_id);
 
         if (!missing) {
             for (let item of table) {
@@ -541,7 +553,7 @@ function filter_helper(table: Array<Course_obj>, query: QueryRequest, missing_co
         for (let item of and_list) {
             var a = JSON.stringify(item);
             var query = {content: a};
-            var temp = filter_helper(table, query, missing_col);
+            var temp = filter_helper(table, query, missing_id);
             final_array = final_array.concat(temp);
         }
         final_array.sort(compare);
@@ -567,11 +579,13 @@ function filter_helper(table: Array<Course_obj>, query: QueryRequest, missing_co
     else if (key == "OR") {
         var or_list = j_obj[key];
         var final_array: Course_obj[] = [];
+        if(or_list.length == 0)
+            throw new Error("empty OR");
 
         for (let item of or_list) {
             var a = JSON.stringify(item);
             var query = {content: a};
-            var temp = filter_helper(table, query, missing_col);
+            var temp = filter_helper(table, query, missing_id);
             final_array = final_array.concat(temp);
         }
         final_array.sort(compare);
@@ -587,9 +601,12 @@ function filter_helper(table: Array<Course_obj>, query: QueryRequest, missing_co
     else if (key == "NOT") {
 
         var inner_query = j_obj[key];
+        if (Object.keys(inner_query)==[]){
+                throw new Error("empty NOT");
+        }
         var a = JSON.stringify(inner_query);
         var query = {content: a};
-        var before_negate = filter_helper(table, query, missing_col);
+        var before_negate = filter_helper(table, query, missing_id,);
 
         var final_array = before_negate.concat(table);
         final_array.sort(compare);
@@ -615,14 +632,22 @@ function compare(a: Course_obj, b: Course_obj): number {
     return a.id - b.id;
 }
 
-function check_missing(keys: any, missing_col: string []): boolean {
-    var missing: boolean = false;
+function check_missing(keys: any, missing_id: string [],invalid_query:string[]): boolean []{
+    var missing: boolean [] = [];
 
     for (var i = 0; i < keys.length; i++) {
         var val = dictionary[keys[i]];
         if (isUndefined(val)) {
-            missing_col.push(keys[i]);
-            missing = true;
+            var vals:string=val.toString();
+            var dataset_id=vals.substring(0,vals.indexOf("_"));
+            var exist: boolean = fs.existsSync("src/" + dataset_id + ".txt");
+            if (!exist){
+                missing_id.push(dataset_id);
+                missing[0]=true;
+            }else {
+                invalid_query.push(keys[i]);
+                missing [1]= true;
+            }
         }
     }
     return missing;

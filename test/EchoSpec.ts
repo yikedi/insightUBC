@@ -71,74 +71,17 @@ describe("EchoSpec", function () {
 
 
     });
-    it("test add courses.zip", function (done) {
+
+
+    /**
+     *
+     */
+    it("test add testfile 3.zip", function (done) {
         this.timeout(50000)
 
         var zip = new JSZip();
         //var temp_1 = "./src/testfile 3.zip";
         var temp_1 = "./src/courses.zip";
-        var f = fs.readFileSync(temp_1, {encoding: "base64"});
-
-        var temp = new InsightFacade();
-
-        temp.addDataset("courses", f)
-            .then((response) => {
-                console.log(response.code);
-                //console.log(response.body);
-                done();
-            })
-            .catch((err) => {
-                Log.test("incatch");
-                console.log(err.code);
-                done();
-            });
-
-    });
-
-
-
-    it("test remove", function (done) {
-        //this.timeout(50000)
-
-        var temp = new InsightFacade();
-
-        temp.removeDataset("courses").then(function (result) {
-            console.log(Object.keys({}));
-            console.log(result.code);
-            console.log(result.body);
-            done();
-        });
-
-        Log.test("outsideasync");
-
-
-    });
-
-    it("test remove", function (done) {
-        //this.timeout(50000)
-
-        var temp = new InsightFacade();
-
-        temp.removeDataset("courses").then(function (result) {
-            console.log(result.code);
-            console.log(result.body);
-            done();
-        }).catch(function(err){
-            console.log(err.code+"double remove");
-            done();
-        });
-
-        Log.test("outsideasync");
-
-
-    });
-
-    it("test add testfile 3.zip", function (done) {
-        this.timeout(50000)
-
-        var zip = new JSZip();
-        //var temp_1 = "./src/courses.zip";
-        var temp_1 = "./src/testfile 3.zip";
         var f = fs.readFileSync(temp_1, {encoding: "base64"});
 
         var temp = new InsightFacade();
@@ -157,6 +100,148 @@ describe("EchoSpec", function () {
     });
 
 
+
+    xit("test remove", function (done) {
+        //this.timeout(50000)
+
+        var temp = new InsightFacade();
+
+        temp.removeDataset("courses").then(function (result) {
+            console.log(Object.keys({}));
+            console.log(result.code);
+            console.log(result.body);
+            done();
+        });
+
+        Log.test("outsideasync");
+
+
+    });
+
+    xit("test remove", function (done) {
+        //this.timeout(50000)
+
+        var temp = new InsightFacade();
+
+        temp.removeDataset("courses").then(function (result) {
+            console.log(result.code);
+            console.log(result.body);
+            done();
+        }).catch(function(err){
+            console.log(err.code+"double remove");
+            done();
+        });
+
+        Log.test("outsideasync");
+
+
+    });
+
+
+
+    it("query before overwrite", function (done) {
+
+        this.timeout(500000);
+
+
+        var temp = new InsightFacade();
+
+        var s1 = {
+            "WHERE": {
+                    "GT": {
+                        "courses_avg": 49
+                    }
+
+
+            },
+            "OPTIONS": {
+                "COLUMNS": [
+                    "courses_dept",
+                    "courses_avg"
+                ],
+                "ORDER": "courses_dept",
+                "FORM": "TABLE"
+            }
+        };
+
+        var a = JSON.stringify(s1);
+        var query = {content: a};
+
+        temp.performQuery(query).then(function (body) {
+            console.log(body.code);
+            console.log(body.body);
+            done();
+        }).catch(function (err) {
+            console.log(err.code);
+            console.log(err.body);
+            done();
+        })
+
+    });
+
+    it("test overwrite courses.zip", function (done) {
+        this.timeout(50000)
+
+        var zip = new JSZip();
+        //var temp_1 = "./src/courses.zip";
+        var temp_1 = "./src/testfile.zip";
+        var f = fs.readFileSync(temp_1, {encoding: "base64"});
+
+        var temp = new InsightFacade();
+
+        temp.addDataset("courses", f)
+            .then((response) => {
+                console.log(response.code);
+                //console.log(response.body);
+                done();
+            })
+            .catch((err) => {
+                Log.test("incatch");
+                done(err);
+            });
+
+    });
+
+    it("test performquery after remove", function (done) {
+
+        this.timeout(500000);
+
+
+        var temp = new InsightFacade();
+
+        var s1 = {
+            "WHERE": {
+
+                    "GT": {
+                        "courses_avg": 49
+                    }
+
+
+            },
+            "OPTIONS": {
+                "COLUMNS": [
+                    "courses_dept",
+                    "courses_avg"
+                ],
+                "ORDER": "courses_dept",
+                "FORM": "TABLE"
+            }
+        };
+
+        var a = JSON.stringify(s1);
+        var query = {content: a};
+
+        temp.performQuery(query).then(function (body) {
+            console.log(body.code);
+            console.log(body.body);
+            done();
+        }).catch(function (err) {
+            console.log(err.code);
+            console.log(err.body);
+            done();
+        })
+
+    });
 
 
 
@@ -438,7 +523,6 @@ describe("EchoSpec", function () {
         this.timeout(50000);
 
 
-
         var s1 = {
             "WHERE":{
 
@@ -580,7 +664,7 @@ describe("EchoSpec", function () {
     // });
 
 
-    xit("test invalid query ", function (done) {
+    it("test invalid query ", function (done) {
         this.timeout(50000);
 
 
