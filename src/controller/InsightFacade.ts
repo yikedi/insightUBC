@@ -13,7 +13,6 @@ var fs = require('fs');
 var validator = require('is-my-json-valid');
 
 
-
 let dictionary: {[index: string]: string} = {};
 
 dictionary = {
@@ -144,23 +143,11 @@ export default class InsightFacade implements IInsightFacade {
 
 
         return new Promise(function (fulfill, reject) {
-            var zip = new JSZip();
-            var ret_obj = null;
 
+            var ret_obj = null;
+            var zip = new JSZip();
             var exist: boolean = fs.existsSync("src/" + id + ".txt");
 
-            // if (exist) {
-            //     var file = fs.readFile("src/" + id + ".txt", 'utf-8', (err: Error, data: string) => {
-            //         if (err) {
-            //             console.log("in exist err line 154");
-            //             throw err;
-            //         }
-            //         ret_obj = {code: 201, body: data};
-            //         return fulfill(ret_obj);
-            //     });
-            //
-            // }
-            //else {
             zip.loadAsync(content, {"base64": true})
                 .then(function (data: JSZip) {
 
@@ -218,15 +205,25 @@ export default class InsightFacade implements IInsightFacade {
                             return reject(ret_obj)
                         }
 
-                        fs.writeFileSync('src/' + id + '.txt', j_objs);
-                        console.log("write file error else line 220");
-                        if (exist) {
-                            ret_obj = {code: 201, body: j_objs};
-                        }
-                        else {
-                            ret_obj = {code: 204, body: j_objs};
-                        }
-                        return fulfill(ret_obj);
+
+                        fs.writeFile('src/' + id + '.txt', j_objs, (err: Error) => {
+                            if (err) {
+
+                                ret_obj = {code: 400, body: {"error": err.message}};
+                                console.log("write file error if line 216");
+                                return reject(ret_obj);
+                            }
+                            else {
+                                console.log("write file error else line 220");
+                                if (exist) {
+                                    ret_obj = {code: 201, body: j_objs};
+                                }
+                                else {
+                                    ret_obj = {code: 204, body: j_objs};
+                                }
+                                return fulfill(ret_obj);
+                            }
+                        });
 
                     }).catch(function (err: Error) {
                         console.log("in write file catch line 228");
@@ -291,10 +288,8 @@ export default class InsightFacade implements IInsightFacade {
 
                         var table = build_table(data);
 
-                        var missing_id: string[] = [];
-                        var invalid_qurey: string[]=[];
+                        var missing_col: string[] = [];
 
-                        
                         var j_query = query.content;
                         var j_obj = JSON.parse(j_query);
                         var options = j_obj["OPTIONS"];
@@ -304,34 +299,34 @@ export default class InsightFacade implements IInsightFacade {
                         for (let column of columns) {
                             var value = dictionary[column];
                             if (isUndefined(value))
-                                missing_id.push(column);
+                                missing_col.push(column);
                         }
 
                         var order_check = dictionary[order];
                         if (isUndefined(order_check))
-                            missing_id.push(order);
+                            missing_col.push(order);
 
 
                         var body = null;
                         try {
-                            body = filter(table, query, missing_id);
+                            body = filter(table, query, missing_col);
                         } catch (err) {
-                            if (missing_id.length > 0) {
-                                missing_id.sort();
-                                var missing_id_no_duplicate: string[] = [];
-                                missing_id_no_duplicate.push(missing_id[0]);
-                                for (var i = 1; i < missing_id.length; i++) {
-                                    if (missing_id[i] != missing_id_no_duplicate[i - 1]) {
-                                        missing_id_no_duplicate.push(missing_id[i]);
+                            if (missing_col.length > 0) {
+                                missing_col.sort();
+                                var missing_col_no_duplicate: string[] = [];
+                                missing_col_no_duplicate.push(missing_col[0]);
+                                for (var i = 1; i < missing_col.length; i++) {
+                                    if (missing_col[i] != missing_col_no_duplicate[i - 1]) {
+                                        missing_col_no_duplicate.push(missing_col[i]);
                                     }
                                 }
-                                return reject({code: 424, body: {"missing": missing_id_no_duplicate}});
+                                return reject({code: 424, body: {"missing": missing_col_no_duplicate}});
                             }
                             else
                                 return reject({code: 400, body: err.message});
                         }
-                        if (missing_id.length > 0)
-                            return reject({code: 424, body: {"missing": missing_id}});
+                        if (missing_col.length > 0)
+                            return reject({code: 424, body: {"missing": missing_col}});
 
                         return fulfill({code: 200, body: body});
 
@@ -350,6 +345,7 @@ export default class InsightFacade implements IInsightFacade {
         });
 
     }
+
 }
 
 function build_table(data: string): Array<Course_obj> {
@@ -387,7 +383,7 @@ function build_table(data: string): Array<Course_obj> {
     return course_list;
 }
 
-function filter(table: Array<Course_obj>, query: QueryRequest, missing_id: string []): any {
+function filter(table: Array<Course_obj>, query: QueryRequest, missing_col: string []): any {
 
     var j_query = query.content;
     var j_obj = JSON.parse(j_query);
@@ -398,14 +394,13 @@ function filter(table: Array<Course_obj>, query: QueryRequest, missing_id: strin
     var query = {content: a};
     var ret_table = [];
     try {
-        ret_table = filter_helper(table, query, missing_id);
+        ret_table = filter_helper(table, query, missing_col);
     } catch (err) {
         throw err;
     }
 
     var columns = options["COLUMNS"];
     var order = options["ORDER"];
-    var form = options["FORM"];
 
     ret_table.sort((a: Course_obj, b: Course_obj) => {
         if (typeof b.getValue(dictionary[order]) == "number")
@@ -429,12 +424,11 @@ function filter(table: Array<Course_obj>, query: QueryRequest, missing_id: strin
         ret_array.push(ret_obj);
     }
 
-    var ret_obj = {render: form, result: ret_array};
 
-    return ret_obj;
+    return ret_array;
 }
 
-function filter_helper(table: Array<Course_obj>, query: QueryRequest, missing_id: string[],invalid_query:string[]): Array<Course_obj> {
+function filter_helper(table: Array<Course_obj>, query: QueryRequest, missing_col: string[]): Array<Course_obj> {
 
     var j_query = query.content;
     var j_obj = JSON.parse(j_query);
@@ -446,22 +440,25 @@ function filter_helper(table: Array<Course_obj>, query: QueryRequest, missing_id
 
         var inner_query = j_obj[key];
         var inner_keys = Object.keys(inner_query);
-        if (Object.keys(inner_query)==[]){
+        if (Object.keys(inner_query) == []) {
             throw new Error("empty IS");
         }
 
-        var missing: boolean[] = [];
-        missing = check_missing(inner_keys, missing_id,invalid_query);
+        var missing: boolean = false;
+        missing = check_missing(inner_keys, missing_col);
 
-        if (!missing[0] && !missing[1]) {
+        if (!missing) {
+
 
             for (let item of table) {
                 for (var i = 0; i < inner_keys.length; i++) {
                     var target = dictionary[inner_keys[i]];
 
                     try {
-                        if (item.getValue(target) == inner_query[inner_keys[i]]) {
-                            ret_array.push(item);
+                        if (typeof inner_query[inner_keys[i]] == "string") {
+                            if (item.getValue(target) == inner_query[inner_keys[i]]) {
+                                ret_array.push(item);
+                            }
                         }
                     } catch (err) {
                         throw err;
@@ -472,22 +469,25 @@ function filter_helper(table: Array<Course_obj>, query: QueryRequest, missing_id
     }
     else if (key == "GT") {
 
-        var inner_query = j_obj[key];
-        var inner_keys = Object.keys(inner_query);
-        if (Object.keys(inner_query)==[]){
+        if (Object.keys(inner_query) == []) {
             throw new Error("empty GT");
         }
 
+        var inner_query = j_obj[key];
+        var inner_keys = Object.keys(inner_query);
+
         var missing: boolean = false;
-        missing = check_missing(inner_keys, missing_id);
+        missing = check_missing(inner_keys, missing_col);
 
         if (!missing) {
             for (let item of table) {
                 for (var i = 0; i < inner_keys.length; i++) {
                     var target = dictionary[inner_keys[i]];
                     try {
-                        if (item.getValue(target) > Number(inner_query[inner_keys[i]])) {
-                            ret_array.push(item);
+                        if (typeof inner_query[inner_keys[i]] == "number") {
+                            if (item.getValue(target) > Number(inner_query[inner_keys[i]])) {
+                                ret_array.push(item);
+                            }
                         }
                     } catch (err) {
                         throw err;
@@ -497,21 +497,25 @@ function filter_helper(table: Array<Course_obj>, query: QueryRequest, missing_id
         }
     }
     else if (key == "LT") {
-        var inner_query = j_obj[key];
-        var inner_keys = Object.keys(inner_query);
-        if (Object.keys(inner_query)==[]){
+
+        if (Object.keys(inner_query) == []) {
             throw new Error("empty LT");
         }
+        var inner_query = j_obj[key];
+        var inner_keys = Object.keys(inner_query);
+
         var missing: boolean = false;
-        missing = check_missing(inner_keys, missing_id);
+        missing = check_missing(inner_keys, missing_col);
 
         if (!missing) {
             for (let item of table) {
                 for (var i = 0; i < inner_keys.length; i++) {
                     var target = dictionary[inner_keys[i]];
                     try {
-                        if (item.getValue(target) < Number(inner_query[inner_keys[i]])) {
-                            ret_array.push(item);
+                        if (typeof inner_query[inner_keys[i]] == "number") {
+                            if (item.getValue(target) < Number(inner_query[inner_keys[i]])) {
+                                ret_array.push(item);
+                            }
                         }
                     } catch (err) {
                         throw err;
@@ -521,22 +525,25 @@ function filter_helper(table: Array<Course_obj>, query: QueryRequest, missing_id
         }
     }
     else if (key == "EQ") {
-        var inner_query = j_obj[key];
-        var inner_keys = Object.keys(inner_query);
-        if (Object.keys(inner_query)==[]){
+
+        if (Object.keys(inner_query) == []) {
             throw new Error("empty EQ");
         }
+        var inner_query = j_obj[key];
+        var inner_keys = Object.keys(inner_query);
 
         var missing: boolean = false;
-        missing = check_missing(inner_keys, missing_id);
+        missing = check_missing(inner_keys, missing_col);
 
         if (!missing) {
             for (let item of table) {
                 for (var i = 0; i < inner_keys.length; i++) {
                     var target = dictionary[inner_keys[i]];
                     try {
-                        if (item.getValue(target) == Number(inner_query[inner_keys[i]])) {
-                            ret_array.push(item);
+                        if (typeof inner_query[inner_keys[i]] == "number") {
+                            if (item.getValue(target) == Number(inner_query[inner_keys[i]])) {
+                                ret_array.push(item);
+                            }
                         }
                     } catch (err) {
                         throw err;
@@ -548,12 +555,15 @@ function filter_helper(table: Array<Course_obj>, query: QueryRequest, missing_id
     else if (key == "AND") {
         var and_list = j_obj[key];
         var final_array: Course_obj[] = [];
-        if(and_list.length == 0)
+
+        if (and_list.length == 0) {
             throw new Error("empty AND");
+        }
+
         for (let item of and_list) {
             var a = JSON.stringify(item);
             var query = {content: a};
-            var temp = filter_helper(table, query, missing_id);
+            var temp = filter_helper(table, query, missing_col);
             final_array = final_array.concat(temp);
         }
         final_array.sort(compare);
@@ -579,13 +589,15 @@ function filter_helper(table: Array<Course_obj>, query: QueryRequest, missing_id
     else if (key == "OR") {
         var or_list = j_obj[key];
         var final_array: Course_obj[] = [];
-        if(or_list.length == 0)
+
+        if (or_list.length == 0) {
             throw new Error("empty OR");
+        }
 
         for (let item of or_list) {
             var a = JSON.stringify(item);
             var query = {content: a};
-            var temp = filter_helper(table, query, missing_id);
+            var temp = filter_helper(table, query, missing_col);
             final_array = final_array.concat(temp);
         }
         final_array.sort(compare);
@@ -601,12 +613,14 @@ function filter_helper(table: Array<Course_obj>, query: QueryRequest, missing_id
     else if (key == "NOT") {
 
         var inner_query = j_obj[key];
-        if (Object.keys(inner_query)==[]){
-                throw new Error("empty NOT");
+
+        if (Object.keys(inner_query) == []) {
+            throw new Error("empty NOT");
         }
         var a = JSON.stringify(inner_query);
         var query = {content: a};
-        var before_negate = filter_helper(table, query, missing_id,);
+        var before_negate = filter_helper(table, query, missing_col);
+
 
         var final_array = before_negate.concat(table);
         final_array.sort(compare);
@@ -632,25 +646,16 @@ function compare(a: Course_obj, b: Course_obj): number {
     return a.id - b.id;
 }
 
-function check_missing(keys: any, missing_id: string [],invalid_query:string[]): boolean []{
-    var missing: boolean [] = [];
+function check_missing(keys: any, missing_col: string []): boolean {
+    var missing: boolean = false;
 
     for (var i = 0; i < keys.length; i++) {
         var val = dictionary[keys[i]];
         if (isUndefined(val)) {
-            var vals:string=val.toString();
-            var dataset_id=vals.substring(0,vals.indexOf("_"));
-            var exist: boolean = fs.existsSync("src/" + dataset_id + ".txt");
-            if (!exist){
-                missing_id.push(dataset_id);
-                missing[0]=true;
-            }else {
-                invalid_query.push(keys[i]);
-                missing [1]= true;
-            }
+            var vals: string = val.toString();
+            missing_col.push(keys[i]);
+            missing = true;
         }
     }
     return missing;
 }
-
-
