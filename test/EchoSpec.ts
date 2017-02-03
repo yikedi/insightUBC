@@ -75,8 +75,8 @@ describe("EchoSpec", function () {
 
     /**
      *
-     */
-    it("test add testfile 3.zip", function (done) {
+
+    it("test add courses.zip", function (done) {
         this.timeout(50000)
 
         var zip = new JSZip();
@@ -148,8 +148,8 @@ describe("EchoSpec", function () {
 
         var s1 = {
             "WHERE": {
-                    "GT": {
-                        "courses_avg": 49
+                    "EQ": {
+                        "courses_dept": "44"
                     }
 
 
@@ -580,7 +580,7 @@ describe("EchoSpec", function () {
     });
     //
     //
-    xit("test all with other zip file ", function (done) {
+    it("test all with other zip file ", function (done) {
         this.timeout(50000)
 
 
@@ -711,6 +711,7 @@ describe("EchoSpec", function () {
 
     });
 
+     */
 
 
 });

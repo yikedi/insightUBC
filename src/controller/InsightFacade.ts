@@ -37,7 +37,7 @@ class Course_obj {
     Pass: number;
     Fail: number;
     Audit: number;
-    id: number;
+    id: string;
 
     constructor() {
         this.Subject = null;
@@ -123,7 +123,7 @@ class Course_obj {
                 break;
             }
             case "id": {
-                this.id = Number(value);
+                this.id = value;
                 break;
             }
             default :
@@ -310,7 +310,7 @@ export default class InsightFacade implements IInsightFacade {
                         if (isUndefined(order_check))
                             missing_col.push(order);
 
-                        if (form == "TABLE") {
+                        if (form != "TABLE") {
                             missing_col.push(form);
                         }
 
@@ -480,112 +480,139 @@ function filter_helper(table: Array<Course_obj>, query: QueryRequest, missing_co
         if (Object.keys(inner_query) == []) {
             throw new Error("empty IS");
         }
+        if (inner_keys.length>1){
+            throw new Error("too many parameters");
+        }
 
         var missing: boolean = false;
         missing = check_missing(inner_keys, missing_col);
 
         if (!missing) {
 
-
+            var target = dictionary[inner_keys[0]];
             for (let item of table) {
-                for (var i = 0; i < inner_keys.length; i++) {
-                    var target = dictionary[inner_keys[i]];
 
                     try {
-                        if (typeof inner_query[inner_keys[i]] == "string") {
-                            if (item.getValue(target) == inner_query[inner_keys[i]]) {
+                        if (typeof inner_query[inner_keys[0]] == "string" && typeof item.getValue(target)=="string") {
+                            if (item.getValue(target) == inner_query[inner_keys[0]]) {
                                 ret_array.push(item);
                             }
+                        }
+                        else {
+                            throw new Error("type error IS");
                         }
                     } catch (err) {
                         throw err;
                     }
-                }
+
             }
         }
     }
     else if (key == "GT") {
 
+
+        var inner_query = j_obj[key];
+        var inner_keys = Object.keys(inner_query);
+
+
+
         if (Object.keys(inner_query) == []) {
             throw new Error("empty GT");
         }
 
-        var inner_query = j_obj[key];
-        var inner_keys = Object.keys(inner_query);
+        if (inner_keys.length>1){
+            throw new Error("too many parameters");
+        }
 
         var missing: boolean = false;
         missing = check_missing(inner_keys, missing_col);
 
         if (!missing) {
+            var target = dictionary[inner_keys[0]];
             for (let item of table) {
-                for (var i = 0; i < inner_keys.length; i++) {
-                    var target = dictionary[inner_keys[i]];
-                    try {
-                        if (typeof inner_query[inner_keys[i]] == "number") {
-                            if (item.getValue(target) > Number(inner_query[inner_keys[i]])) {
-                                ret_array.push(item);
-                            }
+
+                try {
+                    if (typeof inner_query[inner_keys[0]] == "number" && typeof item.getValue(target)=="number") {
+                        if (item.getValue(target) > inner_query[inner_keys[0]]) {
+                            ret_array.push(item);
                         }
-                    } catch (err) {
-                        throw err;
                     }
+                    else {
+                        throw new Error("type error GT");
+                    }
+                } catch (err) {
+                    throw err;
                 }
+
             }
         }
     }
     else if (key == "LT") {
 
-        if (Object.keys(inner_query) == []) {
-            throw new Error("empty LT");
-        }
         var inner_query = j_obj[key];
         var inner_keys = Object.keys(inner_query);
 
+        if (inner_keys.length>1){
+            throw new Error("too many parameters");
+        }
+
+        if (Object.keys(inner_query) == []) {
+            throw new Error("empty LT");
+        }
         var missing: boolean = false;
         missing = check_missing(inner_keys, missing_col);
 
         if (!missing) {
+            var target = dictionary[inner_keys[0]];
             for (let item of table) {
-                for (var i = 0; i < inner_keys.length; i++) {
-                    var target = dictionary[inner_keys[i]];
-                    try {
-                        if (typeof inner_query[inner_keys[i]] == "number") {
-                            if (item.getValue(target) < Number(inner_query[inner_keys[i]])) {
-                                ret_array.push(item);
-                            }
+
+                try {
+                    if (typeof inner_query[inner_keys[0]] == "number" && typeof item.getValue(target)=="number") {
+                        if (item.getValue(target) < inner_query[inner_keys[0]]) {
+                            ret_array.push(item);
                         }
-                    } catch (err) {
-                        throw err;
                     }
+                    else {
+                        throw new Error("type error LT");
+                    }
+                } catch (err) {
+                    throw err;
                 }
+
             }
         }
     }
     else if (key == "EQ") {
+        var inner_query = j_obj[key];
+        var inner_keys = Object.keys(inner_query);
+        if (inner_keys.length>1){
+            throw new Error("too many parameters");
+        }
+
 
         if (Object.keys(inner_query) == []) {
             throw new Error("empty EQ");
         }
-        var inner_query = j_obj[key];
-        var inner_keys = Object.keys(inner_query);
-
         var missing: boolean = false;
         missing = check_missing(inner_keys, missing_col);
 
         if (!missing) {
+            var target = dictionary[inner_keys[0]];
             for (let item of table) {
-                for (var i = 0; i < inner_keys.length; i++) {
-                    var target = dictionary[inner_keys[i]];
-                    try {
-                        if (typeof inner_query[inner_keys[i]] == "number") {
-                            if (item.getValue(target) == Number(inner_query[inner_keys[i]])) {
-                                ret_array.push(item);
-                            }
+
+                try {
+                    if (typeof inner_query[inner_keys[0]] == "number" && typeof item.getValue(target)=="number") {
+                        if (item.getValue(target) == inner_query[inner_keys[0]]) {
+                            ret_array.push(item);
                         }
-                    } catch (err) {
-                        throw err;
                     }
+                    else {
+                        throw new Error("type error EQ");
+                    }
+                } catch (err) {
+                    throw err;
                 }
+
             }
         }
     }
@@ -680,7 +707,7 @@ function filter_helper(table: Array<Course_obj>, query: QueryRequest, missing_co
 }
 
 function compare(a: Course_obj, b: Course_obj): number {
-    return a.id - b.id;
+    return Number(a.id) - Number(b.id);
 }
 
 function check_missing(keys: any, missing_col: string []): boolean {
