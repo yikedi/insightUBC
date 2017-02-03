@@ -12,7 +12,7 @@ var JSZip = require('jszip');
 var fs = require('fs');
 var validator = require('is-my-json-valid');
 
-var zip = new JSZip();
+
 
 let dictionary: {[index: string]: string} = {};
 
@@ -144,7 +144,7 @@ export default class InsightFacade implements IInsightFacade {
 
 
         return new Promise(function (fulfill, reject) {
-
+            var zip = new JSZip();
             var ret_obj = null;
 
             var exist: boolean = fs.existsSync("src/" + id + ".txt");
@@ -218,34 +218,15 @@ export default class InsightFacade implements IInsightFacade {
                             return reject(ret_obj)
                         }
 
-
-                        // var validate=validator({
-                        //     required:true,
-                        //     type:'object',
-                        //
-                        // });
-                        //
-                        // console.log('should be valid', validate(j_objs));
-
-
-                        fs.writeFile('src/' + id + '.txt', j_objs, (err: Error) => {
-                            if (err) {
-
-                                ret_obj = {code: 400, body: {"error": err.message}};
-                                console.log("write file error if line 216");
-                                return reject(ret_obj);
-                            }
-                            else {
-                                console.log("write file error else line 220");
-                                if (exist) {
-                                    ret_obj = {code: 201, body: j_objs};
-                                }
-                                else {
-                                    ret_obj = {code: 204, body: j_objs};
-                                }
-                                return fulfill(ret_obj);
-                            }
-                        });
+                        fs.writeFileSync('src/' + id + '.txt', j_objs);
+                        console.log("write file error else line 220");
+                        if (exist) {
+                            ret_obj = {code: 201, body: j_objs};
+                        }
+                        else {
+                            ret_obj = {code: 204, body: j_objs};
+                        }
+                        return fulfill(ret_obj);
 
                     }).catch(function (err: Error) {
                         console.log("in write file catch line 228");

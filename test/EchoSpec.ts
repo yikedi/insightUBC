@@ -71,12 +71,12 @@ describe("EchoSpec", function () {
 
 
     });
-    xit("test add testfile 3.zip", function (done) {
+    it("test add courses.zip", function (done) {
         this.timeout(50000)
 
         var zip = new JSZip();
-        var temp_1 = "./src/testfile 3.zip";
-        //var temp_1 = "./src/courses.zip";
+        //var temp_1 = "./src/testfile 3.zip";
+        var temp_1 = "./src/courses.zip";
         var f = fs.readFileSync(temp_1, {encoding: "base64"});
 
         var temp = new InsightFacade();
@@ -89,14 +89,15 @@ describe("EchoSpec", function () {
             })
             .catch((err) => {
                 Log.test("incatch");
-                done(err);
+                console.log(err.code);
+                done();
             });
 
     });
 
 
 
-    xit("test remove", function (done) {
+    it("test remove", function (done) {
         //this.timeout(50000)
 
         var temp = new InsightFacade();
@@ -112,7 +113,7 @@ describe("EchoSpec", function () {
 
     });
 
-    xit("test remove", function (done) {
+    it("test remove", function (done) {
         //this.timeout(50000)
 
         var temp = new InsightFacade();
@@ -131,12 +132,12 @@ describe("EchoSpec", function () {
 
     });
 
-    xit("test add courses.zip", function (done) {
+    it("test add testfile 3.zip", function (done) {
         this.timeout(50000)
 
         var zip = new JSZip();
-        var temp_1 = "./src/courses.zip";
-        //var temp_1 = "./src/testfile 3.zip";
+        //var temp_1 = "./src/courses.zip";
+        var temp_1 = "./src/testfile 3.zip";
         var f = fs.readFileSync(temp_1, {encoding: "base64"});
 
         var temp = new InsightFacade();
@@ -578,7 +579,7 @@ describe("EchoSpec", function () {
     // });
 
 
-    it("test invalid query ", function (done) {
+    xit("test invalid query ", function (done) {
         this.timeout(50000);
 
 
