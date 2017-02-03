@@ -669,7 +669,7 @@ function filter_helper(table: Array<Course_obj>, query: QueryRequest, missing_co
         if (!isUndefined(final_array[0]))
             ret_array.push(final_array[0]);
         for (var i = 1; i < final_array.length; i++) {
-            if (final_array[i].id != ret_array[i - 1].id) {
+            if (final_array[i].id != ret_array[ret_array.length-1].id) {
                 ret_array.push(final_array[i]);
             }
         }
