@@ -103,6 +103,7 @@ describe("EchoSpec", function () {
         var temp = new InsightFacade();
 
         temp.removeDataset("courses").then(function (result) {
+            console.log(Object.keys({}));
             console.log(result.code);
             console.log(result.body);
             done();
