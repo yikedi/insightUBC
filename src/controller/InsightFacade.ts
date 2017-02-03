@@ -351,11 +351,11 @@ export default class InsightFacade implements IInsightFacade {
                                 }
                             }
 
-                            if (missing_ids.length == 0) {
-                                return reject({code: 400, body: {"error": "invalid query"}});
-                            } else {
+                            // if (missing_ids.length == 0) {
+                            //     return reject({code: 400, body: {"error": "invalid query"}});
+                            // } else {
                                 return reject({code: 424, body: {"missing": missing_col}});
-                            }
+                           // }
 
                         }else if(error_400.length > 0){
                             return reject({code: 400, body: {"error": "probably type err"}});
