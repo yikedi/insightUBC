@@ -291,14 +291,22 @@ export default class InsightFacade implements IInsightFacade {
                         var missing_col: string[] = [];
                         var error_400:Object[] =[];
 
-                        var j_query = query.content;
-                        var j_obj = JSON.parse(j_query);
 
 
-                        var options = j_obj["OPTIONS"];
-                        var columns = options["COLUMNS"];
-                        var order = options["ORDER"];
-                        var form = options["FORM"];
+                        try {
+                            var j_query = query.content;
+                            var j_obj = JSON.parse(j_query);
+
+                            var where =j_obj["WHERE"];
+                            var options = j_obj["OPTIONS"];
+                            var columns = options["COLUMNS"];
+                            var order = options["ORDER"];
+                            var form = options["FORM"];
+                        }
+                        catch (err){
+                            return reject({code: 400, body: {"error": "invalid json or query 307"}});
+                        }
+
 
 
                         for (let column of columns) {
@@ -325,19 +333,6 @@ export default class InsightFacade implements IInsightFacade {
                             body = filter(table, query, missing_col, error_400);
                         } catch (err) {
                             return reject({code: 400, body: err.message});
-                            // if (missing_col.length > 0) {
-                            //     missing_col.sort();
-                            //     var missing_col_no_duplicate: string[] = [];
-                            //     missing_col_no_duplicate.push(missing_col[0]);
-                            //     for (var i = 1; i < missing_col.length; i++) {
-                            //         if (missing_col[i] != missing_col_no_duplicate[i - 1]) {
-                            //             missing_col_no_duplicate.push(missing_col[i]);
-                            //         }
-                            //     }
-                            //     return reject({code: 424, body: {"missing": missing_col_no_duplicate}});
-                            // }
-                            // else
-                            //     return reject({code: 400, body: err.message});
                         }
 
                         if (missing_col.length > 0) {
@@ -679,11 +674,41 @@ function filter_helper(table: Array<Course_obj>, query: QueryRequest, missing_co
     }
     else if (key == "NOT") {
 
-        var inner_query = j_obj[key];
+        // var inner_query = j_obj[key];
+        //
+        //
+        // if (Object.keys(inner_query) == []) {
+        //     throw new Error("empty NOT");
+        // }
+        // var a = JSON.stringify(inner_query);
+        // var query = {content: a};
+        // var before_negate = filter_helper(table, query, missing_col,error_400);
+        //
+        //
+        // var final_array = before_negate.concat(table);
+        // final_array.sort(compare);
+        //
+        // var element_1 = final_array[0];
+        // for (var i = 1; i < final_array.length; i++) {
+        //     var element_2 = final_array[i];
+        //     if (element_2.id != element_1.id) {
+        //         ret_array.push(element_1);
+        //         element_1 = final_array[i];
+        //     } else if ((i + 1) < final_array.length) {
+        //         element_1 = final_array[i + 1];
+        //         i++;
+        //     }
+        // }
 
+        var inner_query = j_obj[key];
+        var inner_keys = Object.keys(inner_query);
+        if (inner_keys.length>1){
+            throw new Error("too many parameters");
+        }
         if (Object.keys(inner_query) == []) {
             throw new Error("empty NOT");
         }
+
         var a = JSON.stringify(inner_query);
         var query = {content: a};
         var before_negate = filter_helper(table, query, missing_col,error_400);
@@ -704,7 +729,10 @@ function filter_helper(table: Array<Course_obj>, query: QueryRequest, missing_co
             }
         }
 
+
     }
+    else
+        throw new Error("invalid query missing filter word 736");
 
     return ret_array;
 }

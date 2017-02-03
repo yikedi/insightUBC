@@ -73,7 +73,7 @@ describe("EchoSpec", function () {
 
     });
 
-    /*
+
     xit("test add courses.zip", function (done) {
         this.timeout(50000)
 
@@ -491,7 +491,7 @@ describe("EchoSpec", function () {
             "WHERE": {
                 "AND": [{
                     "GT": {
-                         "courses_avg": "90"
+                        "courses_avg": "90"
                     }
                 }, {
                     "EQ": {
@@ -517,7 +517,7 @@ describe("EchoSpec", function () {
                     "courses_uuid"
                 ],
                 "ORDER": "courses_avg",
-                "FORM": "TABL"
+                "FORM": "TABLE"
             }
         };
 
@@ -536,7 +536,7 @@ describe("EchoSpec", function () {
     });
 
 
-    it("test contradictory query 1 ", function (done) {
+    xit("test contradictory query 1 ", function (done) {
         this.timeout(50000)
 
 
@@ -589,6 +589,232 @@ describe("EchoSpec", function () {
         })
 
     });
+
+    it("test NOT with no answer query 1 ", function (done) {
+        this.timeout(50000)
+
+
+        var temp = new InsightFacade();
+
+        var s1 = {
+            "WHERE": {
+                "NOT": {
+
+                    "OR": [
+                        {
+                            "GT": {
+                                "courses_avg": 0
+                            }
+                        }
+                        ,
+                        {
+                            "EQ": {
+                                "courses_avg": 0
+                            }
+                        }
+                    ]
+
+                }
+            }
+            ,
+                "OPTIONS": {
+                    "COLUMNS": [
+
+
+                        "courses_dept",
+                        "courses_avg",
+                        "courses_uuid"
+                    ],
+                    "ORDER": "courses_avg",
+                    "FORM": "TABLE"
+                }
+
+        };
+
+        var a = JSON.stringify(s1);
+        var query = {content: a};
+        temp.performQuery(query).then(function (body) {
+            console.log(body.code);
+            console.log(body.body);
+            done();
+        }).catch(function (err) {
+            console.log(err.code);
+            console.log(err.body);
+            done();
+        })
+
+    });
+
+
+    it("test 400 1 invalid key ", function (done) {
+        this.timeout(50000)
+
+
+        var temp = new InsightFacade();
+
+        var s1 = {
+            "WHERE": {
+                "AND": [{
+                    "GT": {
+                        "courses_avg": 90
+                    }
+                }, {
+                    "EQ": {
+                        "courses_avg": 77
+                    }
+
+                }, {
+                    "IS": {
+                        // Error here
+                        "courses_dep": "cpsc"
+                    }
+
+                }
+
+                ]
+
+            },
+            "OPTIONS": {
+                "COLUMNS": [
+                    "courses_dept",
+                    "courses_avg",
+                    "courses_uuid"
+                ],
+                "ORDER": "courses_avg",
+                "FORM": "TABLE"
+            }
+        };
+
+        var a = JSON.stringify(s1);
+        var query = {content: a};
+        temp.performQuery(query).then(function (body) {
+            console.log(body.code);
+            console.log(body.body);
+            done();
+        }).catch(function (err) {
+            console.log(err.code);
+            console.log(err.body);
+            done();
+        })
+
+    });
+
+
+    it("test 400 2 undefined and ", function (done) {
+        this.timeout(50000)
+
+
+        var temp = new InsightFacade();
+
+        var s1 = {
+            "WHERE": {
+                "OR": [
+                    {"a": 5}
+                    //     {
+                    //     "GT": {
+                    //         "courses_avg": 90
+                    //     }
+                    // }, {
+                    //     "EQ": {
+                    //         "courses_avg": 77
+                    //     }
+                    //
+                    // }, {
+                    //     "IS": {
+                    //         // Error here
+                    //         "courses_dep": "cpsc"
+                    //     }
+                    //
+                    // }
+
+                ]
+
+            ,
+            "OPTIONS": {
+                "COLUMNS": [
+                    "courses_dept",
+                    "courses_avg",
+                    "courses_uuid"
+                ],
+                "ORDER": "courses_avg",
+                "FORM": "TABLE"
+            }
+        }
+        };
+
+        var a = JSON.stringify(s1);
+        var query = {content: a};
+        temp.performQuery(query).then(function (body) {
+            console.log(body.code);
+            console.log(body.body);
+            done();
+        }).catch(function (err) {
+            console.log(err.code);
+            console.log(err.body);
+            done();
+        })
+
+    });
+
+
+    it("test 400 3 empty and ", function (done) {
+        this.timeout(50000)
+
+
+        var temp = new InsightFacade();
+
+        var s1 = {
+            "WHERE": {
+                "OR": [
+                    {a:5}
+                    //     {
+                    //     "GT": {
+                    //         "courses_avg": 90
+                    //     }
+                    // }, {
+                    //     "EQ": {
+                    //         "courses_avg": 77
+                    //     }
+                    //
+                    // }, {
+                    //     "IS": {
+                    //         // Error here
+                    //         "courses_dep": "cpsc"
+                    //     }
+                    //
+                    // }
+
+                ]
+            }
+
+                ,
+                "OPTIONS": {
+                    "COLUMNS": [
+                        "courses_dept",
+                        "courses_avg",
+                        "courses_uuid"
+                    ],
+                    "ORDER": "courses_avg",
+                    "FORM": "TABLE"
+                }
+
+        };
+
+        var a = JSON.stringify(s1);
+        var query = {content: a};
+        temp.performQuery(query).then(function (body) {
+            console.log(body.code);
+            console.log(body.body);
+            done();
+        }).catch(function (err) {
+            console.log(err.code);
+            console.log(err.body);
+            done();
+        })
+
+    });
+
+
 
 
 
