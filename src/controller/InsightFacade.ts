@@ -289,6 +289,7 @@ export default class InsightFacade implements IInsightFacade {
                         var table = build_table(data);
 
                         var missing_col: string[] = [];
+                        var error_400:Object[] =[];
 
                         var j_query = query.content;
                         var j_obj = JSON.parse(j_query);
@@ -321,7 +322,7 @@ export default class InsightFacade implements IInsightFacade {
                         missing_col = [];
                         var body = null;
                         try {
-                            body = filter(table, query, missing_col);
+                            body = filter(table, query, missing_col, error_400);
                         } catch (err) {
                             return reject({code: 400, body: err.message});
                             // if (missing_col.length > 0) {
@@ -361,6 +362,8 @@ export default class InsightFacade implements IInsightFacade {
                                 return reject({code: 424, body: {"missing": missing_col}});
                             }
 
+                        }else if(error_400.length > 0){
+                            return reject({code: 400, body: {"error": "probably type err"}});
                         }
 
                         var ret_obj={render:form,result:body};
@@ -419,7 +422,7 @@ function build_table(data: string): Array<Course_obj> {
     return course_list;
 }
 
-function filter(table: Array<Course_obj>, query: QueryRequest, missing_col: string []): any {
+function filter(table: Array<Course_obj>, query: QueryRequest, missing_col: string [], error_400:Object[]): any {
 
     var j_query = query.content;
     var j_obj = JSON.parse(j_query);
@@ -430,7 +433,7 @@ function filter(table: Array<Course_obj>, query: QueryRequest, missing_col: stri
     var query = {content: a};
     var ret_table = [];
     try {
-        ret_table = filter_helper(table, query, missing_col);
+        ret_table = filter_helper(table, query, missing_col,error_400);
     } catch (err) {
         throw err;
     }
@@ -465,7 +468,7 @@ function filter(table: Array<Course_obj>, query: QueryRequest, missing_col: stri
     return ret_array;
 }
 
-function filter_helper(table: Array<Course_obj>, query: QueryRequest, missing_col: string[]): Array<Course_obj> {
+function filter_helper(table: Array<Course_obj>, query: QueryRequest, missing_col: string[],error_400:Object[]): Array<Course_obj> {
 
     var j_query = query.content;
     var j_obj = JSON.parse(j_query);
@@ -499,10 +502,10 @@ function filter_helper(table: Array<Course_obj>, query: QueryRequest, missing_co
                             }
                         }
                         else {
-                            throw new Error("type error IS");
+                            error_400.push( {"error": "type error IS"});
                         }
                     } catch (err) {
-                        throw err;
+                        error_400.push( {"error": err.message});
                     }
 
             }
@@ -538,10 +541,10 @@ function filter_helper(table: Array<Course_obj>, query: QueryRequest, missing_co
                         }
                     }
                     else {
-                        throw new Error("type error GT");
+                        error_400.push( {"error": "type error GT"});
                     }
                 } catch (err) {
-                    throw err;
+                    error_400.push( {"error": err.message});
                 }
 
             }
@@ -573,10 +576,10 @@ function filter_helper(table: Array<Course_obj>, query: QueryRequest, missing_co
                         }
                     }
                     else {
-                        throw new Error("type error LT");
+                        error_400.push( {"error": "type error LT"});
                     }
                 } catch (err) {
-                    throw err;
+                    error_400.push( {"error": err.message});
                 }
 
             }
@@ -607,10 +610,10 @@ function filter_helper(table: Array<Course_obj>, query: QueryRequest, missing_co
                         }
                     }
                     else {
-                        throw new Error("type error EQ");
+                        error_400.push( {"error": "type error EQ"});
                     }
                 } catch (err) {
-                    throw err;
+                    error_400.push( {"error": err.message});
                 }
 
             }
@@ -627,7 +630,7 @@ function filter_helper(table: Array<Course_obj>, query: QueryRequest, missing_co
         for (let item of and_list) {
             var a = JSON.stringify(item);
             var query = {content: a};
-            var temp = filter_helper(table, query, missing_col);
+            var temp = filter_helper(table, query, missing_col,error_400);
             final_array = final_array.concat(temp);
         }
         final_array.sort(compare);
@@ -661,7 +664,7 @@ function filter_helper(table: Array<Course_obj>, query: QueryRequest, missing_co
         for (let item of or_list) {
             var a = JSON.stringify(item);
             var query = {content: a};
-            var temp = filter_helper(table, query, missing_col);
+            var temp = filter_helper(table, query, missing_col,error_400);
             final_array = final_array.concat(temp);
         }
         final_array.sort(compare);
@@ -683,7 +686,7 @@ function filter_helper(table: Array<Course_obj>, query: QueryRequest, missing_co
         }
         var a = JSON.stringify(inner_query);
         var query = {content: a};
-        var before_negate = filter_helper(table, query, missing_col);
+        var before_negate = filter_helper(table, query, missing_col,error_400);
 
 
         var final_array = before_negate.concat(table);

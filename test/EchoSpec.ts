@@ -218,7 +218,7 @@ describe("EchoSpec", function () {
             "WHERE": {
                 "AND": [{
                     "GT": {
-                        "courses_avg": 90
+                        "courses_avg": "90"
                     }
                 }, {
                     "EQ": {
@@ -231,12 +231,6 @@ describe("EchoSpec", function () {
                     }
 
                 }
-                    // ,
-                    //     {
-                    //     "LT": {
-                    //         "courses_avg": 70
-                    //     }
-                    // }
                 ]
 
             },
@@ -278,16 +272,16 @@ describe("EchoSpec", function () {
 
                     "OR": [{
                         "GT": {
-                            "courses_avg": 90
+                            "courses_avg": "90"
                         }
                     }, {
                         "EQ": {
-                            "courses_avg": 77
+                            "courses_avg": "77"
                         }
 
                     }, {
                         "IS": {
-                            "courses_dept": "cpsc"
+                            "courses_dept": 29
                         }
 
                     }
@@ -840,3 +834,36 @@ describe("EchoSpec", function () {
 
 
 });
+
+/** 400 before 424
+{
+    "WHERE": {
+    "AND": [{
+        "GT": {
+            "courses_avg": "90"
+        }
+    }, {
+        "EQ": {
+            "courss_avg": 77
+        }
+
+    }, {
+        "IS": {
+            "course_dept": "cpsc"
+        }
+
+    }
+    ]
+
+},
+    "OPTIONS": {
+    "COLUMNS": [
+        "courses_dept",
+        "courses_avg",
+        "courses_uuid"
+    ],
+        "ORDER": "courses_avg",
+        "FORM": "TABLE"
+}
+}
+ */
