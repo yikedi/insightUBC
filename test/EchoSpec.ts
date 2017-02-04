@@ -930,3 +930,42 @@ describe("EchoSpec", function () {
             }
         }
  */
+
+/**partial string
+ {
+            "WHERE": {
+                "OR": [{
+                    "AND": [{
+                        "IS": {
+                            "courses_instructor": "lyons, charles"
+                        }
+                    }
+                        , {
+                            "IS": {
+                                "courses_instructor": "s*"
+                            }
+
+                        }
+                    ]
+                }
+
+                ]
+
+
+            },
+            "OPTIONS": {
+                "COLUMNS": [
+                    "courses_dept",
+                    "courses_avg",
+                    "courses_uuid",
+                    "courses_title",
+                    "courses_instructor",
+                    "courses_fail",
+                    "courses_audit",
+                    "courses_pass"
+                ],
+                "ORDER": "courses_avg",
+                "FORM": "TABLE"
+            }
+        }
+ */
