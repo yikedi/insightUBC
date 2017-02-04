@@ -495,21 +495,20 @@ function filter_helper(table: Array<Course_obj>, query: QueryRequest, missing_co
                                     var index_of_partial_second: number = input.indexOf("*",input.length-1);
                                     if(index_of_partial_second != -1 ){
                                         //*aaa*
-                                        var str = "/\s*("+input.substring(1,input.length-1)+")\s*/";
-                                        if(item.getValue(target).search(str)!=-1)
-                                            ret_array.push(item);
+
+                                        var sub_input=input.substring(1,input.length-1);
+                                            if(item.getValue(target).includes(sub_input)){
+                                                ret_array.push(item);
+                                            }
+
                                     }else{//*aa
-                                        var str = "\s*("+input.substring(1)+")";
-                                        var index:number=item.getValue(target).search(str);
-                                        // if(index!=-1 && index + input.length -1 == item.getValue(target).length)
-                                        //     ret_array.push(item);
 
                                         if(item.getValue(target).endsWith(input.substring(1))){
                                             ret_array.push(item);
                                         }
                                     }
                                 }else if  (index_of_partial_first==input.length-1 && input.length>1){// aaa*
-                                    var str = "("+input.substring(1,input.length-1)+")\s*"
+
                                      if(item.getValue(target).startsWith(input.substring(0,input.length-1))){
                                          ret_array.push(item);
                                      }
@@ -774,3 +773,4 @@ function check_missing(keys: any, missing_col: string []){
         }
     }
 }
+

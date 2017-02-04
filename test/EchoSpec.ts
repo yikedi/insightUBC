@@ -1557,7 +1557,7 @@ describe("EchoSpec", function () {
                     }
                         , {
                             "IS": {
-                                "courses_instructor": "*charles*"
+                                "courses_instructor": "**"
                             }
 
                         }
