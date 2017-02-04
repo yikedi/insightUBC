@@ -285,24 +285,22 @@ export default class InsightFacade implements IInsightFacade {
                         var table = build_table(data);
 
                         var missing_col: string[] = [];
-                        var error_400:Object[] =[];
-
+                        var error_400: Object[] = [];
 
 
                         try {
                             var j_query = JSON.stringify(query);
                             var j_obj = JSON.parse(j_query);
 
-                            var where =j_obj["WHERE"];
+                            var where = j_obj["WHERE"];
                             var options = j_obj["OPTIONS"];
                             var columns = options["COLUMNS"];
                             var order = options["ORDER"];
                             var form = options["FORM"];
                         }
-                        catch (err){
+                        catch (err) {
                             return reject({code: 400, body: {"error": "invalid json or query 307"}});
                         }
-
 
 
                         for (let column of columns) {
@@ -347,18 +345,18 @@ export default class InsightFacade implements IInsightFacade {
                                 }
                             }
 
-                            if (missing_ids.length>0){
+                            if (missing_ids.length > 0) {
                                 return reject({code: 424, body: {"missing": missing_ids}});
                             }
 
-                                return reject({code: 400, body: {"missing": missing_col}});
+                            return reject({code: 400, body: {"missing": missing_col}});
 
 
-                        }else if(error_400.length > 0){
+                        } else if (error_400.length > 0) {
                             return reject({code: 400, body: error_400[0]});
                         }
 
-                        var ret_obj={render:form,result:body};
+                        var ret_obj = {render: form, result: body};
                         return fulfill({code: 200, body: ret_obj});
 
 
@@ -414,7 +412,7 @@ function build_table(data: string): Array<Course_obj> {
     return course_list;
 }
 
-function filter(table: Array<Course_obj>, query: QueryRequest, missing_col: string [], error_400:Object[]): any {
+function filter(table: Array<Course_obj>, query: QueryRequest, missing_col: string [], error_400: Object[]): any {
 
     var j_query = JSON.stringify(query);
     var j_obj = JSON.parse(j_query);
@@ -422,10 +420,10 @@ function filter(table: Array<Course_obj>, query: QueryRequest, missing_col: stri
     var options = j_obj["OPTIONS"];
     var where = j_obj["WHERE"];
 
-    var query:QueryRequest=where;
+    var query: QueryRequest = where;
     var ret_table = [];
     try {
-        ret_table = filter_helper(table, query, missing_col,error_400);
+        ret_table = filter_helper(table, query, missing_col, error_400);
     } catch (err) {
         throw err;
     }
@@ -460,7 +458,7 @@ function filter(table: Array<Course_obj>, query: QueryRequest, missing_col: stri
     return ret_array;
 }
 
-function filter_helper(table: Array<Course_obj>, query: QueryRequest, missing_col: string[],error_400:Object[]): Array<Course_obj> {
+function filter_helper(table: Array<Course_obj>, query: QueryRequest, missing_col: string[], error_400: Object[]): Array<Course_obj> {
 
     var j_query = JSON.stringify(query);
     var j_obj = JSON.parse(j_query);
@@ -475,7 +473,7 @@ function filter_helper(table: Array<Course_obj>, query: QueryRequest, missing_co
         if (Object.keys(inner_query).length == 0) {
             throw new Error("empty IS");
         }
-        if (inner_keys.length>1){
+        if (inner_keys.length > 1) {
             throw new Error("too many parameters");
         }
 
@@ -486,47 +484,47 @@ function filter_helper(table: Array<Course_obj>, query: QueryRequest, missing_co
             var target = dictionary[inner_keys[0]];
             for (let item of table) {
 
-                    try {
-                        var input=inner_query[inner_keys[0]];
+                try {
+                    var input = inner_query[inner_keys[0]];
 
-                        if (typeof input == "string" && typeof item.getValue(target)=="string") {
-                                var index_of_partial_first: number =input.indexOf("*");
-                                 if(index_of_partial_first == 0 && input.length>1){
-                                    var index_of_partial_second: number = input.indexOf("*",input.length-1);
-                                    if(index_of_partial_second != -1 ){
-                                        //*aaa*
+                    if (typeof input == "string" && typeof item.getValue(target) == "string") {
+                        var index_of_partial_first: number = input.indexOf("*");
+                        if (index_of_partial_first == 0 && input.length > 1) {
+                            var index_of_partial_second: number = input.indexOf("*", input.length - 1);
+                            if (index_of_partial_second != -1) {
+                                //*aaa*
 
-                                        var sub_input=input.substring(1,input.length-1);
-                                            if(item.getValue(target).includes(sub_input)){
-                                                ret_array.push(item);
-                                            }
-
-                                    }else{//*aa
-
-                                        if(item.getValue(target).endsWith(input.substring(1))){
-                                            ret_array.push(item);
-                                        }
-                                    }
-                                }else if  (index_of_partial_first==input.length-1 && input.length>1){// aaa*
-
-                                     if(item.getValue(target).startsWith(input.substring(0,input.length-1))){
-                                         ret_array.push(item);
-                                     }
+                                var sub_input = input.substring(1, input.length - 1);
+                                if (item.getValue(target).includes(sub_input)) {
+                                    ret_array.push(item);
                                 }
-                                else {
-                                    if (inner_query[inner_keys[0]]==item.getValue(target)){
-                                        ret_array.push(item);
-                                    }
-                                 }
 
+                            } else {//*aa
+
+                                if (item.getValue(target).endsWith(input.substring(1))) {
+                                    ret_array.push(item);
+                                }
                             }
+                        } else if (index_of_partial_first == input.length - 1 && input.length > 1) {// aaa*
 
-                        else {
-                            error_400.push( {"error": "type error IS"});
+                            if (item.getValue(target).startsWith(input.substring(0, input.length - 1))) {
+                                ret_array.push(item);
+                            }
                         }
-                    } catch (err) {
-                        error_400.push( {"error": err.message});
+                        else {
+                            if (inner_query[inner_keys[0]] == item.getValue(target)) {
+                                ret_array.push(item);
+                            }
+                        }
+
                     }
+
+                    else {
+                        error_400.push({"error": "type error IS"});
+                    }
+                } catch (err) {
+                    error_400.push({"error": err.message});
+                }
 
             }
         }
@@ -538,12 +536,11 @@ function filter_helper(table: Array<Course_obj>, query: QueryRequest, missing_co
         var inner_keys = Object.keys(inner_query);
 
 
-
         if (Object.keys(inner_query).length == 0) {
             throw new Error("empty GT");
         }
 
-        if (inner_keys.length>1){
+        if (inner_keys.length > 1) {
             throw new Error("too many parameters");
         }
 
@@ -554,16 +551,16 @@ function filter_helper(table: Array<Course_obj>, query: QueryRequest, missing_co
             for (let item of table) {
 
                 try {
-                    if (typeof inner_query[inner_keys[0]] == "number" && typeof item.getValue(target)=="number") {
+                    if (typeof inner_query[inner_keys[0]] == "number" && typeof item.getValue(target) == "number") {
                         if (item.getValue(target) > inner_query[inner_keys[0]]) {
                             ret_array.push(item);
                         }
                     }
                     else {
-                        error_400.push( {"error": "type error GT"});
+                        error_400.push({"error": "type error GT"});
                     }
                 } catch (err) {
-                    error_400.push( {"error": err.message});
+                    error_400.push({"error": err.message});
                 }
 
             }
@@ -574,11 +571,11 @@ function filter_helper(table: Array<Course_obj>, query: QueryRequest, missing_co
         var inner_query = j_obj[key];
         var inner_keys = Object.keys(inner_query);
 
-        if (inner_keys.length>1){
+        if (inner_keys.length > 1) {
             throw new Error("too many parameters");
         }
 
-        if (Object.keys(inner_query).length ==0) {
+        if (Object.keys(inner_query).length == 0) {
             throw new Error("empty LT");
         }
         check_missing(inner_keys, missing_col);
@@ -588,16 +585,16 @@ function filter_helper(table: Array<Course_obj>, query: QueryRequest, missing_co
             for (let item of table) {
 
                 try {
-                    if (typeof inner_query[inner_keys[0]] == "number" && typeof item.getValue(target)=="number") {
+                    if (typeof inner_query[inner_keys[0]] == "number" && typeof item.getValue(target) == "number") {
                         if (item.getValue(target) < inner_query[inner_keys[0]]) {
                             ret_array.push(item);
                         }
                     }
                     else {
-                        error_400.push( {"error": "type error LT"});
+                        error_400.push({"error": "type error LT"});
                     }
                 } catch (err) {
-                    error_400.push( {"error": err.message});
+                    error_400.push({"error": err.message});
                 }
 
             }
@@ -606,12 +603,12 @@ function filter_helper(table: Array<Course_obj>, query: QueryRequest, missing_co
     else if (key == "EQ") {
         var inner_query = j_obj[key];
         var inner_keys = Object.keys(inner_query);
-        if (inner_keys.length>1){
+        if (inner_keys.length > 1) {
             throw new Error("too many parameters");
         }
 
 
-        if (Object.keys(inner_query).length==0) {
+        if (Object.keys(inner_query).length == 0) {
             throw new Error("empty EQ");
         }
         check_missing(inner_keys, missing_col);
@@ -621,16 +618,16 @@ function filter_helper(table: Array<Course_obj>, query: QueryRequest, missing_co
             for (let item of table) {
 
                 try {
-                    if (typeof inner_query[inner_keys[0]] == "number" && typeof item.getValue(target)=="number") {
+                    if (typeof inner_query[inner_keys[0]] == "number" && typeof item.getValue(target) == "number") {
                         if (item.getValue(target) == inner_query[inner_keys[0]]) {
                             ret_array.push(item);
                         }
                     }
                     else {
-                        error_400.push( {"error": "type error EQ"});
+                        error_400.push({"error": "type error EQ"});
                     }
                 } catch (err) {
-                    error_400.push( {"error": err.message});
+                    error_400.push({"error": err.message});
                 }
 
             }
@@ -646,14 +643,14 @@ function filter_helper(table: Array<Course_obj>, query: QueryRequest, missing_co
 
         for (let item of and_list) {
             var a = JSON.stringify(item);
-            var query:QueryRequest = item;
-            var temp = filter_helper(table, query, missing_col,error_400);
+            var query: QueryRequest = item;
+            var temp = filter_helper(table, query, missing_col, error_400);
             final_array = final_array.concat(temp);
         }
         final_array.sort(compare);
         for (var i = 0; i < final_array.length; i++) {
             var in_intersection = false;
-            if (i + (and_list.length-1) < final_array.length) {
+            if (i + (and_list.length - 1) < final_array.length) {
                 var index = i + and_list.length - 1;
 
                 if (final_array[i].id == final_array[index].id) {
@@ -680,8 +677,8 @@ function filter_helper(table: Array<Course_obj>, query: QueryRequest, missing_co
 
         for (let item of or_list) {
             var a = JSON.stringify(item);
-            var query :QueryRequest= item;
-            var temp = filter_helper(table, query, missing_col,error_400);
+            var query: QueryRequest = item;
+            var temp = filter_helper(table, query, missing_col, error_400);
             final_array = final_array.concat(temp);
         }
         final_array.sort(compare);
@@ -689,7 +686,7 @@ function filter_helper(table: Array<Course_obj>, query: QueryRequest, missing_co
         if (!isUndefined(final_array[0]))
             ret_array.push(final_array[0]);
         for (var i = 1; i < final_array.length; i++) {
-            if (final_array[i].id != ret_array[ret_array.length-1].id) {
+            if (final_array[i].id != ret_array[ret_array.length - 1].id) {
                 ret_array.push(final_array[i]);
             }
         }
@@ -724,7 +721,7 @@ function filter_helper(table: Array<Course_obj>, query: QueryRequest, missing_co
 
         var inner_query = j_obj[key];
         var inner_keys = Object.keys(inner_query);
-        if (inner_keys.length>1){
+        if (inner_keys.length > 1) {
             throw new Error("too many parameters");
         }
         if (Object.keys(inner_query) == []) {
@@ -732,8 +729,8 @@ function filter_helper(table: Array<Course_obj>, query: QueryRequest, missing_co
         }
 
         var a = JSON.stringify(inner_query);
-        var query :QueryRequest=inner_query;
-        var before_negate = filter_helper(table, query, missing_col,error_400);
+        var query: QueryRequest = inner_query;
+        var before_negate = filter_helper(table, query, missing_col, error_400);
 
 
         var final_array = before_negate.concat(table);
@@ -763,7 +760,7 @@ function compare(a: Course_obj, b: Course_obj): number {
     return Number(a.id) - Number(b.id);
 }
 
-function check_missing(keys: any, missing_col: string []){
+function check_missing(keys: any, missing_col: string []) {
 
     for (var i = 0; i < keys.length; i++) {
         var val = dictionary[keys[i]];
