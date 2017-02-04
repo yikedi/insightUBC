@@ -4,13 +4,9 @@
 import {IInsightFacade, InsightResponse, QueryRequest} from "./IInsightFacade";
 
 import Log from "../Util";
-import {fullResponse} from "restify";
-import {error} from "util";
 import {isUndefined} from "util";
-import {throws} from "assert";
 var JSZip = require('jszip');
 var fs = require('fs');
-var validator = require('is-my-json-valid');
 
 
 let dictionary: {[index: string]: string} = {};
@@ -22,7 +18,7 @@ dictionary = {
     "courses_instructor": "Professor",
     "courses_title": "Title",
     "courses_pass": "Pass",
-    "courses_fail": "fail",
+    "courses_fail": "Fail",
     "courses_audit": "Audit",
     "courses_uuid": "id"
 };
@@ -358,7 +354,7 @@ export default class InsightFacade implements IInsightFacade {
                            // }
 
                         }else if(error_400.length > 0){
-                            return reject({code: 400, body: {"error": "probably type err"}});
+                            return reject({code: 400, body: error_400[0]});
                         }
 
                         var ret_obj={render:form,result:body};
@@ -482,20 +478,21 @@ function filter_helper(table: Array<Course_obj>, query: QueryRequest, missing_co
             throw new Error("too many parameters");
         }
 
-        var missing: boolean = false;
-        missing = check_missing(inner_keys, missing_col);
+        check_missing(inner_keys, missing_col);
 
-        if (!missing) {
+        if (missing_col.length == 0) {
 
             var target = dictionary[inner_keys[0]];
             for (let item of table) {
 
                     try {
                         if (typeof inner_query[inner_keys[0]] == "string" && typeof item.getValue(target)=="string") {
-                            if (item.getValue(target) == inner_query[inner_keys[0]]) {
-                                ret_array.push(item);
+                                //console.log(inner_query[inner_keys[0]]);
+                                if (item.getValue(target) == inner_query[inner_keys[0]]) {
+                                    ret_array.push(item);
+                                }
                             }
-                        }
+
                         else {
                             error_400.push( {"error": "type error IS"});
                         }
@@ -522,10 +519,9 @@ function filter_helper(table: Array<Course_obj>, query: QueryRequest, missing_co
             throw new Error("too many parameters");
         }
 
-        var missing: boolean = false;
-        missing = check_missing(inner_keys, missing_col);
+        check_missing(inner_keys, missing_col);
 
-        if (!missing) {
+        if (missing_col.length == 0) {
             var target = dictionary[inner_keys[0]];
             for (let item of table) {
 
@@ -557,10 +553,9 @@ function filter_helper(table: Array<Course_obj>, query: QueryRequest, missing_co
         if (Object.keys(inner_query).length ==0) {
             throw new Error("empty LT");
         }
-        var missing: boolean = false;
-        missing = check_missing(inner_keys, missing_col);
+        check_missing(inner_keys, missing_col);
 
-        if (!missing) {
+        if (missing_col.length == 0) {
             var target = dictionary[inner_keys[0]];
             for (let item of table) {
 
@@ -591,10 +586,9 @@ function filter_helper(table: Array<Course_obj>, query: QueryRequest, missing_co
         if (Object.keys(inner_query).length==0) {
             throw new Error("empty EQ");
         }
-        var missing: boolean = false;
-        missing = check_missing(inner_keys, missing_col);
+        check_missing(inner_keys, missing_col);
 
-        if (!missing) {
+        if (missing_col.length == 0) {
             var target = dictionary[inner_keys[0]];
             for (let item of table) {
 
@@ -631,7 +625,7 @@ function filter_helper(table: Array<Course_obj>, query: QueryRequest, missing_co
         final_array.sort(compare);
         for (var i = 0; i < final_array.length; i++) {
             var in_intersection = false;
-            if (i + and_list.length < final_array.length) {
+            if (i + (and_list.length-1) < final_array.length) {
                 var index = i + and_list.length - 1;
 
                 if (final_array[i].id == final_array[index].id) {
@@ -741,16 +735,13 @@ function compare(a: Course_obj, b: Course_obj): number {
     return Number(a.id) - Number(b.id);
 }
 
-function check_missing(keys: any, missing_col: string []): boolean {
-    var missing: boolean = false;
+function check_missing(keys: any, missing_col: string []){
 
     for (var i = 0; i < keys.length; i++) {
         var val = dictionary[keys[i]];
         if (isUndefined(val)) {
             var vals: string = keys[i].toString();
             missing_col.push(keys[i]);
-            missing = true;
         }
     }
-    return missing;
 }
