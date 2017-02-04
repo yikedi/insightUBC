@@ -290,7 +290,7 @@ export default class InsightFacade implements IInsightFacade {
 
 
                         try {
-                            var j_query = query.content;
+                            var j_query = JSON.stringify(query);
                             var j_obj = JSON.parse(j_query);
 
                             var where =j_obj["WHERE"];
@@ -416,13 +416,13 @@ function build_table(data: string): Array<Course_obj> {
 
 function filter(table: Array<Course_obj>, query: QueryRequest, missing_col: string [], error_400:Object[]): any {
 
-    var j_query = query.content;
+    var j_query = JSON.stringify(query);
     var j_obj = JSON.parse(j_query);
+
     var options = j_obj["OPTIONS"];
     var where = j_obj["WHERE"];
 
-    var a = JSON.stringify(where);
-    var query = {content: a};
+    var query:QueryRequest=where;
     var ret_table = [];
     try {
         ret_table = filter_helper(table, query, missing_col,error_400);
@@ -462,7 +462,7 @@ function filter(table: Array<Course_obj>, query: QueryRequest, missing_col: stri
 
 function filter_helper(table: Array<Course_obj>, query: QueryRequest, missing_col: string[],error_400:Object[]): Array<Course_obj> {
 
-    var j_query = query.content;
+    var j_query = JSON.stringify(query);
     var j_obj = JSON.parse(j_query);
     var keys = Object.keys(j_obj);
     var key = keys[0];
@@ -637,7 +637,7 @@ function filter_helper(table: Array<Course_obj>, query: QueryRequest, missing_co
 
         for (let item of and_list) {
             var a = JSON.stringify(item);
-            var query = {content: a};
+            var query:QueryRequest = item;
             var temp = filter_helper(table, query, missing_col,error_400);
             final_array = final_array.concat(temp);
         }
@@ -671,7 +671,7 @@ function filter_helper(table: Array<Course_obj>, query: QueryRequest, missing_co
 
         for (let item of or_list) {
             var a = JSON.stringify(item);
-            var query = {content: a};
+            var query :QueryRequest= item;
             var temp = filter_helper(table, query, missing_col,error_400);
             final_array = final_array.concat(temp);
         }
@@ -723,7 +723,7 @@ function filter_helper(table: Array<Course_obj>, query: QueryRequest, missing_co
         }
 
         var a = JSON.stringify(inner_query);
-        var query = {content: a};
+        var query :QueryRequest=inner_query;
         var before_negate = filter_helper(table, query, missing_col,error_400);
 
 

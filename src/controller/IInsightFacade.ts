@@ -11,7 +11,7 @@ export interface InsightResponse {
 //
 export interface QueryRequest {
     // you can define your own structure that complies with the EBNF here
-    content: string;
+
 }
 
 export interface IInsightFacade {
