@@ -302,15 +302,20 @@ export default class InsightFacade implements IInsightFacade {
                             return reject({code: 400, body: {"error": "invalid json or query 307"}});
                         }
 
+                        var order_valid:boolean=false;
+                        var order_check = dictionary[order];
 
                         for (let column of columns) {
                             var value = dictionary[column];
                             if (isUndefined(value))
                                 missing_col.push(column);
+                            if (order==column){
+                                order_valid=true;
+                            }
                         }
 
-                        var order_check = dictionary[order];
-                        if (isUndefined(order_check))
+
+                        if (isUndefined(order_check) || !order_valid)
                             missing_col.push(order);
 
                         if (form != "TABLE") {

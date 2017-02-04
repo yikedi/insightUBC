@@ -135,7 +135,7 @@ describe("EchoSpec", function () {
     });
 
 
-    xit("query before overwrite", function (done) {
+    it("query before overwrite", function (done) {
 
         this.timeout(500000);
 
@@ -165,7 +165,7 @@ describe("EchoSpec", function () {
                     "courses_dept",
                     "courses_avg"
                 ],
-                "ORDER": "courses_avg",
+                "ORDER": "courses_uid",
                 "FORM": "TABLE"
             }
         };
