@@ -216,30 +216,30 @@ describe("EchoSpec", function () {
 
         var s1 = {
             "WHERE": {
-                "OR": [{
+                "AND": [{
                     "AND": [{
-                        "IS": {
-                            "courses_instructor": "lyons, charles"
+                        "GT": {
+                            "a_avg": 63.99
                         }
                     }
                         , {
-                            "IS": {
-                                "courses_instructor": "*charles"
+                            "EQ": {
+                                "b_avg": 64
                             }
 
                         }
                     ]
+                    ,
+                    "IS": {
+                        "c_avg": 63.99
+                    }
                 }
-                    // , {
-                    //     "NOT": {
-                    //         "NOT": {
-                    //             "IS": {
-                    //                 "courses_dept": "aanb"
-                    //             }
-                    //
-                    //         }
-                    //     }
-                    // }
+                    , {
+                        "EQ": {
+                            "d_avg": 64
+                        }
+
+                    }
                 ]
 
 

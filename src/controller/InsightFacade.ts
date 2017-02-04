@@ -487,9 +487,27 @@ function filter_helper(table: Array<Course_obj>, query: QueryRequest, missing_co
 
                     try {
                         if (typeof inner_query[inner_keys[0]] == "string" && typeof item.getValue(target)=="string") {
-                                //console.log(inner_query[inner_keys[0]]);
-                                if (item.getValue(target) == inner_query[inner_keys[0]]) {
-                                    ret_array.push(item);
+                                var index_of_partial_first: number =inner_query[inner_keys[0]].indexOf("*");
+                                if(index_of_partial_first== -1) {//aaa
+                                    if (item.getValue(target) == inner_query[inner_keys[0]]) {
+                                        ret_array.push(item);
+                                    }
+                                }else if(index_of_partial_first == 0){
+                                    var index_of_partial_second: number = inner_query[inner_keys[0]].indexOf("*",1);
+                                    if(index_of_partial_second != -1){
+                                        //*aaa*
+                                        var str = "\s*("+inner_query[inner_keys[0]].substring(1,inner_query[inner_keys[0]].length)+")\s*";
+                                        if(item.getValue(target).search(str)!=-1)
+                                            ret_array.push(item);
+                                    }else{//*aa
+                                        var str = "\s*("+inner_query[inner_keys[0]].substring(1)+")";
+                                        if(item.getValue(target).search(str)!=-1)
+                                            ret_array.push(item);
+                                    }
+                                }else{// aaa*
+                                    var str = "("+inner_query[inner_keys[0]].substring(1,inner_query[inner_keys[0]].length)+")\s*"
+                                    if(item.getValue(target).search(str)!=-1)
+                                        ret_array.push(item);
                                 }
                             }
 
