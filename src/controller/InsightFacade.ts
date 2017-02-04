@@ -493,6 +493,7 @@ function filter_helper(table: Array<Course_obj>, query: QueryRequest, missing_co
                     var input = inner_query[inner_keys[0]];
 
                     if (typeof input == "string" && typeof item.getValue(target) == "string") {
+
                         var index_of_partial_first: number = input.indexOf("*");
                         if (index_of_partial_first == 0 && input.length > 1) {
                             var index_of_partial_second: number = input.indexOf("*", input.length - 1);
@@ -517,7 +518,7 @@ function filter_helper(table: Array<Course_obj>, query: QueryRequest, missing_co
                             }
                         }
                         else {
-                            if (inner_query[inner_keys[0]] == item.getValue(target)) {
+                            if (input == item.getValue(target)) {
                                 ret_array.push(item);
                             }
                         }
@@ -655,8 +656,8 @@ function filter_helper(table: Array<Course_obj>, query: QueryRequest, missing_co
         final_array.sort(compare);
         for (var i = 0; i < final_array.length; i++) {
             var in_intersection = false;
-            var index = i + and_list.length - 1;
 
+            var index = i + and_list.length - 1;
             if (index < final_array.length) {
 
                 if (final_array[i].id == final_array[index].id) {

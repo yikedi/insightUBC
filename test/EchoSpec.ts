@@ -1543,7 +1543,7 @@ describe("EchoSpec", function () {
 
     });
 
-    it("test partial ", function (done) {
+    xit("test partial ", function (done) {
         this.timeout(50000)
 
 
@@ -1599,4 +1599,204 @@ describe("EchoSpec", function () {
 
 
     });
+
+
+
+
+    it("test partial 3 all courses in one dept but taught by ", function (done) {
+        this.timeout(50000)
+
+
+        var s1 = {
+            "WHERE": {
+                "AND": [
+                    {
+                        "IS": {
+                            "courses_dept": "*cpsc*"
+                        }
+                    }
+                        ,
+                    {
+                            "NOT": {
+                                    "IS":{
+                                        "courses_instructor":"*hu*"
+                                    }
+                            }
+
+                        }
+
+                ]
+
+
+            },
+            "OPTIONS": {
+                "COLUMNS": [
+
+                    "courses_uuid",
+                    "courses_dept",
+                    "courses_instructor"
+
+                ],
+                "ORDER": "courses_uuid",
+                "FORM": "TABLE"
+            }
+        };
+
+
+        var query = s1;
+        var temp = new InsightFacade();
+
+
+        temp.performQuery(query).then(function (result) {
+            console.log(result.code);
+            console.log(result.body);
+            console.log(result.body["result"].length);
+            done();
+        }).catch(function (err) {
+            console.log(err.code);
+            console.log(err.body);
+
+            done();
+        })
+
+
+    });
+
+
+    xit("test partial 3 ", function (done) {
+        this.timeout(50000)
+
+
+        var s1 = {
+            "WHERE": {
+                "AND": [
+                    {
+                        "IS": {
+                            "courses_dept": "*cpsc*"
+                        }
+                    }
+                    ,
+                    {
+                        "IS": {
+                            "courses_instructor": "*"+""+"*"
+                        }
+
+                    }
+
+                ]
+
+
+            },
+            "OPTIONS": {
+                "COLUMNS": [
+
+                    "courses_uuid",
+                    "courses_dept",
+                    "courses_instructor"
+
+                ],
+                "ORDER": "courses_uuid",
+                "FORM": "TABLE"
+            }
+        };
+
+
+        var query = s1;
+        var temp = new InsightFacade();
+
+
+        temp.performQuery(query).then(function (result) {
+            console.log(result.code);
+            console.log(result.body);
+            console.log(result.body["result"].length);
+            done();
+        }).catch(function (err) {
+            console.log(err.code);
+            console.log(err.body);
+
+            done();
+        })
+
+
+    });
+
+
+
+
+    it("test partial 4 ", function (done) {
+        this.timeout(50000)
+
+        //All courses in cpsc except for some course of which uuid range is some specified range
+        var s1 = {
+            "WHERE": {
+                "AND": [
+                    {
+                        "IS": {
+                            "courses_dept": "*cpsc*"
+                        }
+                    }
+                    ,
+                    {
+                        "NOT": {
+                            "OR":[
+
+                                {
+                                    "IS": {
+                                        "courses_uuid": "129*"
+                                    }
+                                },
+                                {
+                                    "IS": {
+                                        "courses_uuid": "130*"
+                                    }
+                                }
+
+
+                            ]
+                        }
+
+                    }
+
+                ]
+
+
+            },
+            "OPTIONS": {
+                "COLUMNS": [
+
+                    "courses_uuid",
+                    "courses_dept",
+                    "courses_instructor"
+
+                ],
+                "ORDER": "courses_uuid",
+                "FORM": "TABLE"
+            }
+        };
+
+
+        var query = s1;
+        var temp = new InsightFacade();
+
+
+        temp.performQuery(query).then(function (result) {
+            console.log(result.code);
+            console.log(result.body);
+            console.log(result.body["result"].length);
+            done();
+        }).catch(function (err) {
+            console.log(err.code);
+            console.log(err.body);
+
+            done();
+        })
+
+
+    });
+
+
+
+
+
+
 });
