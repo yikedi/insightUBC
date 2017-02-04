@@ -487,29 +487,39 @@ function filter_helper(table: Array<Course_obj>, query: QueryRequest, missing_co
             for (let item of table) {
 
                     try {
-                        if (typeof inner_query[inner_keys[0]] == "string" && typeof item.getValue(target)=="string") {
-                                var index_of_partial_first: number =inner_query[inner_keys[0]].indexOf("*");
-                                if(index_of_partial_first== -1) {//aaa
-                                    if (item.getValue(target) == inner_query[inner_keys[0]]) {
-                                        ret_array.push(item);
-                                    }
-                                }else if(index_of_partial_first == 0){
-                                    var index_of_partial_second: number = inner_query[inner_keys[0]].indexOf("*",1);
-                                    if(index_of_partial_second != -1){
+                        var input=inner_query[inner_keys[0]];
+
+                        if (typeof input == "string" && typeof item.getValue(target)=="string") {
+                                var index_of_partial_first: number =input.indexOf("*");
+                                 if(index_of_partial_first == 0 && input.length>1){
+                                    var index_of_partial_second: number = input.indexOf("*",input.length-1);
+                                    if(index_of_partial_second != -1 ){
                                         //*aaa*
-                                        var str = "\s*("+inner_query[inner_keys[0]].substring(1,inner_query[inner_keys[0]].length)+")\s*";
+                                        var str = "/\s*("+input.substring(1,input.length-1)+")\s*/";
                                         if(item.getValue(target).search(str)!=-1)
                                             ret_array.push(item);
                                     }else{//*aa
-                                        var str = "\s*("+inner_query[inner_keys[0]].substring(1)+")";
-                                        if(item.getValue(target).search(str)!=-1)
+                                        var str = "\s*("+input.substring(1)+")";
+                                        var index:number=item.getValue(target).search(str);
+                                        // if(index!=-1 && index + input.length -1 == item.getValue(target).length)
+                                        //     ret_array.push(item);
+
+                                        if(item.getValue(target).endsWith(input.substring(1))){
                                             ret_array.push(item);
+                                        }
                                     }
-                                }else{// aaa*
-                                    var str = "("+inner_query[inner_keys[0]].substring(1,inner_query[inner_keys[0]].length)+")\s*"
-                                    if(item.getValue(target).search(str)!=-1)
-                                        ret_array.push(item);
+                                }else if  (index_of_partial_first==input.length-1 && input.length>1){// aaa*
+                                    var str = "("+input.substring(1,input.length-1)+")\s*"
+                                     if(item.getValue(target).startsWith(input.substring(0,input.length-1))){
+                                         ret_array.push(item);
+                                     }
                                 }
+                                else {
+                                    if (inner_query[inner_keys[0]]==item.getValue(target)){
+                                        ret_array.push(item);
+                                    }
+                                 }
+
                             }
 
                         else {
