@@ -602,7 +602,7 @@ describe("EchoSpec", function () {
                     "OR": [
                         {
                             "GT": {
-                                "courses_avg": 0
+                                "courses_vg": 0
                             }
                         }
                         ,
@@ -707,8 +707,8 @@ describe("EchoSpec", function () {
 
         var s1 = {
             "WHERE": {
-                "OR": [
-                    {"a": 5}
+               // "OR": [
+                   // {"a": 5}
                     //     {
                     //     "GT": {
                     //         "courses_avg": 90
@@ -726,8 +726,8 @@ describe("EchoSpec", function () {
                     //
                     // }
 
-                ]
-
+              //  ]
+            }
                 ,
                 "OPTIONS": {
                     "COLUMNS": [
@@ -738,7 +738,7 @@ describe("EchoSpec", function () {
                     "ORDER": "courses_avg",
                     "FORM": "TABLE"
                 }
-            }
+
         };
 
         var a = JSON.stringify(s1);

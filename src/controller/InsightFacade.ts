@@ -336,7 +336,7 @@ export default class InsightFacade implements IInsightFacade {
                             for (let missing_item of missing_col) {
                                 try {
                                     var vals = missing_item.toString();
-                                    var missing_id = vals.substring(0, vals.indexOf("_"));
+                                    var missing_id = vals.substring(0, vals.indexOf("_"));  //Could trigger error
                                     var exist: boolean = fs.existsSync("src/" + missing_id + ".txt");
                                     if (!exist) {
                                         missing_ids.push(missing_id);
@@ -347,11 +347,12 @@ export default class InsightFacade implements IInsightFacade {
                                 }
                             }
 
-                            // if (missing_ids.length == 0) {
-                            //     return reject({code: 400, body: {"error": "invalid query"}});
-                            // } else {
-                                return reject({code: 424, body: {"missing": missing_col}});
-                           // }
+                            if (missing_ids.length>0){
+                                return reject({code: 424, body: {"missing": missing_ids}});
+                            }
+
+                                return reject({code: 400, body: {"missing": missing_col}});
+
 
                         }else if(error_400.length > 0){
                             return reject({code: 400, body: error_400[0]});
