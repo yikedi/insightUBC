@@ -655,8 +655,9 @@ function filter_helper(table: Array<Course_obj>, query: QueryRequest, missing_co
         final_array.sort(compare);
         for (var i = 0; i < final_array.length; i++) {
             var in_intersection = false;
-            if (i + (and_list.length - 1) < final_array.length) {
-                var index = i + and_list.length - 1;
+            var index = i + and_list.length - 1;
+
+            if (index < final_array.length) {
 
                 if (final_array[i].id == final_array[index].id) {
                     in_intersection = true;
@@ -698,31 +699,6 @@ function filter_helper(table: Array<Course_obj>, query: QueryRequest, missing_co
     }
     else if (key == "NOT") {
 
-        // var inner_query = j_obj[key];
-        //
-        //
-        // if (Object.keys(inner_query) == []) {
-        //     throw new Error("empty NOT");
-        // }
-        // var a = JSON.stringify(inner_query);
-        // var query = {content: a};
-        // var before_negate = filter_helper(table, query, missing_col,error_400);
-        //
-        //
-        // var final_array = before_negate.concat(table);
-        // final_array.sort(compare);
-        //
-        // var element_1 = final_array[0];
-        // for (var i = 1; i < final_array.length; i++) {
-        //     var element_2 = final_array[i];
-        //     if (element_2.id != element_1.id) {
-        //         ret_array.push(element_1);
-        //         element_1 = final_array[i];
-        //     } else if ((i + 1) < final_array.length) {
-        //         element_1 = final_array[i + 1];
-        //         i++;
-        //     }
-        // }
 
         var inner_query = j_obj[key];
         var inner_keys = Object.keys(inner_query);
@@ -733,7 +709,6 @@ function filter_helper(table: Array<Course_obj>, query: QueryRequest, missing_co
             throw new Error("empty NOT");
         }
 
-        var a = JSON.stringify(inner_query);
         var query: QueryRequest = inner_query;
         var before_negate = filter_helper(table, query, missing_col, error_400);
 
@@ -742,8 +717,15 @@ function filter_helper(table: Array<Course_obj>, query: QueryRequest, missing_co
         final_array.sort(compare);
 
         var element_1 = final_array[0];
+
         for (var i = 1; i < final_array.length; i++) {
+
             var element_2 = final_array[i];
+                if (final_array[i].id!=ret_array[ret_array.length-1].id){
+                    ret_array.push(final_array[i]);
+                }
+
+
             if (element_2.id != element_1.id) {
                 ret_array.push(element_1);
                 element_1 = final_array[i];
@@ -751,6 +733,10 @@ function filter_helper(table: Array<Course_obj>, query: QueryRequest, missing_co
                 element_1 = final_array[i + 1];
                 i++;
             }
+        }
+
+        if (final_array[final_array.length-1].id!=ret_array[ret_array.length-1].id){
+            ret_array.push(final_array[i]);
         }
 
 
