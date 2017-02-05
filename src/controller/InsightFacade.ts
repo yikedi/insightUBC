@@ -328,9 +328,10 @@ export default class InsightFacade implements IInsightFacade {
                             }
                         }
 
-
-                        if (isUndefined(order_check) || !order_valid)
-                            missing_col.push(order);
+                        if (!isUndefined(order)) {
+                            if (isUndefined(order_check) || !order_valid)
+                                missing_col.push(order);
+                        }
 
                         if (form != "TABLE") {
                             missing_col.push(form);
