@@ -404,7 +404,7 @@ function build_table(data: string): Array<Course_obj> {
             try {
                 for (let s of interest_info) {
                     var value = item[s];
-                    if(s == "id"){
+                    if(s == "id" || s=="Course"){
                         each_course.setValue(s,value.toString());
                     }else {
                         each_course.setValue(s, value);
