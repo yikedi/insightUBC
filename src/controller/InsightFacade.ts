@@ -748,7 +748,7 @@ function filter_helper(table: Array<Course_obj>, query: QueryRequest, missing_co
                 i++;
             }
         }
-        if(ret_array[ret_array.length-2].id != final_array[final_array.length-1].id){
+        if(final_array[final_array.length-2].id != final_array[final_array.length-1].id){
             ret_array.push(final_array[final_array.length-1]);
         }
 

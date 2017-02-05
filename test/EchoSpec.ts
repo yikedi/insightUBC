@@ -1810,14 +1810,14 @@ describe("EchoSpec", function () {
 
         var s1 = '{'+
             '"WHERE": {'+
-                '"AND": []'+
+            '"AND": []'+
 
             '},'+
             '"OPTIONS": {"COLUMNS": ["courses_dept","courses_avg"],'+
-                '"ORDER": "courses_avg",'+
-                '"FORM": "TABLE"'+
+            '"ORDER": "courses_avg",'+
+            '"FORM": "TABLE"'+
             '}'+
-        '}';
+            '}';
         var query = JSON.parse(s1);
         var temp = new InsightFacade();
         temp.performQuery(query).then(function (result) {
@@ -1870,8 +1870,8 @@ describe("EchoSpec", function () {
         var s1 = {
             "WHERE": {
                 "EQ": {
-                        "courses_avg": 99,
-                        "courses_fail": 1
+                    "courses_avg": 99,
+                    "courses_fail": 1
                 }
 
             },
@@ -2348,6 +2348,11 @@ describe("EchoSpec", function () {
         }).catch(function (err) {
             console.log(err.code);
             //console.log(err.body);
+
+
+            var servers = new Server(88);
+            servers.start().then().catch();
+            servers.stop().then().catch();
 
             done();
         })
