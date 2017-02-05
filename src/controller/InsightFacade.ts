@@ -404,7 +404,11 @@ function build_table(data: string): Array<Course_obj> {
             try {
                 for (let s of interest_info) {
                     var value = item[s];
-                    each_course.setValue(s, value);
+                    if(s == "id"){
+                        each_course.setValue(s,value.toString());
+                    }else {
+                        each_course.setValue(s, value);
+                    }
                 }
             } catch (err) {
                 console.log(err.toString());
@@ -718,15 +722,8 @@ function filter_helper(table: Array<Course_obj>, query: QueryRequest, missing_co
         final_array.sort(compare);
 
         var element_1 = final_array[0];
-
         for (var i = 1; i < final_array.length; i++) {
-
             var element_2 = final_array[i];
-                if (final_array[i].id!=ret_array[ret_array.length-1].id){
-                    ret_array.push(final_array[i]);
-                }
-
-
             if (element_2.id != element_1.id) {
                 ret_array.push(element_1);
                 element_1 = final_array[i];
@@ -735,9 +732,8 @@ function filter_helper(table: Array<Course_obj>, query: QueryRequest, missing_co
                 i++;
             }
         }
-
-        if (final_array[final_array.length-1].id!=ret_array[ret_array.length-1].id){
-            ret_array.push(final_array[i]);
+        if(ret_array[ret_array.length-1].id != final_array[final_array.length-1].id){
+            ret_array.push(final_array[final_array.length-1]);
         }
 
 

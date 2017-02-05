@@ -135,7 +135,7 @@ describe("EchoSpec", function () {
     });
 
 
-    it("query before overwrite", function (done) {
+    xit("query before overwrite", function (done) {
 
         this.timeout(500000);
 
@@ -227,7 +227,7 @@ describe("EchoSpec", function () {
 
                 }, {
                     "IS": {
-                        "course_dept": "cpsc"
+                        "courses_dept": "cpsc"
                     }
 
                 }
@@ -1490,6 +1490,7 @@ describe("EchoSpec", function () {
 
 
      });
+
      */
 
 
@@ -1603,7 +1604,7 @@ describe("EchoSpec", function () {
 
 
 
-    it("test partial 3 all courses in one dept but taught by ", function (done) {
+    xit("test partial 3 all courses in one dept but taught by ", function (done) {
         this.timeout(50000)
 
 
@@ -1723,7 +1724,7 @@ describe("EchoSpec", function () {
 
 
 
-    it("test partial 4 ", function (done) {
+    xit("test partial 4 ", function (done) {
         this.timeout(50000)
 
         //All courses in cpsc except for some course of which uuid range is some specified range
@@ -1732,7 +1733,7 @@ describe("EchoSpec", function () {
                 "AND": [
                     {
                         "IS": {
-                            "courses_dept": "*cpsc*"
+                            "courses_dept": "cpsc"
                         }
                     }
                     ,
@@ -1741,8 +1742,8 @@ describe("EchoSpec", function () {
                             "OR":[
 
                                 {
-                                    "IS": {
-                                        "courses_uuid": "129*"
+                                    "GT": {
+                                        "courses_avg": 90
                                     }
                                 },
                                 {
@@ -1751,14 +1752,12 @@ describe("EchoSpec", function () {
                                     }
                                 }
 
-
                             ]
                         }
 
                     }
 
                 ]
-
 
             },
             "OPTIONS": {
@@ -1795,6 +1794,106 @@ describe("EchoSpec", function () {
     });
 
 
+
+    xit("test not ", function (done) {
+        this.timeout(50000)
+
+        //All courses in cpsc except for some course of which uuid range is some specified range
+        var s1 = {
+            "WHERE": {
+                "NOT":{
+
+                    "IS":{"courses_dept":"*cpsc*"}
+                }
+
+
+            },
+            "OPTIONS": {
+                "COLUMNS": [
+
+                    "courses_avg",
+                    "courses_uuid",
+                    "courses_dept",
+                    "courses_instructor"
+
+                ],
+                "ORDER": "courses_uuid",
+                "FORM": "TABLE"
+            }
+        };
+
+
+        var query = s1;
+        var temp = new InsightFacade();
+
+
+        temp.performQuery(query).then(function (result) {
+            console.log(result.code);
+            console.log(result.body);
+          //  console.log(result.body["result"].length);
+            done();
+        }).catch(function (err) {
+            console.log(err.code);
+            console.log(err.body);
+
+            done();
+        })
+
+
+    });
+
+
+    it("test 424 2222 ", function (done) {
+        this.timeout(50000)
+
+
+        var temp = new InsightFacade();
+
+        var s1 = {
+            "WHERE": {
+                "AND": [{
+                    "GT": {
+                        "courses1_avg": "90"
+                    }
+                }, {
+                    "EQ": {
+                        "courses2_avg": 77
+                    }
+
+                }, {
+                    "IS": {
+                        "course_dept": "cpsc"
+                    }
+
+                }
+
+                ]
+
+            },
+            "OPTIONS": {
+                "COLUMNS": [
+                    "courses_dept",
+                    "courses_avg",
+                    "courses_uuid"
+                ],
+                "ORDER": "courses_avg",
+                "FORM": "TABLE"
+            }
+        };
+
+
+        var query = s1;
+        temp.performQuery(query).then(function (body) {
+            console.log(body.code);
+            console.log(body.body);
+            done();
+        }).catch(function (err) {
+            console.log(err.code);
+            console.log(err.body);
+            done();
+        })
+
+    });
 
 
 
