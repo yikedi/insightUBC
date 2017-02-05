@@ -491,7 +491,7 @@ function filter_helper(table: Array<Course_obj>, query: QueryRequest, missing_co
     var ret_array: Course_obj[] = [];
 
     if (key == "IS") {
-
+  
         var inner_query = j_obj[key];
         var inner_keys = Object.keys(inner_query);
         if (Object.keys(inner_query).length == 0) {
