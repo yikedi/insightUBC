@@ -87,11 +87,11 @@ class Course_obj {
     setValue(target: string, value: string) {
         switch (target) {
             case "Subject": {
-                this.Subject = value;
+                this.Subject = value.toString();
                 break;
             }
             case "Course": {
-                this.Course = value;
+                this.Course = value.toString();
                 break;
             }
             case "Avg": {
@@ -103,7 +103,7 @@ class Course_obj {
                 break;
             }
             case "Title": {
-                this.Title = value;
+                this.Title = value.toString();
                 break;
             }
             case "Pass": {
@@ -119,7 +119,7 @@ class Course_obj {
                 break;
             }
             case "id": {
-                this.id = value;
+                this.id = value.toString();
                 break;
             }
             default :
@@ -305,6 +305,16 @@ export default class InsightFacade implements IInsightFacade {
                         var order_valid:boolean=false;
                         var order_check = dictionary[order];
 
+                        // for (let column of columns) {
+                        //     var value = dictionary[column];
+                        //     if (isUndefined(value)) {
+                        //         missing_col.push(column);
+                        //     }
+                        //     if (order==column){
+                        //         order_valid=true;
+                        //     }
+                        // }
+
                         for (let column of columns) {
                             var value = dictionary[column];
 
@@ -458,11 +468,12 @@ function filter(table: Array<Course_obj>, query: QueryRequest, missing_col: stri
     for (let item of ret_table) {
         let ret_obj: {[index: string]: any} = {};
         for (let column of columns) {
-
-            if (!isUndefined(dictionary[column])) {
-                ret_obj[column] = item.getValue(dictionary[column]);
+            try {
+                if(!isUndefined(dictionary[column]))
+                    ret_obj[column] = item.getValue(dictionary[column]);
+            } catch (err) {
+                throw err;
             }
-
         }
         ret_array.push(ret_obj);
     }
@@ -478,13 +489,6 @@ function filter_helper(table: Array<Course_obj>, query: QueryRequest, missing_co
     var keys = Object.keys(j_obj);
     var key = keys[0];
     var ret_array: Course_obj[] = [];
-
-
-    // var no_use_array: Course_obj[] = [];
-    //
-    // for(var i = 1; i<keys.length;i++){
-    //     filter_helper(table, j_obj[keys[i]],missing_col,no_use_array);
-    // }
 
     if (key == "IS") {
 
@@ -743,7 +747,7 @@ function filter_helper(table: Array<Course_obj>, query: QueryRequest, missing_co
                 i++;
             }
         }
-        if(final_array[final_array.length-2].id != final_array[final_array.length-1].id){
+        if(ret_array[ret_array.length-2].id != final_array[final_array.length-1].id){
             ret_array.push(final_array[final_array.length-1]);
         }
 
