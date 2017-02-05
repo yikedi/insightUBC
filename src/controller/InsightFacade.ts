@@ -178,7 +178,7 @@ export default class InsightFacade implements IInsightFacade {
                                     final_string += content;
                                 }
                                 catch (Error) {
-                                    console.log("in catch for each list line 190");
+                                    //console.log("in catch for each list line 190");
                                     //return reject({code: 400, body: {"error": Error.message}});
                                 }
 
@@ -206,11 +206,11 @@ export default class InsightFacade implements IInsightFacade {
                             if (err) {
 
                                 ret_obj = {code: 400, body: {"error": err.message}};
-                                console.log("write file error if line 216");
+                                //console.log("write file error if line 216");
                                 return reject(ret_obj);
                             }
                             else {
-                                console.log("write file error else line 220");
+                                //console.log("write file error else line 220");
                                 if (exist) {
                                     ret_obj = {code: 201, body: j_objs};
                                 }
@@ -222,14 +222,14 @@ export default class InsightFacade implements IInsightFacade {
                         });
 
                     }).catch(function (err: Error) {
-                        console.log("in write file catch line 228");
+                        //console.log("in write file catch line 228");
                         ret_obj = {code: 400, body: {"error": err.message}};
                         return reject(ret_obj);
                     });
 
 
                 }).catch(function (err: Error) {
-                console.log("in JSZip catch line 235");
+                //console.log("in JSZip catch line 235");
                 ret_obj = {code: 400, body: {"error": err.message}};
                 return reject(ret_obj);
             });
@@ -277,7 +277,7 @@ export default class InsightFacade implements IInsightFacade {
             if (exist) {
                 var file = fs.readFile("src/" + id + ".txt", 'utf-8', (err: Error, data: string) => {
                     if (err) {
-                        console.log("in exist err line 154");
+                        //console.log("in exist err line 154");
                         return reject({code: 400, body: {"error": err.message}});
                     }
                     else {
@@ -426,7 +426,7 @@ function build_table(data: string): Array<Course_obj> {
                     }
                 }
             } catch (err) {
-                console.log(err.toString());
+                //console.log(err.toString());
             }
 
             course_list.push(each_course);
@@ -492,7 +492,7 @@ function filter_helper(table: Array<Course_obj>, query: QueryRequest, missing_co
     var ret_array: Course_obj[] = [];
 
     if (key == "IS") {
-  
+
         var inner_query = j_obj[key];
         var inner_keys = Object.keys(inner_query);
         if (Object.keys(inner_query).length == 0) {
@@ -774,4 +774,3 @@ function check_missing(keys: any, missing_col: string []) {
         }
     }
 }
-
