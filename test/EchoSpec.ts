@@ -165,7 +165,7 @@ describe("EchoSpec", function () {
                     "courses_dept",
                     "courses_avg"
                 ],
-                "ORDER": {"courses_uuid":"courses_avg"},
+                "ORDER": {"courses_uuid": "courses_avg"},
                 "FORM": "TABLE"
             }
         };
@@ -329,36 +329,60 @@ describe("EchoSpec", function () {
         var temp = new InsightFacade();
 
         var s1 = {
-            "WHERE": {
-                "AND": [{
-                    "GT": {
-                        "courses_avg": "90"
-                    }
-                }, {
-                    "EQ": {
-                        "courss_avg": "77"
-                    }
+                "WHERE": {
 
-                }, {
-                    "IS": {
-                        "course_dept": "cpsc"
-                    }
+                    "OR": [
+                        {
+                            "NOT": {
 
+                                "AND": [{
+                                    "GT": {
+                                        "courses_avg": "90"
+                                    }
+                                }, {
+                                    "EQ": {
+                                        "courss_avg": "77"
+                                    }
+
+                                }, {
+                                    "IS": {
+                                        "course_dept": "cpsc"
+                                    }
+
+                                }, {
+                                    "AND": [
+                                        {
+                                            "GT": {"courses_avg": 20}
+                                        }
+                                    ]
+
+
+                                }
+
+                                ]
+
+
+                            }
+                        },
+                        {
+                            "IS": {
+                                "courses_uuid": "129*"
+                            }
+
+                        }
+                    ]
+                },
+                "OPTIONS": {
+                    "COLUMNS": [
+                        "courses_dept",
+                        "courses_avg",
+                        "courses_uuid"
+                    ],
+                    "ORDER": "courses_avg",
+                    "FORM": "TABLE"
                 }
-
-                ]
-
-            },
-            "OPTIONS": {
-                "COLUMNS": [
-                    "courses_dept",
-                    "courses_avg",
-                    "courses_uuid"
-                ],
-                "ORDER": "courses_avg",
-                "FORM": "TABLE"
             }
-        };
+            ;
 
 
         var query = s1;
@@ -1543,8 +1567,8 @@ describe("EchoSpec", function () {
 
 
     });
-
-    xit("test partial ", function (done) {
+    /*
+    it("test partial ", function (done) {
         this.timeout(50000)
 
 
@@ -1590,6 +1614,7 @@ describe("EchoSpec", function () {
         temp.performQuery(query).then(function (result) {
             console.log(result.code);
             console.log(result.body);
+
             done();
         }).catch(function (err) {
             console.log(err.code);
@@ -1602,69 +1627,7 @@ describe("EchoSpec", function () {
     });
 
 
-
-
-    xit("test partial 3 all courses in one dept but taught by ", function (done) {
-        this.timeout(50000)
-
-
-        var s1 = {
-            "WHERE": {
-                "AND": [
-                    {
-                        "IS": {
-                            "courses_dept": "*cpsc*"
-                        }
-                    }
-                        ,
-                    {
-                            "NOT": {
-                                    "IS":{
-                                        "courses_instructor":"*hu*"
-                                    }
-                            }
-
-                        }
-
-                ]
-
-
-            },
-            "OPTIONS": {
-                "COLUMNS": [
-
-                    "courses_uuid",
-                    "courses_dept",
-                    "courses_instructor"
-
-                ],
-                "ORDER": "courses_uuid",
-                "FORM": "TABLE"
-            }
-        };
-
-
-        var query = s1;
-        var temp = new InsightFacade();
-
-
-        temp.performQuery(query).then(function (result) {
-            console.log(result.code);
-            console.log(result.body);
-            console.log(result.body["result"].length);
-            done();
-        }).catch(function (err) {
-            console.log(err.code);
-            console.log(err.body);
-
-            done();
-        })
-
-
-    });
-
-
-    xit("test partial 3 ", function (done) {
+    it("test partial 3 all courses in one dept but taught by ", function (done) {
         this.timeout(50000)
 
 
@@ -1678,8 +1641,10 @@ describe("EchoSpec", function () {
                     }
                     ,
                     {
-                        "IS": {
-                            "courses_instructor": "*"+""+"*"
+                        "NOT": {
+                            "IS": {
+                                "courses_instructor": "hu, alan"
+                            }
                         }
 
                     }
@@ -1722,6 +1687,64 @@ describe("EchoSpec", function () {
     });
 
 
+    it("test partial all courses in one dept except some specific example ", function (done) {
+        this.timeout(50000)
+
+
+        var s1 = {
+            "WHERE": {
+                "AND": [
+                    {
+                        "IS": {
+                            "courses_dept": "*cpsc*"
+                        }
+                    }
+                    ,
+                    {
+                        "NOT": {
+                            "IS":{
+                                "courses_uuid":"129*"
+                            }
+                        }
+
+                    }
+
+                ]
+
+
+            },
+            "OPTIONS": {
+                "COLUMNS": [
+
+                    "courses_uuid",
+                    "courses_dept",
+                    "courses_instructor"
+
+                ],
+                "ORDER": "courses_uuid",
+                "FORM": "TABLE"
+            }
+        };
+
+
+        var query = s1;
+        var temp = new InsightFacade();
+
+
+        temp.performQuery(query).then(function (result) {
+            console.log(result.code);
+            console.log(result.body);
+            console.log(result.body["result"].length);
+            done();
+        }).catch(function (err) {
+            console.log(err.code);
+            console.log(err.body);
+
+            done();
+        })
+
+
+    });
 
 
     xit("test partial 4 ", function (done) {
@@ -1739,7 +1762,7 @@ describe("EchoSpec", function () {
                     ,
                     {
                         "NOT": {
-                            "OR":[
+                            "OR": [
 
                                 {
                                     "GT": {
@@ -1794,16 +1817,15 @@ describe("EchoSpec", function () {
     });
 
 
-
     xit("test not ", function (done) {
         this.timeout(50000)
 
         //All courses in cpsc except for some course of which uuid range is some specified range
         var s1 = {
             "WHERE": {
-                "NOT":{
+                "NOT": {
 
-                    "IS":{"courses_dept":"*cpsc*"}
+                    "IS": {"courses_dept": "*cpsc*"}
                 }
 
 
@@ -1830,7 +1852,7 @@ describe("EchoSpec", function () {
         temp.performQuery(query).then(function (result) {
             console.log(result.code);
             console.log(result.body);
-          //  console.log(result.body["result"].length);
+            //  console.log(result.body["result"].length);
             done();
         }).catch(function (err) {
             console.log(err.code);
@@ -1843,7 +1865,7 @@ describe("EchoSpec", function () {
     });
 
 
-    it("test 424 2222 ", function (done) {
+    xit("test 424 2223 ", function (done) {
         this.timeout(50000)
 
 
@@ -1895,7 +1917,66 @@ describe("EchoSpec", function () {
 
     });
 
+    xit("test 424 2222 ", function (done) {
+        this.timeout(50000)
 
 
+        var temp = new InsightFacade();
 
+        var s1 = {
+            "WHERE": {
+                "AND": [{
+                    "AND": [{
+                        "GT": {
+                            "courses_avg": 63.99
+                        }
+                    }
+                        , {
+                            "EQ": {
+                                "courses_avg": 64
+                            }
+                        }
+                    ]
+                    ,
+                    "IS": {
+                        "coursesavg": 63.99
+                    }
+                }
+                    , {
+                        "EQ": {
+                            "courses_avg": 64
+                        }
+                    }
+                ]
+            },
+            "OPTIONS": {
+                "COLUMNS": [
+                    "courses_dept",
+                    "courses_avg",
+                    "courses_uuid",
+                    "courses_title",
+                    "courses_instructor",
+                    "courses_fail",
+                    "courses_audit",
+                    "courses_pass"
+                ],
+                "ORDER": "courses_avg",
+                "FORM": "TABLE"
+            }
+        };
+
+
+        var query = s1;
+        temp.performQuery(query).then(function (body) {
+            console.log(body.code);
+            console.log(body.body);
+            done();
+        }).catch(function (err) {
+            console.log(err.code);
+            console.log(err.body);
+            done();
+        })
+
+    });
+*/
 });
