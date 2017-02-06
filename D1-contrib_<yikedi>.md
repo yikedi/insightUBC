@@ -11,3 +11,8 @@ https://github.com/CS310-2017Jan/cpsc310project_team132/commit/3674dfd365bef1398
 3. help writting test
 https://github.com/CS310-2017Jan/cpsc310project_team132/commit/71f9a0c6354bb5c106797afd22b685d3cb127ba8
 
+
+
+4. 
+We used good data structures and helper functions that make coding and debugging easy. However, we had the error check too strict so that our code keep throwing 400 in autotest and we that make us think we had wrong implementation and that waste us a lot of time. 
+In the future deliverable, we will read the spec and ask for clarification more frequently and implement error case only after we know our code is good for correct input. 
