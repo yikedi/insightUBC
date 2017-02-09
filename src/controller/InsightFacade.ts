@@ -132,12 +132,13 @@ class Course_obj {
 
 export default class InsightFacade implements IInsightFacade {
     datasets: Array<Object>;
+    datasetsID_list: Array<string> = ["courses","rooms"];
 
     constructor() {
-        var datasetsID_list: Array<string> = ["courses"];
+
         this.datasets = [];
 
-        for (let id of datasetsID_list) {
+        for (let id of this.datasetsID_list) {
             var path: string ="src/" + id + ".txt";
             var exist: boolean = fs.existsSync(path);
             if(exist) {
@@ -157,14 +158,14 @@ export default class InsightFacade implements IInsightFacade {
     addDataset(id: string, content: string): Promise<InsightResponse> {
 
 
-        return new Promise(function (fulfill, reject) {
+        return new Promise((fulfill, reject) =>{
 
             var ret_obj = null;
             var zip = new JSZip();
             var exist: boolean = fs.existsSync("src/" + id + ".txt");
 
             zip.loadAsync(content, {"base64": true})
-                .then(function (data: JSZip) {
+                .then((data: JSZip)=> {
 
 
                     var promise_list: Promise<string>[] = [];
@@ -178,7 +179,7 @@ export default class InsightFacade implements IInsightFacade {
 
                     var final_string = "{\"" + id + "\":[";
 
-                    Promise.all(promise_list).then(function (list) {
+                    Promise.all(promise_list).then((list)=> {
 
                         var i = 0;
 
@@ -222,6 +223,7 @@ export default class InsightFacade implements IInsightFacade {
 
 
                         fs.writeFile('src/' + id + '.txt', j_objs, (err: Error) => {
+                            let code = -1;
                             if (err) {
 
                                 ret_obj = {code: 400, body: {"error": err.message}};
@@ -232,10 +234,14 @@ export default class InsightFacade implements IInsightFacade {
                                 //console.log("write file error else line 220");
                                 if (exist) {
                                     ret_obj = {code: 201, body: j_objs};
+                                    code = 201;
                                 }
                                 else {
                                     ret_obj = {code: 204, body: j_objs};
+                                    code = 204
                                 }
+                                this.datasets[this.datasetsID_list.indexOf(id)]
+                                    ={code: code, body: j_objs,id:id} ;
                                 return fulfill(ret_obj);
                             }
                         });
@@ -259,7 +265,7 @@ export default class InsightFacade implements IInsightFacade {
     }
 
     removeDataset(id: string): Promise<InsightResponse> {
-        return new Promise(function (fulfill, reject) {
+        return new Promise( (fulfill, reject) =>{
             var ret_obj = null;
             var path = "src/" + id + ".txt";
             var exist: boolean = fs.existsSync("src/" + id + ".txt");
@@ -277,6 +283,8 @@ export default class InsightFacade implements IInsightFacade {
                         return reject(ret_obj);
                     } else {
                         ret_obj = {code: 204, body: "The operation was successful"};
+                        this.datasets[this.datasetsID_list.indexOf(id)]
+                            = {code: 400, body: {"error": "file " + id + " not exist"}};
                         return fulfill(ret_obj);
                     }
                 });
