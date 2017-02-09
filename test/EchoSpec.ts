@@ -73,6 +73,29 @@ describe("EchoSpec", function () {
 
     });
 
+    xit("test add courses.zip", function (done) {
+        this.timeout(50000)
+
+        var zip = new JSZip();
+        var temp_1 = "./src/courses.zip";
+        var f = fs.readFileSync(temp_1, {encoding: "base64"});
+
+        var temp = new InsightFacade();
+
+        temp.addDataset("rooms", f)
+            .then((response) => {
+                console.log(response.code);
+                console.log(response.body);
+                done();
+            })
+            .catch((err) => {
+                console.log(err.code);
+                console.log(err.body)
+                done();
+            });
+
+    });
+/*
 
     it("test add courses.zip", function (done) {
         this.timeout(50000)
@@ -2352,5 +2375,5 @@ describe("EchoSpec", function () {
             done();
         })
     });
-
+*/
 });

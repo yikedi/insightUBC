@@ -8,8 +8,6 @@ import {isUndefined} from "util";
 var JSZip = require('jszip');
 var fs = require('fs');
 
-//declare var datasets: Array<Object>;
-
 
 let dictionary: {[index: string]: string} = {};
 
@@ -131,41 +129,23 @@ class Course_obj {
 }
 
 export default class InsightFacade implements IInsightFacade {
-    datasets: Array<Object>;
-    datasetsID_list: Array<string> = ["courses","rooms"];
 
     constructor() {
-
-        this.datasets = [];
-
-        for (let id of this.datasetsID_list) {
-            var path: string ="src/" + id + ".txt";
-            var exist: boolean = fs.existsSync(path);
-            if(exist) {
-                var data:string = fs.readFileSync(path, 'utf-8');
-                this.datasets.push({code: 132, body: data, id: id});
-            }else{
-                this.datasets.push({code: 400, body: {"error": "file " + id + " not exist"}});
-            }
-        }
-
-        Log.trace('InsightFacadeImpl::init()')
-
+        Log.trace('InsightFacadeImpl::init()');
     }
-
 
 //
     addDataset(id: string, content: string): Promise<InsightResponse> {
 
 
-        return new Promise((fulfill, reject) =>{
+        return new Promise(function (fulfill, reject) {
 
             var ret_obj = null;
             var zip = new JSZip();
             var exist: boolean = fs.existsSync("src/" + id + ".txt");
 
             zip.loadAsync(content, {"base64": true})
-                .then((data: JSZip)=> {
+                .then(function (data: JSZip) {
 
 
                     var promise_list: Promise<string>[] = [];
@@ -179,7 +159,7 @@ export default class InsightFacade implements IInsightFacade {
 
                     var final_string = "{\"" + id + "\":[";
 
-                    Promise.all(promise_list).then((list)=> {
+                    Promise.all(promise_list).then(function (list) {
 
                         var i = 0;
 
@@ -223,7 +203,6 @@ export default class InsightFacade implements IInsightFacade {
 
 
                         fs.writeFile('src/' + id + '.txt', j_objs, (err: Error) => {
-                            let code = -1;
                             if (err) {
 
                                 ret_obj = {code: 400, body: {"error": err.message}};
@@ -234,14 +213,10 @@ export default class InsightFacade implements IInsightFacade {
                                 //console.log("write file error else line 220");
                                 if (exist) {
                                     ret_obj = {code: 201, body: j_objs};
-                                    code = 201;
                                 }
                                 else {
                                     ret_obj = {code: 204, body: j_objs};
-                                    code = 204
                                 }
-                                this.datasets[this.datasetsID_list.indexOf(id)]
-                                    ={code: code, body: j_objs,id:id} ;
                                 return fulfill(ret_obj);
                             }
                         });
@@ -265,7 +240,7 @@ export default class InsightFacade implements IInsightFacade {
     }
 
     removeDataset(id: string): Promise<InsightResponse> {
-        return new Promise( (fulfill, reject) =>{
+        return new Promise(function (fulfill, reject) {
             var ret_obj = null;
             var path = "src/" + id + ".txt";
             var exist: boolean = fs.existsSync("src/" + id + ".txt");
@@ -283,8 +258,6 @@ export default class InsightFacade implements IInsightFacade {
                         return reject(ret_obj);
                     } else {
                         ret_obj = {code: 204, body: "The operation was successful"};
-                        this.datasets[this.datasetsID_list.indexOf(id)]
-                            = {code: 400, body: {"error": "file " + id + " not exist"}};
                         return fulfill(ret_obj);
                     }
                 });
@@ -294,117 +267,128 @@ export default class InsightFacade implements IInsightFacade {
     }
 
     performQuery(query: QueryRequest): Promise <InsightResponse> {
-        return new Promise( (fulfill, reject)=> {
+        return new Promise(function (fulfill, reject) {
 
-            //var id = "courses";
+            /*******/
+            var id = "courses";
 
-            //var exist: boolean = fs.existsSync("src/" + id + ".txt");
-            var file = JSON.parse(JSON.stringify(this.datasets[0]));
-            if (file.code == 132) {
-                //var file = fs.readFile("src/" + id + ".txt", 'utf-8', (err: Error, data: string) => {
-                //if (err) {
-                //console.log("in exist err line 154");
-                //    return reject({code: 400, body: {"error": err.message}});
-                //}
-                //else {
-                var data = file.body;
-                var table = build_table(data);
+            var exist: boolean = fs.existsSync("src/" + id + ".txt");
 
-                var missing_col: string[] = [];
-                var error_400: Object[] = [];
-
-
-                try {
-                    var j_query = JSON.stringify(query);
-                    var j_obj = JSON.parse(j_query);
-
-                    var where = j_obj["WHERE"];
-                    var options = j_obj["OPTIONS"];
-                    var columns = options["COLUMNS"];
-                    var order = options["ORDER"];
-                    var form = options["FORM"];
-                }
-                catch (err) {
-                    return reject({code: 400, body: {"error": "invalid json or query 307"}});
-                }
-
-                var order_valid: boolean = false;
-                var order_check = dictionary[order];
-
-                for (let column of columns) {
-                    var value = dictionary[column];
-
-                    if (isUndefined(value)) {
-                        if (column.substring(0, column.indexOf("_")) != file.id) {
-                            missing_col.push(column);
-                        }
+            if (exist) {
+                var file = fs.readFile("src/" + id + ".txt", 'utf-8', (err: Error, data: string) => {
+                    if (err) {
+                        //console.log("in exist err line 154");
+                        return reject({code: 400, body: {"error": err.message}});
                     }
-                    if (order == column) {
-                        order_valid = true;
-                    }
-                }
+                    else {
 
-                if (!isUndefined(order)) {
-                    if (isUndefined(order_check) || !order_valid)
-                        missing_col.push(order);
-                }
+                        var table = build_table(data);
 
-                if (form != "TABLE") {
-                    missing_col.push(form);
-                }
+                        var missing_col: string[] = [];
+                        var error_400: Object[] = [];
 
-                if (missing_col.length > 0) {
-                    return reject({code: 400, body: {"error": "invalid query 315"}});
-                }
 
-                missing_col = [];
-                var body = null;
-                try {
-                    body = filter(table, query, missing_col, error_400);
-                } catch (err) {
-                    return reject({code: 400, body: err.message});
-                }
-
-                if (missing_col.length > 0) {
-                    var missing_ids: string[] = [];
-                    for (let missing_item of missing_col) {
                         try {
-                            var vals = missing_item.toString();
-                            var missing_id = vals.substring(0, vals.indexOf("_"));  //Could trigger error
-                            var exist: boolean = fs.existsSync("src/" + missing_id + ".txt");
-                            if (!exist) {
-                                missing_ids.push(missing_id);
-                            }
+                            var j_query = JSON.stringify(query);
+                            var j_obj = JSON.parse(j_query);
+
+                            var where = j_obj["WHERE"];
+                            var options = j_obj["OPTIONS"];
+                            var columns = options["COLUMNS"];
+                            var order = options["ORDER"];
+                            var form = options["FORM"];
                         }
                         catch (err) {
+                            return reject({code: 400, body: {"error": "invalid json or query 307"}});
+                        }
+
+                        var order_valid:boolean=false;
+                        var order_check = dictionary[order];
+
+                        // for (let column of columns) {
+                        //     var value = dictionary[column];
+                        //     if (isUndefined(value)) {
+                        //         missing_col.push(column);
+                        //     }
+                        //     if (order==column){
+                        //         order_valid=true;
+                        //     }
+                        // }
+
+                        for (let column of columns) {
+                            var value = dictionary[column];
+
+                            if (isUndefined(value)) {
+                                if (column.substring(0,column.indexOf("_"))!=id){
+                                    missing_col.push(column);
+                                }
+                            }
+                            if (order==column){
+                                order_valid=true;
+                            }
+                        }
+
+                        if (!isUndefined(order)) {
+                            if (isUndefined(order_check) || !order_valid)
+                                missing_col.push(order);
+                        }
+
+                        if (form != "TABLE") {
+                            missing_col.push(form);
+                        }
+
+                        if (missing_col.length > 0) {
+                            return reject({code: 400, body: {"error": "invalid query 315"}});
+                        }
+
+                        missing_col = [];
+                        var body = null;
+                        try {
+                            body = filter(table, query, missing_col, error_400);
+                        } catch (err) {
                             return reject({code: 400, body: err.message});
                         }
+
+                        if (missing_col.length > 0) {
+                            var missing_ids: string[] = [];
+                            for (let missing_item of missing_col) {
+                                try {
+                                    var vals = missing_item.toString();
+                                    var missing_id = vals.substring(0, vals.indexOf("_"));  //Could trigger error
+                                    var exist: boolean = fs.existsSync("src/" + missing_id + ".txt");
+                                    if (!exist) {
+                                        missing_ids.push(missing_id);
+                                    }
+                                }
+                                catch (err) {
+                                    return reject({code: 400, body: err.message});
+                                }
+                            }
+
+                            if (missing_ids.length > 0) {
+                                return reject({code: 424, body: {"missing": missing_ids}});
+                            }
+
+                            return reject({code: 400, body: {"missing": missing_col}});
+
+
+                        } else if (error_400.length > 0) {
+                            return reject({code: 400, body: error_400[0]});
+                        }
+
+                        var ret_obj = {render: form, result: body};
+                        return fulfill({code: 200, body: ret_obj});
+
+
                     }
 
-                    if (missing_ids.length > 0) {
-                        return reject({code: 424, body: {"missing": missing_ids}});
-                    }
 
-                    return reject({code: 400, body: {"missing": missing_col}});
-
-
-                } else if (error_400.length > 0) {
-                    return reject({code: 400, body: error_400[0]});
-                }
-
-                var ret_obj = {render: form, result: body};
-                return fulfill({code: 200, body: ret_obj});
-
-
-                //}
-
-
-                //});
+                });
 
             }
             else {
-                //var ret_obj = {code: 400, body: {"error": "file not exist"}};
-                return reject(this.datasets[0]);
+                var ret_obj = {code: 400, body: {"error": "file not exist"}};
+                return reject(ret_obj);
             }
 
         });
@@ -435,9 +419,9 @@ function build_table(data: string): Array<Course_obj> {
             try {
                 for (let s of interest_info) {
                     var value = item[s];
-                    if (s == "id" || s == "Course") {
-                        each_course.setValue(s, value.toString());
-                    } else {
+                    if(s == "id" || s=="Course"){
+                        each_course.setValue(s,value.toString());
+                    }else {
                         each_course.setValue(s, value);
                     }
                 }
@@ -486,7 +470,7 @@ function filter(table: Array<Course_obj>, query: QueryRequest, missing_col: stri
         let ret_obj: {[index: string]: any} = {};
         for (let column of columns) {
             try {
-                if (!isUndefined(dictionary[column]))
+                if(!isUndefined(dictionary[column]))
                     ret_obj[column] = item.getValue(dictionary[column]);
             } catch (err) {
                 throw err;
@@ -764,8 +748,8 @@ function filter_helper(table: Array<Course_obj>, query: QueryRequest, missing_co
                 i++;
             }
         }
-        if (final_array[final_array.length - 2].id != final_array[final_array.length - 1].id) {
-            ret_array.push(final_array[final_array.length - 1]);
+        if(final_array[final_array.length-2].id != final_array[final_array.length-1].id){
+            ret_array.push(final_array[final_array.length-1]);
         }
 
 
@@ -790,4 +774,3 @@ function check_missing(keys: any, missing_col: string []) {
         }
     }
 }
-
