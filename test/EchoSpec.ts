@@ -74,7 +74,7 @@ describe("EchoSpec", function () {
     });
 
 
-    it("test add courses.zip", function (done) {
+    xit("test add courses.zip", function (done) {
         this.timeout(50000)
 
         var zip = new JSZip();
@@ -94,7 +94,7 @@ describe("EchoSpec", function () {
             });
 
     });
-    it("test add courses.zip again", function (done) {
+    xit("test add courses.zip again", function (done) {
         this.timeout(50000)
 
         var zip = new JSZip();
@@ -2283,7 +2283,7 @@ describe("EchoSpec", function () {
 
 
 
-    it("test remove ", function (done) {
+    xit("test remove ", function (done) {
         this.timeout(10000)
 
 
