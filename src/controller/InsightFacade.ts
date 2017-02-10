@@ -24,7 +24,15 @@ dictionary = {
     "courses_uuid": "id"
 };
 
-class Course_obj {
+class Dataset_obj {
+  getValue(target:string):any {
+      return null;
+  }
+  setValue(target:string,value:string){
+  }
+}
+
+class Course_obj extends Dataset_obj{
 
     Subject: string;
     Course: string;
@@ -37,6 +45,7 @@ class Course_obj {
     id: string;
 
     constructor() {
+        super();
         this.Subject = null;
         this.Course = null;
         this.Avg = null;
@@ -129,9 +138,7 @@ class Course_obj {
     }
 }
 
-
-
-class Rooms_obj {
+class Rooms_obj extends Dataset_obj{
 
     rooms_fullname: string;
     rooms_shortname: string;
@@ -146,6 +153,7 @@ class Rooms_obj {
     rooms_href:string;
 
     constructor() {
+        super();
         this.rooms_fullname= null;
         this.rooms_shortname= null;
         this.rooms_number= null;
@@ -253,6 +261,8 @@ class Rooms_obj {
         }
     }
 }
+
+
 
 
 export default class InsightFacade implements IInsightFacade {
@@ -704,7 +714,7 @@ function build_table(data: string): Array<Course_obj> {
     var courses = temp["courses"];
 
 
-    var course_list = new Array<Course_obj>();
+    var course_list : Course_obj[]=[];
 
     var interest_info = ["Subject", "Course", "Avg", "Professor", "Title", "Pass", "Fail", "Audit", "id"];
 
@@ -737,7 +747,33 @@ function build_table(data: string): Array<Course_obj> {
     return course_list;
 }
 
-function filter(table: Array<Course_obj>, query: QueryRequest, missing_col: string [], error_400: Object[]): any {
+
+function build_table_rooms(data: string): Array<Rooms_obj> {
+
+    var temp = JSON.parse(data);
+    var rooms = temp["rooms"];
+
+
+    var course_list = new Array<Course_obj>();
+
+    var interest_info = ["rooms_fullname", "rooms_shortname", "rooms_name", "rooms_number",
+        "rooms_address", "rooms_lat", "rooms_lon", "rooms_seats", "rooms_furniture","rooms_href"];
+
+    var room_list : Rooms_obj[]=[];
+    for (let room of rooms) {
+        var room_obj=new Rooms_obj();
+        for (let s of interest_info){
+            room_obj.setValue(s,room[s]);
+        }
+      room_list.push(room_obj);
+    }
+
+    return room_list;
+}
+
+
+
+function filter(table: Array<Dataset_obj>, query: QueryRequest, missing_col: string [], error_400: Object[]): any {
 
     var j_query = JSON.stringify(query);
     var j_obj = JSON.parse(j_query);
@@ -784,7 +820,7 @@ function filter(table: Array<Course_obj>, query: QueryRequest, missing_col: stri
     return ret_array;
 }
 
-function filter_helper(table: Array<Course_obj>, query: QueryRequest, missing_col: string[], error_400: Object[]): Array<Course_obj> {
+function filter_helper(table: Array<Dataset_obj>, query: QueryRequest, missing_col: string[], error_400: Object[]): Array<Dataset_obj> {
 
     var j_query = JSON.stringify(query);
     var j_obj = JSON.parse(j_query);
@@ -1074,47 +1110,6 @@ function check_missing(keys: any, missing_col: string []) {
             missing_col.push(keys[i]);
         }
     }
-}
-
-function addDataset_html(id: string, content: string): Promise<InsightResponse> {
-
-    return new Promise(function (fulfill,reject) {
-
-        var ret_obj = null;
-        var zip = new JSZip();
-        var exist: boolean = fs.existsSync("src/" + id + ".txt");
-
-        var index_file:any;
-        zip.loadAsync(content, {"base64": true}).then(function (data: JSZip) {
-
-                var promise_list: Promise<string>[] = [];
-                var name_list: string[] = [];
-
-                data.forEach(function (path, file) {
-                    name_list.push(file.name);
-                    promise_list.push(file.async("string"));
-                    if (file.name=="index.htm"){
-                        index_file=file;
-                    }
-                });
-
-                var index_file_string=index_file.toString();
-
-                var tbody_start=index_file_string.indexOf("<tbody>");
-                var tbody_end=index_file_string.indexOf("</tbody>");
-                console.log(index_file_string.substring(tbody_start,tbody_end));
-
-
-
-
-            });
-
-
-
-
-        return fulfill();
-    })
-
 }
 
 function extract_info(target:string, key_start:string,key_end:string) :string{
