@@ -773,7 +773,7 @@ function build_table_rooms(data: string): Array<Rooms_obj> {
 
 
 
-function filter(table: Array<Dataset_obj>, query: QueryRequest, missing_col: string [], error_400: Object[]): any {
+function filter(table: Array<Course_obj>, query: QueryRequest, missing_col: string [], error_400: Object[]): any {
 
     var j_query = JSON.stringify(query);
     var j_obj = JSON.parse(j_query);
@@ -820,7 +820,7 @@ function filter(table: Array<Dataset_obj>, query: QueryRequest, missing_col: str
     return ret_array;
 }
 
-function filter_helper(table: Array<Dataset_obj>, query: QueryRequest, missing_col: string[], error_400: Object[]): Array<Dataset_obj> {
+function filter_helper(table: Array<Course_obj>, query: QueryRequest, missing_col: string[], error_400: Object[]): Array<Course_obj> {
 
     var j_query = JSON.stringify(query);
     var j_obj = JSON.parse(j_query);
