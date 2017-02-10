@@ -2376,4 +2376,32 @@ describe("EchoSpec", function () {
         })
     });
 */
+
+    it("test readError", function (done) {
+        this.timeout(10000)
+
+
+
+        var zip = new JSZip();
+        var temp_1 = "./src/rooms.zip";
+        var f = fs.readFileSync(temp_1, {encoding: "base64"});
+
+        var temp = new InsightFacade();
+
+        temp.addDataset("rooms", f)
+            .then((response) => {
+                console.log(response.code);
+                console.log(response.body);
+                done();
+            })
+            .catch((err) => {
+                console.log(err.code);
+                console.log(err.body)
+                done();
+            });
+
+    });
+
+
+
 });

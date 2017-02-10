@@ -5,9 +5,10 @@ import {IInsightFacade, InsightResponse, QueryRequest} from "./IInsightFacade";
 
 import Log from "../Util";
 import {isUndefined} from "util";
+import forEach = require("core-js/fn/array/for-each");
 var JSZip = require('jszip');
 var fs = require('fs');
-
+const parse5 = require('parse5');
 
 let dictionary: {[index: string]: string} = {};
 
@@ -144,96 +145,170 @@ export default class InsightFacade implements IInsightFacade {
             var zip = new JSZip();
             var exist: boolean = fs.existsSync("src/" + id + ".txt");
 
-            zip.loadAsync(content, {"base64": true})
-                .then(function (data: JSZip) {
 
 
-                    var promise_list: Promise<string>[] = [];
-                    var name_list: string[] = [];
+                zip.loadAsync(content, {"base64": true})
+                    .then(function (data: JSZip) {
 
-                    data.forEach(function (path, file) {
-                        name_list.push(file.name);
-                        promise_list.push(file.async("string"));
 
-                    });
+                        var promise_list: Promise<string>[] = [];
+                        var name_list: string[] = [];
 
-                    var final_string = "{\"" + id + "\":[";
+                        if (id=="courses") {
+                            data.forEach(function (path, file) {
+                                name_list.push(file.name);
+                                promise_list.push(file.async("string"));
 
-                    Promise.all(promise_list).then(function (list) {
+                            });
 
-                        var i = 0;
+                            var final_string = "{\"" + id + "\":[";
 
-                        for (let item of list) {
+                            Promise.all(promise_list).then(function (list) {
 
-                            if (i > 0) {
-                                var temp;
-                                try {
-                                    temp = JSON.parse(item);
-                                    //console.log(temp["result"]);
-                                    if (temp["result"].length == 0) {
-                                        i++;
-                                        continue;
+                                var i = 0;
+
+                                for (let item of list) {
+
+                                    if (i > 0) {
+                                        var temp;
+                                        try {
+                                            temp = JSON.parse(item);
+                                            //console.log(temp["result"]);
+                                            if (temp["result"].length == 0) {
+                                                i++;
+                                                continue;
+                                            }
+                                            var content = '{\"' + name_list[i] + '\":' + item + '},';
+                                            final_string += content;
+                                        }
+                                        catch (Error) {
+                                            //console.log("in catch for each list line 190");
+                                            //return reject({code: 400, body: {"error": Error.message}});
+                                        }
+
                                     }
-                                    var content = '{\"' + name_list[i] + '\":' + item + '},';
-                                    final_string += content;
+                                    i++;
                                 }
-                                catch (Error) {
-                                    //console.log("in catch for each list line 190");
-                                    //return reject({code: 400, body: {"error": Error.message}});
+                                final_string = final_string.substr(0, final_string.length - 1) + "]}";
+                                var j_objs: any = null;
+                                try {
+                                    j_objs = JSON.parse(final_string);
+                                    if (j_objs[id].length == 0) {
+                                        ret_obj = {code: 400, body: {"error": "No valid json object exist"}};
+                                    }
+
+                                    j_objs = JSON.stringify(j_objs);
+
+                                }
+                                catch (err) {
+                                    ret_obj = {code: 400, body: {"error": err.message}};
+                                    return reject(ret_obj)
                                 }
 
-                            }
-                            i++;
-                        }
-                        final_string = final_string.substr(0, final_string.length - 1) + "]}";
-                        var j_objs: any = null;
-                        try {
-                            j_objs = JSON.parse(final_string);
-                            if (j_objs[id].length == 0) {
-                                ret_obj = {code: 400, body: {"error": "No valid json object exist"}};
-                            }
 
-                            j_objs = JSON.stringify(j_objs);
+                                fs.writeFile('src/' + id + '.txt', j_objs, (err: Error) => {
+                                    if (err) {
 
-                        }
-                        catch (err) {
-                            ret_obj = {code: 400, body: {"error": err.message}};
-                            return reject(ret_obj)
-                        }
+                                        ret_obj = {code: 400, body: {"error": err.message}};
+                                        //console.log("write file error if line 216");
+                                        return reject(ret_obj);
+                                    }
+                                    else {
+                                        //console.log("write file error else line 220");
+                                        if (exist) {
+                                            ret_obj = {code: 201, body: j_objs};
+                                        }
+                                        else {
+                                            ret_obj = {code: 204, body: j_objs};
+                                        }
+                                        return fulfill(ret_obj);
+                                    }
+                                });
 
-
-                        fs.writeFile('src/' + id + '.txt', j_objs, (err: Error) => {
-                            if (err) {
-
+                            }).catch(function (err: Error) {
+                                //console.log("in write file catch line 228");
                                 ret_obj = {code: 400, body: {"error": err.message}};
-                                //console.log("write file error if line 216");
                                 return reject(ret_obj);
-                            }
-                            else {
-                                //console.log("write file error else line 220");
-                                if (exist) {
-                                    ret_obj = {code: 201, body: j_objs};
+                            });
+
+                        }
+                        else {
+                            var index_file:any
+                            data.forEach(function (path, file) {
+
+                                name_list.push(file.name);
+                                promise_list.push(file.async("string"));
+                                // if (file.name == "index.htm") {
+                                //     index_file = file;
+                                // }
+                            });
+
+                            Promise.all(promise_list).then(function (list) {
+
+
+                                for (var i=0;i<name_list.length;i++){
+                                    if (name_list[i]=="index.htm"){
+                                        index_file=list[i];
+                                        break;
+                                    }
                                 }
-                                else {
-                                    ret_obj = {code: 204, body: j_objs};
+
+                                var index_file_string = index_file.toString();
+
+                                var tbody_start = index_file_string.indexOf("<tbody>");
+                                var tbody_end = index_file_string.indexOf("</tbody>");
+                                var temp=index_file_string.substring(tbody_start+"<tbody>".length, tbody_end);
+
+                                //console.log(temp);
+
+                                var buildings=temp.split("</tr>");
+                                for (let item of buildings){
+
+                                    var temp_s="a href=";
+                                    var a_href_index=item.indexOf(temp_s)+temp_s.length+1;
+                                    //console.log(a_href_index);
+                                    var a_href=item.substring(a_href_index,item.indexOf("\"",a_href_index));
+                                    //console.log(a_href);
+
+                                    temp_s="building-code\" >";
+                                    var short_name_index=item.indexOf(temp)+temp.length;
+                                    var short_name=item.substring(short_name_index,item.indexOf("</td>",short_name_index)).trim();
+                                    //console.log(short_name);
+
+                                    temp_s="views-field-title\" >";
+                                    var full_name_index=item.indexOf(temp_s)+temp_s.length;
+                                    temp_s="title=\"Building Details and Map\">";
+                                    var full_name_index=item.indexOf(temp_s,full_name_index)+temp_s.length;
+                                    var full_name=item.substring(full_name_index,item.indexOf("</a>",full_name_index));
+                                    //console.log(full_name);
+
+                                    temp_s="field-building-address\" >";
+                                    var address_index=item.indexOf(temp_s)+temp_s.length;
+
+
                                 }
-                                return fulfill(ret_obj);
-                            }
-                        });
+
+
+
+
+                                fulfill({code: 555, body:"at line 252"});
+                            }).catch(function (err) {
+                                return reject({code: 400, body:"error catched 268"});
+                            });
+
+
+
+                        }
+
 
                     }).catch(function (err: Error) {
-                        //console.log("in write file catch line 228");
-                        ret_obj = {code: 400, body: {"error": err.message}};
-                        return reject(ret_obj);
-                    });
+                    //console.log("in JSZip catch line 235");
+                    ret_obj = {code: 400, body: {"error": err.message}};
+                    return reject(ret_obj);
+                });
 
 
-                }).catch(function (err: Error) {
-                //console.log("in JSZip catch line 235");
-                ret_obj = {code: 400, body: {"error": err.message}};
-                return reject(ret_obj);
-            });
-            //}
+
         });
 
 
@@ -305,15 +380,7 @@ export default class InsightFacade implements IInsightFacade {
                         var order_valid:boolean=false;
                         var order_check = dictionary[order];
 
-                        // for (let column of columns) {
-                        //     var value = dictionary[column];
-                        //     if (isUndefined(value)) {
-                        //         missing_col.push(column);
-                        //     }
-                        //     if (order==column){
-                        //         order_valid=true;
-                        //     }
-                        // }
+
 
                         for (let column of columns) {
                             var value = dictionary[column];
@@ -773,4 +840,55 @@ function check_missing(keys: any, missing_col: string []) {
             missing_col.push(keys[i]);
         }
     }
+}
+
+function addDataset_html(id: string, content: string): Promise<InsightResponse> {
+
+    return new Promise(function (fulfill,reject) {
+
+        var ret_obj = null;
+        var zip = new JSZip();
+        var exist: boolean = fs.existsSync("src/" + id + ".txt");
+
+        var index_file:any;
+        zip.loadAsync(content, {"base64": true}).then(function (data: JSZip) {
+
+                var promise_list: Promise<string>[] = [];
+                var name_list: string[] = [];
+
+                data.forEach(function (path, file) {
+                    name_list.push(file.name);
+                    promise_list.push(file.async("string"));
+                    if (file.name=="index.htm"){
+                        index_file=file;
+                    }
+                });
+
+                var index_file_string=index_file.toString();
+
+                var tbody_start=index_file_string.indexOf("<tbody>");
+                var tbody_end=index_file_string.indexOf("</tbody>");
+                console.log(index_file_string.substring(tbody_start,tbody_end));
+
+
+
+
+            });
+
+
+
+
+        return fulfill();
+    })
+
+}
+
+function extract_buildings(content:string):string[]{
+    var buildings :string[] =[];
+
+    var start="<tr class";
+    var end="</tr>";
+
+
+    return
 }
