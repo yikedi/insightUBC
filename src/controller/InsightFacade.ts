@@ -129,6 +129,238 @@ class Course_obj {
     }
 }
 
+class Room_obj {
+
+    Subject: string;
+    Course: string;
+    Avg: number;
+    Professor: string;
+    Title: string;
+    Pass: number;
+    Fail: number;
+    Audit: number;
+    id: string;
+
+    constructor() {
+        this.Subject = null;
+        this.Course = null;
+        this.Avg = null;
+        this.Professor = null;
+        this.Title = null;
+        this.Pass = null;
+        this.Fail = null;
+        this.Audit = null;
+        this.id = null;
+    };
+
+    getValue(target: string): any {
+
+        switch (target) {
+            case "Subject": {
+                return this.Subject;
+            }
+            case "Course": {
+                return this.Course;
+            }
+            case "Avg": {
+                return this.Avg;
+            }
+            case "Professor": {
+                return this.Professor;
+            }
+            case "Title": {
+                return this.Title;
+            }
+            case "Pass": {
+                return this.Pass;
+            }
+            case "Fail": {
+                return this.Fail;
+            }
+            case "Audit": {
+                return this.Audit;
+            }
+            case "id": {
+                return this.id;
+            }
+            default :
+                throw new Error(target);
+        }
+
+
+    }
+
+    setValue(target: string, value: string) {
+        switch (target) {
+            case "Subject": {
+                this.Subject = value.toString();
+                break;
+            }
+            case "Course": {
+                this.Course = value.toString();
+                break;
+            }
+            case "Avg": {
+                this.Avg = Number(value);
+                break;
+            }
+            case "Professor": {
+                this.Professor = value;
+                break;
+            }
+            case "Title": {
+                this.Title = value.toString();
+                break;
+            }
+            case "Pass": {
+                this.Pass = Number(value);
+                break;
+            }
+            case "Fail": {
+                this.Fail = Number(value);
+                break;
+            }
+            case "Audit": {
+                this.Audit = Number(value);
+                break;
+            }
+            case "id": {
+                this.id = value.toString();
+                break;
+            }
+            default :
+                throw new Error(target);
+        }
+    }
+}
+
+
+
+
+class Rooms_obj {
+
+    rooms_fullname: string;
+    rooms_shortname: string;
+    rooms_number: string;
+    rooms_name: string;
+    rooms_address: string;
+    rooms_lat: number;
+    rooms_lon: number;
+    rooms_seats: number;
+    rooms_type: string;
+    rooms_furniture:string;
+    rooms_href:string;
+
+    constructor() {
+        this.rooms_fullname= null;
+        this.rooms_shortname= null;
+        this.rooms_number= null;
+        this.rooms_name= null;
+        this.rooms_address= null;
+        this.rooms_lat= null;
+        this.rooms_lon= null;
+        this.rooms_seats= null;
+        this.rooms_type= null;
+        this.rooms_furniture=null;
+        this.rooms_href=null;
+    };
+
+    getValue(target: string): any {
+
+        switch (target) {
+            case "rooms_fullname": {
+                return this.rooms_fullname;
+            }
+            case "rooms_shortname": {
+                return this.rooms_shortname;
+            }
+            case "rooms_number": {
+                return this.rooms_number;
+            }
+            case "rooms_name": {
+                return this.rooms_name;
+            }
+            case "rooms_address": {
+                return this.rooms_address;
+            }
+            case "rooms_lat": {
+                return this.rooms_lat;
+            }
+            case "rooms_lon": {
+                return this.rooms_lon;
+            }
+            case "rooms_seats": {
+                return this.rooms_seats;
+            }
+            case "rooms_type": {
+                return this.rooms_type;
+            }
+            case "rooms_furniture": {
+                return this.rooms_furniture;
+            }
+            case "rooms_href": {
+                return this.rooms_href;
+            }
+            default :
+                throw new Error(target);
+        }
+
+
+    }
+
+    setValue(target: string, value: string) {
+        switch (target) {
+            case "rooms_fullname": {
+                this.rooms_fullname = value.toString();
+                break;
+            }
+            case "rooms_shortname": {
+                this.rooms_shortname = value.toString();
+                break;
+            }
+            case "rooms_number": {
+                this.rooms_number = value.toString();
+                break;
+            }
+            case "rooms_name": {
+                this.rooms_name = value.toString();
+                break;
+            }
+            case "rooms_address": {
+                this.rooms_address = value.toString();
+                break;
+            }
+            case "rooms_lat": {
+                this.rooms_lat = Number(value);
+                break;
+            }
+            case "rooms_lon": {
+                this.rooms_lon = Number(value);
+                break;
+            }
+            case "rooms_seats": {
+                this.rooms_seats = Number(value);
+                break;
+            }
+            case "rooms_type": {
+                this.rooms_type = value.toString();
+                break;
+            }
+            case "rooms_furniture": {
+                this.rooms_furniture = value.toString();
+                break;
+            }
+            case "rooms_href": {
+                this.rooms_href = value.toString();
+                break;
+            }
+            default :
+                throw new Error(target);
+        }
+    }
+}
+
+
 export default class InsightFacade implements IInsightFacade {
 
     constructor() {
@@ -238,9 +470,7 @@ export default class InsightFacade implements IInsightFacade {
 
                                 name_list.push(file.name);
                                 promise_list.push(file.async("string"));
-                                // if (file.name == "index.htm") {
-                                //     index_file = file;
-                                // }
+
                             });
 
                             Promise.all(promise_list).then(function (list) {
@@ -261,11 +491,15 @@ export default class InsightFacade implements IInsightFacade {
 
                                 //console.log(temp);
 
+                                let building: {[index: string]: any} = {};
                                 var buildings=temp.split("</tr>");
+
+                                var final_buildings: any[]=[];
                                 for (let item of buildings){
 
-                                    var temp_s="a href=";
-                                    var a_href_index=item.indexOf(temp_s)+temp_s.length+1;
+
+                                    var temp_s="a href=\"";
+                                    var a_href_index=item.indexOf(temp_s)+temp_s.length;
                                     //console.log(a_href_index);
                                     var a_href=item.substring(a_href_index,item.indexOf("\"",a_href_index));
                                     //console.log(a_href);
@@ -284,9 +518,28 @@ export default class InsightFacade implements IInsightFacade {
 
                                     temp_s="field-building-address\" >";
                                     var address_index=item.indexOf(temp_s)+temp_s.length;
+                                    var address=item.substring(address_index,item.indexOf("</td>",address_index)).trim();
+                                    console.log(address);
 
+                                    building["a_href"]=a_href;
+                                    building["short_name"]=short_name;
+                                    building["full_name"]=full_name;
+                                    building["address"]=address;
+
+                                    final_buildings.push(building);
 
                                 }
+
+                               for (var i=0;i<list.length;i++){
+
+                                    for (var j=0;j<final_buildings.length;j++){
+                                        if ("./"+name_list[i]==final_buildings[j]["a_href"]){
+
+                                        }
+
+                                    }
+
+                               }
 
 
 
