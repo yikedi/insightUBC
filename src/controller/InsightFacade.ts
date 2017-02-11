@@ -8,7 +8,8 @@ import {isUndefined} from "util";
 import forEach = require("core-js/fn/array/for-each");
 var JSZip = require('jszip');
 var fs = require('fs');
-const parse5 = require('parse5');
+var request = require('request');
+var http = require('http');
 
 let dictionary: {[index: string]: string} = {};
 
@@ -25,14 +26,15 @@ dictionary = {
 };
 
 class Dataset_obj {
-  getValue(target:string):any {
-      return null;
-  }
-  setValue(target:string,value:string){
-  }
+    getValue(target: string): any {
+        return null;
+    }
+
+    setValue(target: string, value: string) {
+    }
 }
 
-class Course_obj extends Dataset_obj{
+class Course_obj extends Dataset_obj {
 
     Subject: string;
     Course: string;
@@ -138,7 +140,7 @@ class Course_obj extends Dataset_obj{
     }
 }
 
-class Rooms_obj extends Dataset_obj{
+class Rooms_obj extends Dataset_obj {
 
     rooms_fullname: string;
     rooms_shortname: string;
@@ -149,22 +151,22 @@ class Rooms_obj extends Dataset_obj{
     rooms_lon: number;
     rooms_seats: number;
     rooms_type: string;
-    rooms_furniture:string;
-    rooms_href:string;
+    rooms_furniture: string;
+    rooms_href: string;
 
     constructor() {
         super();
-        this.rooms_fullname= null;
-        this.rooms_shortname= null;
-        this.rooms_number= null;
-        this.rooms_name= null;
-        this.rooms_address= null;
-        this.rooms_lat= null;
-        this.rooms_lon= null;
-        this.rooms_seats= null;
-        this.rooms_type= null;
-        this.rooms_furniture=null;
-        this.rooms_href=null;
+        this.rooms_fullname = null;
+        this.rooms_shortname = null;
+        this.rooms_number = null;
+        this.rooms_name = null;
+        this.rooms_address = null;
+        this.rooms_lat = null;
+        this.rooms_lon = null;
+        this.rooms_seats = null;
+        this.rooms_type = null;
+        this.rooms_furniture = null;
+        this.rooms_href = null;
     };
 
     getValue(target: string): any {
@@ -263,8 +265,6 @@ class Rooms_obj extends Dataset_obj{
 }
 
 
-
-
 export default class InsightFacade implements IInsightFacade {
 
     constructor() {
@@ -281,224 +281,248 @@ export default class InsightFacade implements IInsightFacade {
             var zip = new JSZip();
             var exist: boolean = fs.existsSync("src/" + id + ".txt");
 
-                zip.loadAsync(content, {"base64": true})
-                    .then(function (data: JSZip) {
+            zip.loadAsync(content, {"base64": true})
+                .then(function (data: JSZip) {
 
 
-                        var promise_list: Promise<string>[] = [];
-                        var name_list: string[] = [];
+                    var promise_list: Promise<string>[] = [];
+                    var name_list: string[] = [];
 
-                        if (id=="courses") {
-                            data.forEach(function (path, file) {
-                                name_list.push(file.name);
-                                promise_list.push(file.async("string"));
+                    if (id == "courses") {
+                        data.forEach(function (path, file) {
+                            name_list.push(file.name);
+                            promise_list.push(file.async("string"));
 
-                            });
+                        });
 
-                            var final_string = "{\"" + id + "\":[";
+                        var final_string = "{\"" + id + "\":[";
 
-                            Promise.all(promise_list).then(function (list) {
+                        Promise.all(promise_list).then(function (list) {
 
-                                var i = 0;
+                            var i = 0;
 
-                                for (let item of list) {
+                            for (let item of list) {
 
-                                    if (i > 0) {
-                                        var temp;
-                                        try {
-                                            temp = JSON.parse(item);
-                                            //console.log(temp["result"]);
-                                            if (temp["result"].length == 0) {
-                                                i++;
-                                                continue;
-                                            }
-                                            var content = '{\"' + name_list[i] + '\":' + item + '},';
-                                            final_string += content;
+                                if (i > 0) {
+                                    var temp;
+                                    try {
+                                        temp = JSON.parse(item);
+                                        //console.log(temp["result"]);
+                                        if (temp["result"].length == 0) {
+                                            i++;
+                                            continue;
                                         }
-                                        catch (Error) {
-                                            //console.log("in catch for each list line 190");
-                                            //return reject({code: 400, body: {"error": Error.message}});
-                                        }
-
+                                        var content = '{\"' + name_list[i] + '\":' + item + '},';
+                                        final_string += content;
                                     }
-                                    i++;
-                                }
-                                final_string = final_string.substr(0, final_string.length - 1) + "]}";
-                                var j_objs: any = null;
-                                try {
-                                    j_objs = JSON.parse(final_string);
-                                    if (j_objs[id].length == 0) {
-                                        ret_obj = {code: 400, body: {"error": "No valid json object exist"}};
+                                    catch (Error) {
+                                        //console.log("in catch for each list line 190");
+                                        //return reject({code: 400, body: {"error": Error.message}});
                                     }
 
-                                    j_objs = JSON.stringify(j_objs);
-
                                 }
-                                catch (err) {
+                                i++;
+                            }
+                            final_string = final_string.substr(0, final_string.length - 1) + "]}";
+                            var j_objs: any = null;
+                            try {
+                                j_objs = JSON.parse(final_string);
+                                if (j_objs[id].length == 0) {
+                                    ret_obj = {code: 400, body: {"error": "No valid json object exist"}};
+                                }
+
+                                j_objs = JSON.stringify(j_objs);
+
+                            }
+                            catch (err) {
+                                ret_obj = {code: 400, body: {"error": err.message}};
+                                return reject(ret_obj)
+                            }
+
+
+                            fs.writeFile('src/' + id + '.txt', j_objs, (err: Error) => {
+                                if (err) {
+
                                     ret_obj = {code: 400, body: {"error": err.message}};
-                                    return reject(ret_obj)
+                                    //console.log("write file error if line 216");
+                                    return reject(ret_obj);
                                 }
-
-
-                                fs.writeFile('src/' + id + '.txt', j_objs, (err: Error) => {
-                                    if (err) {
-
-                                        ret_obj = {code: 400, body: {"error": err.message}};
-                                        //console.log("write file error if line 216");
-                                        return reject(ret_obj);
+                                else {
+                                    //console.log("write file error else line 220");
+                                    if (exist) {
+                                        ret_obj = {code: 201, body: j_objs};
                                     }
                                     else {
-                                        //console.log("write file error else line 220");
-                                        if (exist) {
-                                            ret_obj = {code: 201, body: j_objs};
-                                        }
-                                        else {
-                                            ret_obj = {code: 204, body: j_objs};
-                                        }
-                                        return fulfill(ret_obj);
+                                        ret_obj = {code: 204, body: j_objs};
                                     }
-                                });
-
-                            }).catch(function (err: Error) {
-                                //console.log("in write file catch line 228");
-                                ret_obj = {code: 400, body: {"error": err.message}};
-                                return reject(ret_obj);
+                                    return fulfill(ret_obj);
+                                }
                             });
 
-                        }
-                        else {
+                        }).catch(function (err: Error) {
+                            //console.log("in write file catch line 228");
+                            ret_obj = {code: 400, body: {"error": err.message}};
+                            return reject(ret_obj);
+                        });
 
-                            var index_file:any
-                            data.forEach(function (path, file) {
+                    }
+                    else {
 
-                                name_list.push(file.name);
-                                promise_list.push(file.async("string"));
+                        var index_file: any
+                        data.forEach(function (path, file) {
 
-                            });
+                            name_list.push(file.name);
+                            promise_list.push(file.async("string"));
 
-                            Promise.all(promise_list).then(function (list) {
+                        });
+
+                        Promise.all(promise_list).then(function (list) {
 
 
-                                for (var i=0;i<name_list.length;i++){
-                                    if (name_list[i]=="index.htm"){
-                                        index_file=list[i];
-                                        break;
-                                    }
+                            for (var i = 0; i < name_list.length; i++) {
+                                if (name_list[i] == "index.htm") {
+                                    index_file = list[i];
+                                    break;
                                 }
+                            }
 
-                                var tbody_start = index_file.indexOf("<tbody>");
-                                var tbody_end = index_file.indexOf("</tbody>");
-                                var temp=index_file.substring(tbody_start+"<tbody>".length, tbody_end);
+                            var tbody_start = index_file.indexOf("<tbody>");
+                            var tbody_end = index_file.indexOf("</tbody>");
+                            var temp = index_file.substring(tbody_start + "<tbody>".length, tbody_end);
 
 
-                                var buildings=temp.split("</tr>");
-                                buildings.pop();
-                                var final_buildings: any[]=[];
-                                for (let item of buildings){
+                            var buildings = temp.split("</tr>");
+                            buildings.pop();
+                            var final_buildings: any[] = [];
+                            for (let item of buildings) {
 
-                                    let building: {[index: string]: any} = {};
-                                    var temp_s="a href=\"";
-                                    var a_href=extract_info(item,temp_s,"\"");
+                                let building: {[index: string]: any} = {};
+                                var temp_s = "a href=\"";
+                                var a_href = extract_info(item, temp_s, "\"");
 
-                                    temp_s="building-code\" >";
-                                    var short_name=extract_info(item,temp_s,"</td>");
+                                temp_s = "building-code\" >";
+                                var short_name = extract_info(item, temp_s, "</td>");
 
-                                    temp_s="views-field-title\" >";
-                                    var full_name_index=item.indexOf(temp_s)+temp_s.length;
-                                    temp_s="title=\"Building Details and Map\">";
-                                    var full_name_index=item.indexOf(temp_s,full_name_index)+temp_s.length;
-                                    var full_name=item.substring(full_name_index,item.indexOf("</a>",full_name_index));
+                                temp_s = "views-field-title\" >";
+                                var full_name_index = item.indexOf(temp_s) + temp_s.length;
+                                temp_s = "title=\"Building Details and Map\">";
+                                var full_name_index = item.indexOf(temp_s, full_name_index) + temp_s.length;
+                                var full_name = item.substring(full_name_index, item.indexOf("</a>", full_name_index));
 
-                                    temp_s="field-building-address\" >";
-                                    var address=extract_info(item,temp_s,"</td>");
+                                temp_s = "field-building-address\" >";
+                                var address = extract_info(item, temp_s, "</td>");
 
-                                    building["a_href"]=a_href;
-                                    building["short_name"]=short_name;
-                                    building["full_name"]=full_name;
-                                    building["address"]=address;
+                                building["a_href"] = a_href;
+                                building["short_name"] = short_name;
+                                building["full_name"] = full_name;
+                                building["address"] = address;
 
-                                    final_buildings.push(building);
-                                }
+                                final_buildings.push(building);
+                            }
+                            //change below
+                            //TODO
+                            var lat_lon_list: Promise<Object>[] = [];
+                            for (let i = 0; i < final_buildings.length; i++) {
+                                lat_lon_list.push(new Promise(function (fulfill, reject) {
+                                    let uri = final_buildings[i]["address"];
+                                    let uri_encoded = encodeURIComponent(uri);
+                                    let url = "http://skaha.cs.ubc.ca:11316/api/v1/team132/" + uri_encoded;
 
-                               var final_rooms:any[]=[];
+                                    request(url, function (error: any, response: any, body: any) {
+                                        if (!error && response.statusCode == 200) {
+                                            fulfill(body);
+                                        } else {
+                                            reject(error);
+                                        }
+                                    })
+                                }))
+                            }
+                            Promise.all(lat_lon_list).then((lat_lon_list)=> {
+                                //change abvoe
 
-                               for (var i=0;i<list.length;i++){
-                                    var item=list[i];
-                                    for (var j=0;j<final_buildings.length;j++){
+                                let parsed_list = JSON.parse(JSON.stringify(lat_lon_list));
+                                var final_rooms: any[] = [];
 
-                                        if ("./"+name_list[i]==final_buildings[j]["a_href"]){
+                                for (var i = 0; i < list.length; i++) {
+                                    var item = list[i];
+                                    for (var j = 0; j < final_buildings.length; j++) {
 
-                                            var room_shortname=final_buildings[j]["short_name"];
-                                            var room_fullname=final_buildings[j]["full_name"];
-                                            var room_address=final_buildings[j]["address"];
-                                            var room_href=null;
-                                            var room_number=null;
-                                            var room_seats=null;
-                                            var room_furniture=null;
-                                            var room_type=null;
-                                            var room_name=null;
+                                        if ("./" + name_list[i] == final_buildings[j]["a_href"]) {
 
-                                            var room_lat;
-                                            var room_lon;
+                                            var room_shortname = final_buildings[j]["short_name"];
+                                            var room_fullname = final_buildings[j]["full_name"];
+                                            var room_address = final_buildings[j]["address"];
+                                            var room_href = null;
+                                            var room_number = null;
+                                            var room_seats = null;
+                                            var room_furniture = null;
+                                            var room_type = null;
+                                            var room_name = null;
 
-                                             tbody_start = item.indexOf("<tbody>");
-                                             tbody_end = item.indexOf("</tbody>");
-                                             if (tbody_start!=-1) {
-                                                 temp = item.substring(tbody_start + "<tbody>".length, tbody_end);
-                                                 var rooms=temp.split("</tr>");
+                                            let lat_lon = JSON.parse(parsed_list[j]);
+                                            var room_lat=lat_lon["lat"];
+                                            var room_lon=lat_lon["lon"];
 
-                                                 rooms.pop();
-                                                 for (let room of rooms){
+                                            tbody_start = item.indexOf("<tbody>");
+                                            tbody_end = item.indexOf("</tbody>");
+                                            if (tbody_start != -1) {
+                                                temp = item.substring(tbody_start + "<tbody>".length, tbody_end);
+                                                var rooms = temp.split("</tr>");
 
-                                                     let room_obj: {[index: string]: any} = {};
+                                                rooms.pop();
+                                                for (let room of rooms) {
 
-                                                     var temp_s="a href=\"";
-                                                     room_href=extract_info(room,temp_s,"\"");
+                                                    let room_obj: {[index: string]: any} = {};
 
-                                                     temp_s="title=\"Room Details\">";
-                                                     room_number=extract_info(room,temp_s,"</a>");
+                                                    var temp_s = "a href=\"";
+                                                    room_href = extract_info(room, temp_s, "\"");
 
-                                                     temp_s="room-capacity\" >";
-                                                     room_seats=extract_info(room,temp_s,"</td>");
+                                                    temp_s = "title=\"Room Details\">";
+                                                    room_number = extract_info(room, temp_s, "</a>");
 
-                                                     temp_s="room-furniture\" >";
-                                                     room_furniture=extract_info(room,temp_s,"</td>");
+                                                    temp_s = "room-capacity\" >";
+                                                    room_seats = extract_info(room, temp_s, "</td>");
 
-                                                     temp_s="room-type\" >";
-                                                     room_type=extract_info(room,temp_s,"</td>");
+                                                    temp_s = "room-furniture\" >";
+                                                    room_furniture = extract_info(room, temp_s, "</td>");
 
-                                                     room_name=final_buildings[j]["short_name"]+"_"+room_number;
+                                                    temp_s = "room-type\" >";
+                                                    room_type = extract_info(room, temp_s, "</td>");
 
-                                                     room_obj["rooms_fullname"]=room_fullname;
-                                                     room_obj["rooms_shortname"]=room_shortname;
-                                                     room_obj["rooms_name"]=room_name;
-                                                     room_obj["rooms_number"]=room_number;
-                                                     room_obj["rooms_address"]=room_address;
-                                                     room_obj["rooms_seats"]=room_seats;
-                                                     room_obj["rooms_furniture"]=room_furniture;
-                                                     room_obj["rooms_href"]=room_href;
+                                                    room_name = final_buildings[j]["short_name"] + "_" + room_number;
 
-                                                     final_rooms.push(room_obj);
-                                                 }
+                                                    room_obj["rooms_fullname"] = room_fullname;
+                                                    room_obj["rooms_shortname"] = room_shortname;
+                                                    room_obj["rooms_name"] = room_name;
+                                                    room_obj["rooms_number"] = room_number;
+                                                    room_obj["rooms_address"] = room_address;
+                                                    room_obj["rooms_seats"] = room_seats;
+                                                    room_obj["rooms_furniture"] = room_furniture;
+                                                    room_obj["rooms_href"] = room_href;
+                                                    room_obj["room_lat"] = room_lat;
+                                                    room_obj["room_lon"] = room_lon;
+                                                    final_rooms.push(room_obj);
+                                                }
 
-                                             }
-                                             else {
-                                                 let room_obj: {[index: string]: any} = {};
-                                                 room_href =final_buildings[j]["a_href"];
-                                                 room_obj["rooms_href"]=room_href;
-                                                 room_obj["rooms_fullname"]=room_fullname;
-                                                 room_obj["rooms_shortname"]=room_shortname;
-                                                 room_obj["rooms_address"]=room_address;
+                                            }
+                                            else {
+                                                let room_obj: {[index: string]: any} = {};
+                                                room_href = final_buildings[j]["a_href"];
+                                                room_obj["rooms_href"] = room_href;
+                                                room_obj["rooms_fullname"] = room_fullname;
+                                                room_obj["rooms_shortname"] = room_shortname;
+                                                room_obj["rooms_address"] = room_address;
 
-                                                 room_obj["rooms_name"]=room_name;
-                                                 room_obj["rooms_number"]=room_number;
-                                                 room_obj["rooms_seats"]=room_seats;
-                                                 room_obj["rooms_furniture"]=room_furniture;
+                                                room_obj["rooms_name"] = room_name;
+                                                room_obj["rooms_number"] = room_number;
+                                                room_obj["rooms_seats"] = room_seats;
+                                                room_obj["rooms_furniture"] = room_furniture;
+                                                room_obj["room_lat"] = room_lat;
+                                                room_obj["room_lon"] = room_lon;
 
-                                                 final_rooms.push(room_obj);
+                                                final_rooms.push(room_obj);
 
-                                             }
-
+                                            }
 
                                             // var interest_info = ["rooms_fullname", "rooms_shortname", "rooms_name", "rooms_number",
                                             //     "rooms_address", "rooms_lat", "rooms_lon", "rooms_seats", "rooms_furniture","rooms_href"];
@@ -510,10 +534,10 @@ export default class InsightFacade implements IInsightFacade {
 
                                     }
 
-                               }
+                                }
 
-                               var room_file={"rooms":final_rooms};
-                               var j_objs=JSON.stringify(room_file);
+                                var room_file = {"rooms": final_rooms};
+                                var j_objs = JSON.stringify(room_file);
                                 fs.writeFile('src/' + id + '.txt', j_objs, (err: Error) => {
                                     if (err) {
 
@@ -532,25 +556,23 @@ export default class InsightFacade implements IInsightFacade {
                                         return fulfill(ret_obj);
                                     }
                                 });
-
+                            })
 
 
 //                                fulfill({code: 555, body:"at line 252"});
-                            }).catch(function (err) {
-                                return reject({code: 400, body:"error catched 535"});
-                            });
+                        }).catch(function (err) {
+                            return reject({code: 400, body: "error catched 535"});
+                        });
 
 
+                    }
 
-                        }
 
-
-                    }).catch(function (err: Error) {
-                    //console.log("in JSZip catch line 235");
-                    ret_obj = {code: 400, body: {"error": err.message}};
-                    return reject(ret_obj);
-                });
-
+                }).catch(function (err: Error) {
+                //console.log("in JSZip catch line 235");
+                ret_obj = {code: 400, body: {"error": err.message}};
+                return reject(ret_obj);
+            });
 
 
         });
@@ -621,21 +643,20 @@ export default class InsightFacade implements IInsightFacade {
                             return reject({code: 400, body: {"error": "invalid json or query 307"}});
                         }
 
-                        var order_valid:boolean=false;
+                        var order_valid: boolean = false;
                         var order_check = dictionary[order];
-
 
 
                         for (let column of columns) {
                             var value = dictionary[column];
 
                             if (isUndefined(value)) {
-                                if (column.substring(0,column.indexOf("_"))!=id){
+                                if (column.substring(0, column.indexOf("_")) != id) {
                                     missing_col.push(column);
                                 }
                             }
-                            if (order==column){
-                                order_valid=true;
+                            if (order == column) {
+                                order_valid = true;
                             }
                         }
 
@@ -714,7 +735,7 @@ function build_table(data: string): Array<Course_obj> {
     var courses = temp["courses"];
 
 
-    var course_list : Course_obj[]=[];
+    var course_list: Course_obj[] = [];
 
     var interest_info = ["Subject", "Course", "Avg", "Professor", "Title", "Pass", "Fail", "Audit", "id"];
 
@@ -730,9 +751,9 @@ function build_table(data: string): Array<Course_obj> {
             try {
                 for (let s of interest_info) {
                     var value = item[s];
-                    if(s == "id" || s=="Course"){
-                        each_course.setValue(s,value.toString());
-                    }else {
+                    if (s == "id" || s == "Course") {
+                        each_course.setValue(s, value.toString());
+                    } else {
                         each_course.setValue(s, value);
                     }
                 }
@@ -757,20 +778,19 @@ function build_table_rooms(data: string): Array<Rooms_obj> {
     var course_list = new Array<Course_obj>();
 
     var interest_info = ["rooms_fullname", "rooms_shortname", "rooms_name", "rooms_number",
-        "rooms_address", "rooms_lat", "rooms_lon", "rooms_seats", "rooms_furniture","rooms_href"];
+        "rooms_address", "rooms_lat", "rooms_lon", "rooms_seats", "rooms_furniture", "rooms_href"];
 
-    var room_list : Rooms_obj[]=[];
+    var room_list: Rooms_obj[] = [];
     for (let room of rooms) {
-        var room_obj=new Rooms_obj();
-        for (let s of interest_info){
-            room_obj.setValue(s,room[s]);
+        var room_obj = new Rooms_obj();
+        for (let s of interest_info) {
+            room_obj.setValue(s, room[s]);
         }
-      room_list.push(room_obj);
+        room_list.push(room_obj);
     }
 
     return room_list;
 }
-
 
 
 function filter(table: Array<Course_obj>, query: QueryRequest, missing_col: string [], error_400: Object[]): any {
@@ -807,7 +827,7 @@ function filter(table: Array<Course_obj>, query: QueryRequest, missing_col: stri
         let ret_obj: {[index: string]: any} = {};
         for (let column of columns) {
             try {
-                if(!isUndefined(dictionary[column]))
+                if (!isUndefined(dictionary[column]))
                     ret_obj[column] = item.getValue(dictionary[column]);
             } catch (err) {
                 throw err;
@@ -1085,8 +1105,8 @@ function filter_helper(table: Array<Course_obj>, query: QueryRequest, missing_co
                 i++;
             }
         }
-        if(final_array[final_array.length-2].id != final_array[final_array.length-1].id){
-            ret_array.push(final_array[final_array.length-1]);
+        if (final_array[final_array.length - 2].id != final_array[final_array.length - 1].id) {
+            ret_array.push(final_array[final_array.length - 1]);
         }
 
 
@@ -1112,10 +1132,10 @@ function check_missing(keys: any, missing_col: string []) {
     }
 }
 
-function extract_info(target:string, key_start:string,key_end:string) :string{
+function extract_info(target: string, key_start: string, key_end: string): string {
 
-    var key_start_index=target.indexOf(key_start)+key_start.length;
-    var ret_str=target.substring(key_start_index,target.indexOf(key_end,key_start_index)).trim();
+    var key_start_index = target.indexOf(key_start) + key_start.length;
+    var ret_str = target.substring(key_start_index, target.indexOf(key_end, key_start_index)).trim();
 
     return ret_str;
 }

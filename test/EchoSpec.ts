@@ -2395,8 +2395,8 @@ describe("EchoSpec", function () {
                 done();
             })
             .catch((err) => {
-                console.log(err.code);
-                console.log(err.body)
+                //console.log(err.code);
+                //console.log(err.body)
                 done();
             });
 
