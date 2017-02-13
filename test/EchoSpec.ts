@@ -2377,7 +2377,7 @@ describe("EchoSpec", function () {
     });
 */
 
-    it("test readError", function (done) {
+    it("test Adddataset rooms", function (done) {
         this.timeout(10000)
 
 
@@ -2403,5 +2403,45 @@ describe("EchoSpec", function () {
     });
 
 
+    it("test query rooms", function (done) {
+        this.timeout(10000)
+
+
+        var s1 = {
+            "WHERE": {
+                "GT": {
+                    "rooms_seats": 100
+                }
+
+            },
+            "OPTIONS": {
+                "COLUMNS": [
+                    "rooms_id",
+                    "rooms_seats"
+                ],
+                "ORDER": "rooms_id",
+                "FORM": "TABLE"
+            }
+        };
+        var query = s1;
+
+
+        var temp = new InsightFacade();
+
+        temp.performQuery(query)
+            .then((response) => {
+                console.log(response.code);
+                console.log(response.body);
+                done();
+            })
+            .catch((err) => {
+                console.log(err.code);
+                console.log(err.body)
+                done();
+            });
+
+    });
+
 
 });
+

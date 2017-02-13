@@ -22,10 +22,27 @@ dictionary = {
     "courses_pass": "Pass",
     "courses_fail": "Fail",
     "courses_audit": "Audit",
-    "courses_uuid": "id"
+    "courses_uuid": "id",
+    "rooms_fullname":"rooms_fullname",
+    "rooms_shortname":"rooms_shortname",
+    "rooms_number":"rooms_number",
+    "rooms_name":"rooms_name",
+    "rooms_address":"rooms_address",
+    "rooms_lat":"rooms_lat",
+    "rooms_lon":"rooms_lon",
+    "rooms_seats":"rooms_seats",
+    "rooms_type":"rooms_type",
+    "rooms_furniture":"rooms_furniture",
+    "rooms_href":"rooms_href",
+    "rooms_id":"id"
+
 };
 
 class Dataset_obj {
+    id:string;
+    constructor(){
+        this.id=null;
+    }
     getValue(target: string): any {
         return null;
     }
@@ -153,6 +170,7 @@ class Rooms_obj extends Dataset_obj {
     rooms_type: string;
     rooms_furniture: string;
     rooms_href: string;
+    id:string;
 
     constructor() {
         super();
@@ -167,6 +185,7 @@ class Rooms_obj extends Dataset_obj {
         this.rooms_type = null;
         this.rooms_furniture = null;
         this.rooms_href = null;
+        this.id=null;
     };
 
     getValue(target: string): any {
@@ -204,6 +223,9 @@ class Rooms_obj extends Dataset_obj {
             }
             case "rooms_href": {
                 return this.rooms_href;
+            }
+            case "id":{
+                return this.id;
             }
             default :
                 throw new Error(target);
@@ -258,6 +280,10 @@ class Rooms_obj extends Dataset_obj {
                 this.rooms_href = value.toString();
                 break;
             }
+            case "id":{
+                this.id=value.toString();
+                break;
+            }
             default :
                 throw new Error(target);
         }
@@ -274,6 +300,10 @@ export default class InsightFacade implements IInsightFacade {
 //
     addDataset(id: string, content: string): Promise<InsightResponse> {
 
+
+        // var a:Dataset_obj=new Course_obj();
+        // a.setValue("Subject","5");
+        // console.log(a.Subject);
 
         return new Promise(function (fulfill, reject) {
 
@@ -443,6 +473,7 @@ export default class InsightFacade implements IInsightFacade {
                                 let parsed_list = JSON.parse(JSON.stringify(lat_lon_list));
                                 var final_rooms: any[] = [];
 
+                                var num_rooms=0;
                                 for (var i = 0; i < list.length; i++) {
                                     var item = list[i];
                                     for (var j = 0; j < final_buildings.length; j++) {
@@ -499,30 +530,37 @@ export default class InsightFacade implements IInsightFacade {
                                                     room_obj["rooms_seats"] = room_seats;
                                                     room_obj["rooms_furniture"] = room_furniture;
                                                     room_obj["rooms_href"] = room_href;
-                                                    room_obj["room_lat"] = room_lat;
-                                                    room_obj["room_lon"] = room_lon;
+                                                    room_obj["rooms_lat"] = room_lat;
+                                                    room_obj["rooms_lon"] = room_lon;
+
+                                                    room_obj["id"]=num_rooms;
+                                                    num_rooms++;
                                                     final_rooms.push(room_obj);
                                                 }
 
                                             }
-                                            else {
-                                                let room_obj: {[index: string]: any} = {};
-                                                room_href = final_buildings[j]["a_href"];
-                                                room_obj["rooms_href"] = room_href;
-                                                room_obj["rooms_fullname"] = room_fullname;
-                                                room_obj["rooms_shortname"] = room_shortname;
-                                                room_obj["rooms_address"] = room_address;
 
-                                                room_obj["rooms_name"] = room_name;
-                                                room_obj["rooms_number"] = room_number;
-                                                room_obj["rooms_seats"] = room_seats;
-                                                room_obj["rooms_furniture"] = room_furniture;
-                                                room_obj["room_lat"] = room_lat;
-                                                room_obj["room_lon"] = room_lon;
 
-                                                final_rooms.push(room_obj);
-
-                                            }
+                                            // else {
+                                            //     let room_obj: {[index: string]: any} = {};
+                                            //     room_href = final_buildings[j]["a_href"];
+                                            //     room_obj["rooms_href"] = room_href;
+                                            //     room_obj["rooms_fullname"] = room_fullname;
+                                            //     room_obj["rooms_shortname"] = room_shortname;
+                                            //     room_obj["rooms_address"] = room_address;
+                                            //
+                                            //     room_obj["rooms_name"] = room_name;
+                                            //     room_obj["rooms_number"] = room_number;
+                                            //     room_obj["rooms_seats"] = room_seats;
+                                            //     room_obj["rooms_furniture"] = room_furniture;
+                                            //     room_obj["rooms_lat"] = room_lat;
+                                            //     room_obj["rooms_lon"] = room_lon;
+                                            //
+                                            //     room_obj["rooms_id"]=num_rooms;
+                                            //     num_rooms++;
+                                            //     final_rooms.push(room_obj);
+                                            //
+                                            // }
 
                                             // var interest_info = ["rooms_fullname", "rooms_shortname", "rooms_name", "rooms_number",
                                             //     "rooms_address", "rooms_lat", "rooms_lon", "rooms_seats", "rooms_furniture","rooms_href"];
@@ -556,8 +594,7 @@ export default class InsightFacade implements IInsightFacade {
                                         return fulfill(ret_obj);
                                     }
                                 });
-                            })
-
+                            });
 
 //                                fulfill({code: 555, body:"at line 252"});
                         }).catch(function (err) {
@@ -611,7 +648,27 @@ export default class InsightFacade implements IInsightFacade {
         return new Promise(function (fulfill, reject) {
 
             /*******/
-            var id = "courses";
+            // var id = "courses";
+
+            // var exist: boolean = fs.existsSync("src/" + id + ".txt");
+
+            try {
+                var j_query = JSON.stringify(query);
+                var j_obj = JSON.parse(j_query);
+
+                var where = j_obj["WHERE"];
+                var options = j_obj["OPTIONS"];
+                var columns = options["COLUMNS"];
+                var order = options["ORDER"];
+                var form = options["FORM"];
+            }
+            catch (err) {
+                return reject({code: 400, body: {"error": "invalid json or query 307"}});
+            }
+
+
+            var column0=columns[0];
+            var id:string=column0.substring(0,column0.indexOf("_"));
 
             var exist: boolean = fs.existsSync("src/" + id + ".txt");
 
@@ -623,25 +680,17 @@ export default class InsightFacade implements IInsightFacade {
                     }
                     else {
 
-                        var table = build_table(data);
+                        var table:Dataset_obj[];
+                        if (id=="courses"){
+                            table=build_table(data);
+                        }
+                        else {
+                            table=build_table_rooms(data);
+                        }
 
                         var missing_col: string[] = [];
                         var error_400: Object[] = [];
 
-
-                        try {
-                            var j_query = JSON.stringify(query);
-                            var j_obj = JSON.parse(j_query);
-
-                            var where = j_obj["WHERE"];
-                            var options = j_obj["OPTIONS"];
-                            var columns = options["COLUMNS"];
-                            var order = options["ORDER"];
-                            var form = options["FORM"];
-                        }
-                        catch (err) {
-                            return reject({code: 400, body: {"error": "invalid json or query 307"}});
-                        }
 
                         var order_valid: boolean = false;
                         var order_check = dictionary[order];
@@ -675,11 +724,11 @@ export default class InsightFacade implements IInsightFacade {
 
                         missing_col = [];
                         var body = null;
-                        try {
-                            body = filter(table, query, missing_col, error_400);
-                        } catch (err) {
-                            return reject({code: 400, body: err.message});
-                        }
+                       // try {
+                            body = filter(table, query, missing_col, error_400);  ///**type
+                        // } catch (err) {
+                        //     return reject({code: 400, body: err.message});
+                        // }
 
                         if (missing_col.length > 0) {
                             var missing_ids: string[] = [];
@@ -775,10 +824,8 @@ function build_table_rooms(data: string): Array<Rooms_obj> {
     var rooms = temp["rooms"];
 
 
-    var course_list = new Array<Course_obj>();
-
     var interest_info = ["rooms_fullname", "rooms_shortname", "rooms_name", "rooms_number",
-        "rooms_address", "rooms_lat", "rooms_lon", "rooms_seats", "rooms_furniture", "rooms_href"];
+        "rooms_address", "rooms_lat", "rooms_lon", "rooms_seats", "rooms_furniture", "rooms_href","id"];
 
     var room_list: Rooms_obj[] = [];
     for (let room of rooms) {
@@ -793,7 +840,7 @@ function build_table_rooms(data: string): Array<Rooms_obj> {
 }
 
 
-function filter(table: Array<Course_obj>, query: QueryRequest, missing_col: string [], error_400: Object[]): any {
+function filter(table: Array<Dataset_obj>, query: QueryRequest, missing_col: string [], error_400: Object[]): any {
 
     var j_query = JSON.stringify(query);
     var j_obj = JSON.parse(j_query);
@@ -812,7 +859,7 @@ function filter(table: Array<Course_obj>, query: QueryRequest, missing_col: stri
     var columns = options["COLUMNS"];
     var order = options["ORDER"];
     if (!isUndefined(order)) {
-        ret_table.sort((a: Course_obj, b: Course_obj) => {
+        ret_table.sort((a: Dataset_obj, b: Dataset_obj) => {
             if (typeof b.getValue(dictionary[order]) == "number")
                 return a.getValue(dictionary[order]) - b.getValue(dictionary[order])
             else
@@ -840,13 +887,13 @@ function filter(table: Array<Course_obj>, query: QueryRequest, missing_col: stri
     return ret_array;
 }
 
-function filter_helper(table: Array<Course_obj>, query: QueryRequest, missing_col: string[], error_400: Object[]): Array<Course_obj> {
+function filter_helper(table: Array<Dataset_obj>, query: QueryRequest, missing_col: string[], error_400: Object[]): Array<Dataset_obj> {
 
     var j_query = JSON.stringify(query);
     var j_obj = JSON.parse(j_query);
     var keys = Object.keys(j_obj);
     var key = keys[0];
-    var ret_array: Course_obj[] = [];
+    var ret_array: Dataset_obj[] = [];
 
     if (key == "IS") {
 
@@ -943,7 +990,7 @@ function filter_helper(table: Array<Course_obj>, query: QueryRequest, missing_co
                         error_400.push({"error": "type error GT"});
                     }
                 } catch (err) {
-                    error_400.push({"error": err.message});
+                    error_400.push({"error": "error at line 996"});
                 }
 
             }
@@ -1018,7 +1065,7 @@ function filter_helper(table: Array<Course_obj>, query: QueryRequest, missing_co
     }
     else if (key == "AND") {
         var and_list = j_obj[key];
-        var final_array: Course_obj[] = [];
+        var final_array: Dataset_obj[] = [];
 
         if (and_list.length == 0) {
             throw new Error("empty AND");
@@ -1053,7 +1100,7 @@ function filter_helper(table: Array<Course_obj>, query: QueryRequest, missing_co
     }
     else if (key == "OR") {
         var or_list = j_obj[key];
-        var final_array: Course_obj[] = [];
+        var final_array: Dataset_obj[] = [];
 
         if (or_list.length == 0) {
             throw new Error("empty OR");
@@ -1117,7 +1164,7 @@ function filter_helper(table: Array<Course_obj>, query: QueryRequest, missing_co
     return ret_array;
 }
 
-function compare(a: Course_obj, b: Course_obj): number {
+function compare(a: Dataset_obj, b: Dataset_obj): number {
     return Number(a.id) - Number(b.id);
 }
 
