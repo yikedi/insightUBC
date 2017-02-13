@@ -724,11 +724,11 @@ export default class InsightFacade implements IInsightFacade {
 
                         missing_col = [];
                         var body = null;
-                       // try {
+                       try {
                             body = filter(table, query, missing_col, error_400);  ///**type
-                        // } catch (err) {
-                        //     return reject({code: 400, body: err.message});
-                        // }
+                        } catch (err) {
+                            return reject({code: 400, body: err.message});
+                        }
 
                         if (missing_col.length > 0) {
                             var missing_ids: string[] = [];
