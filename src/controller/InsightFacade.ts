@@ -300,7 +300,6 @@ class Rooms_obj extends Dataset_obj {
     }
 }
 
-
 export default class InsightFacade implements IInsightFacade {
 
     constructor() {
@@ -827,7 +826,6 @@ function build_table(data: string): Array<Course_obj> {
     return course_list;
 }
 
-
 function build_table_rooms(data: string): Array<Rooms_obj> {
 
     var temp = JSON.parse(data);
@@ -848,7 +846,6 @@ function build_table_rooms(data: string): Array<Rooms_obj> {
 
     return room_list;
 }
-
 
 function filter(table: Array<Dataset_obj>, query: QueryRequest, missing_col: string [], error_400: Object[]): any {
 
