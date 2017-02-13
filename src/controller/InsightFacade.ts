@@ -23,6 +23,7 @@ dictionary = {
     "courses_fail": "Fail",
     "courses_audit": "Audit",
     "courses_uuid": "id",
+    "courses_year":"Year",
     "rooms_fullname":"rooms_fullname",
     "rooms_shortname":"rooms_shortname",
     "rooms_number":"rooms_number",
@@ -62,6 +63,7 @@ class Course_obj extends Dataset_obj {
     Fail: number;
     Audit: number;
     id: string;
+    Year:number;
 
     constructor() {
         super();
@@ -74,6 +76,7 @@ class Course_obj extends Dataset_obj {
         this.Fail = null;
         this.Audit = null;
         this.id = null;
+        this.Year=null;
     };
 
     getValue(target: string): any {
@@ -105,6 +108,9 @@ class Course_obj extends Dataset_obj {
             }
             case "id": {
                 return this.id;
+            }
+            case "Year":{
+                return this.Year;
             }
             default :
                 throw new Error(target);
@@ -149,6 +155,10 @@ class Course_obj extends Dataset_obj {
             }
             case "id": {
                 this.id = value.toString();
+                break;
+            }
+            case "Year":{
+                this.Year=Number(value);
                 break;
             }
             default :
@@ -786,7 +796,7 @@ function build_table(data: string): Array<Course_obj> {
 
     var course_list: Course_obj[] = [];
 
-    var interest_info = ["Subject", "Course", "Avg", "Professor", "Title", "Pass", "Fail", "Audit", "id"];
+    var interest_info = ["Subject", "Course", "Avg", "Professor", "Title", "Pass", "Fail", "Audit", "id","Year"];
 
     for (let course of courses) {
 
