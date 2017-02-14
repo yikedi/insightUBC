@@ -739,13 +739,13 @@ export default class InsightFacade implements IInsightFacade {
 
 
                         for (let column of columns) {
-                            var value = dictionary[column];
+                            //var value = dictionary[column];
 
-                            if (isUndefined(value)) {
+                            //if (isUndefined(value)) {
                                 if (column.substring(0, column.indexOf("_")) != id) {
                                     missing_col.push(column);
                                 }
-                            }
+                            //}
                             if (order == column) {
                                 order_valid = true;
                             }
@@ -761,7 +761,7 @@ export default class InsightFacade implements IInsightFacade {
                         }
 
                         if (missing_col.length > 0) {
-                            return reject({code: 400, body: {"error": "invalid query 315"}});
+                            return reject({code: 400, body: {"error": "invalid query 764"}});
                         }
 
                         missing_col = [];
