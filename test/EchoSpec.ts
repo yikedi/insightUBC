@@ -2403,7 +2403,7 @@ describe("EchoSpec", function () {
     });
 
 
-    xit("test query rooms", function (done) {
+    it("test query rooms", function (done) {
         this.timeout(10000)
 
 
@@ -2468,11 +2468,11 @@ describe("EchoSpec", function () {
 
             "OPTIONS": {
                 "COLUMNS": [
-                    "rooms_id",
+                    "courses_id",
                     "rooms_seats",
                     "rooms_shortname"
                 ],
-                "ORDER": "rooms_shortname",
+                "ORDER": "rooms_seats",
                 "FORM": "TABLE"
             }
         };

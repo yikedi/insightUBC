@@ -10,6 +10,7 @@ var JSZip = require('jszip');
 var fs = require('fs');
 var request = require('request');
 var http = require('http');
+var parse5 = require('parse5');
 
 let dictionary: {[index: string]: string} = {};
 
@@ -23,27 +24,29 @@ dictionary = {
     "courses_fail": "Fail",
     "courses_audit": "Audit",
     "courses_uuid": "id",
-    "courses_year":"Year",
-    "rooms_fullname":"rooms_fullname",
-    "rooms_shortname":"rooms_shortname",
-    "rooms_number":"rooms_number",
-    "rooms_name":"rooms_name",
-    "rooms_address":"rooms_address",
-    "rooms_lat":"rooms_lat",
-    "rooms_lon":"rooms_lon",
-    "rooms_seats":"rooms_seats",
-    "rooms_type":"rooms_type",
-    "rooms_furniture":"rooms_furniture",
-    "rooms_href":"rooms_href",
-    "rooms_id":"id"
+    "courses_year": "Year",
+    "rooms_fullname": "rooms_fullname",
+    "rooms_shortname": "rooms_shortname",
+    "rooms_number": "rooms_number",
+    "rooms_name": "rooms_name",
+    "rooms_address": "rooms_address",
+    "rooms_lat": "rooms_lat",
+    "rooms_lon": "rooms_lon",
+    "rooms_seats": "rooms_seats",
+    "rooms_type": "rooms_type",
+    "rooms_furniture": "rooms_furniture",
+    "rooms_href": "rooms_href",
+    "rooms_id": "id"
 
 };
 
 class Dataset_obj {
-    id:string;
-    constructor(){
-        this.id=null;
+    id: string;
+
+    constructor() {
+        this.id = null;
     }
+
     getValue(target: string): any {
         return null;
     }
@@ -63,7 +66,7 @@ class Course_obj extends Dataset_obj {
     Fail: number;
     Audit: number;
     id: string;
-    Year:number;
+    Year: number;
 
     constructor() {
         super();
@@ -76,7 +79,7 @@ class Course_obj extends Dataset_obj {
         this.Fail = null;
         this.Audit = null;
         this.id = null;
-        this.Year=null;
+        this.Year = null;
     };
 
     getValue(target: string): any {
@@ -109,7 +112,7 @@ class Course_obj extends Dataset_obj {
             case "id": {
                 return this.id;
             }
-            case "Year":{
+            case "Year": {
                 return this.Year;
             }
             default :
@@ -157,8 +160,8 @@ class Course_obj extends Dataset_obj {
                 this.id = value.toString();
                 break;
             }
-            case "Year":{
-                this.Year=Number(value);
+            case "Year": {
+                this.Year = Number(value);
                 break;
             }
             default :
@@ -180,7 +183,7 @@ class Rooms_obj extends Dataset_obj {
     rooms_type: string;
     rooms_furniture: string;
     rooms_href: string;
-    id:string;
+    id: string;
 
     constructor() {
         super();
@@ -195,7 +198,7 @@ class Rooms_obj extends Dataset_obj {
         this.rooms_type = null;
         this.rooms_furniture = null;
         this.rooms_href = null;
-        this.id=null;
+        this.id = null;
     };
 
     getValue(target: string): any {
@@ -234,7 +237,7 @@ class Rooms_obj extends Dataset_obj {
             case "rooms_href": {
                 return this.rooms_href;
             }
-            case "id":{
+            case "id": {
                 return this.id;
             }
             default :
@@ -290,8 +293,8 @@ class Rooms_obj extends Dataset_obj {
                 this.rooms_href = value.toString();
                 break;
             }
-            case "id":{
-                this.id=value.toString();
+            case "id": {
+                this.id = value.toString();
                 break;
             }
             default :
@@ -406,7 +409,6 @@ export default class InsightFacade implements IInsightFacade {
 
                     }
                     else {
-
                         var index_file: any
                         data.forEach(function (path, file) {
 
@@ -416,195 +418,226 @@ export default class InsightFacade implements IInsightFacade {
                         });
 
                         Promise.all(promise_list).then(function (list) {
+                            //let index_valid:boolean = true;
 
+                            try {
+                                for (var i = 0; i < name_list.length; i++) {
 
-                            for (var i = 0; i < name_list.length; i++) {
-                                if (name_list[i] == "index.htm") {
-                                    index_file = list[i];
-                                    break;
-                                }
-                            }
+                                    if (name_list[i] == "index.htm") {
 
-                            var tbody_start = index_file.indexOf("<tbody>");
-                            var tbody_end = index_file.indexOf("</tbody>");
-                            var temp = index_file.substring(tbody_start + "<tbody>".length, tbody_end);
-
-
-                            var buildings = temp.split("</tr>");
-                            buildings.pop();
-                            var final_buildings: any[] = [];
-                            for (let item of buildings) {
-
-                                let building: {[index: string]: any} = {};
-                                var temp_s = "a href=\"";
-                                var a_href = extract_info(item, temp_s, "\"");
-
-                                temp_s = "building-code\" >";
-                                var short_name = extract_info(item, temp_s, "</td>");
-
-                                temp_s = "views-field-title\" >";
-                                var full_name_index = item.indexOf(temp_s) + temp_s.length;
-                                temp_s = "title=\"Building Details and Map\">";
-                                var full_name_index = item.indexOf(temp_s, full_name_index) + temp_s.length;
-                                var full_name = item.substring(full_name_index, item.indexOf("</a>", full_name_index));
-
-                                temp_s = "field-building-address\" >";
-                                var address = extract_info(item, temp_s, "</td>");
-
-                                building["a_href"] = a_href;
-                                building["short_name"] = short_name;
-                                building["full_name"] = full_name;
-                                building["address"] = address;
-
-                                final_buildings.push(building);
-                            }
-                            //change below
-                            //TODO
-                            var lat_lon_list: Promise<Object>[] = [];
-                            for (let i = 0; i < final_buildings.length; i++) {
-                                lat_lon_list.push(new Promise(function (fulfill, reject) {
-                                    let uri = final_buildings[i]["address"];
-                                    let uri_encoded = encodeURIComponent(uri);
-                                    let url = "http://skaha.cs.ubc.ca:11316/api/v1/team132/" + uri_encoded;
-
-                                    request(url, function (error: any, response: any, body: any) {
-                                        if (!error && response.statusCode == 200) {
-                                            fulfill(body);
-                                        } else {
-                                            reject(error);
+                                        index_file = list[i];
+                                        try {
+                                            parse5.parse(index_file);
+                                        }catch (err){
+                                            let ret_obj={code:400, body:"invalid index.htm 431"};
+                                            return reject(ret_obj);
                                         }
-                                    })
-                                }))
+                                        break;
+                                    }
+                                    parse5.parse(list[i]);
+                                }
+                            } catch (error) {
+                              //  index_valid=false;
+                                console.log("line 413");
                             }
-                            Promise.all(lat_lon_list).then((lat_lon_list)=> {
-                                //change abvoe
 
-                                let parsed_list = JSON.parse(JSON.stringify(lat_lon_list));
-                                var final_rooms: any[] = [];
+                            //if (index_valid) {
+                                var tbody_start = index_file.indexOf("<tbody>");
+                                var tbody_end = index_file.indexOf("</tbody>");
+                                var temp = index_file.substring(tbody_start + "<tbody>".length, tbody_end);
 
-                                var num_rooms=0;
-                                for (var i = 0; i < list.length; i++) {
-                                    var item = list[i];
-                                    for (var j = 0; j < final_buildings.length; j++) {
 
-                                        if ("./" + name_list[i] == final_buildings[j]["a_href"]) {
+                                var buildings = temp.split("</tr>");
+                                buildings.pop();
+                                var final_buildings: any[] = [];
+                                for (let item of buildings) {
 
-                                            var room_shortname = final_buildings[j]["short_name"];
-                                            var room_fullname = final_buildings[j]["full_name"];
-                                            var room_address = final_buildings[j]["address"];
-                                            var room_href = null;
-                                            var room_number = null;
-                                            var room_seats = null;
-                                            var room_furniture = null;
-                                            var room_type = null;
-                                            var room_name = null;
+                                    let building: {[index: string]: any} = {};
+                                    var temp_s = "a href=\"";
+                                    var a_href = extract_info(item, temp_s, "\"");
 
-                                            let lat_lon = JSON.parse(parsed_list[j]);
-                                            var room_lat=lat_lon["lat"];
-                                            var room_lon=lat_lon["lon"];
+                                    temp_s = "building-code\" >";
+                                    var short_name = extract_info(item, temp_s, "</td>");
 
-                                            tbody_start = item.indexOf("<tbody>");
-                                            tbody_end = item.indexOf("</tbody>");
-                                            if (tbody_start != -1) {
-                                                temp = item.substring(tbody_start + "<tbody>".length, tbody_end);
-                                                var rooms = temp.split("</tr>");
+                                    temp_s = "views-field-title\" >";
+                                    var full_name_index = item.indexOf(temp_s) + temp_s.length;
+                                    temp_s = "title=\"Building Details and Map\">";
+                                    var full_name_index = item.indexOf(temp_s, full_name_index) + temp_s.length;
+                                    var full_name = item.substring(full_name_index, item.indexOf("</a>", full_name_index));
 
-                                                rooms.pop();
-                                                for (let room of rooms) {
+                                    temp_s = "field-building-address\" >";
+                                    var address = extract_info(item, temp_s, "</td>");
 
-                                                    let room_obj: {[index: string]: any} = {};
+                                    building["a_href"] = a_href;
+                                    building["short_name"] = short_name;
+                                    building["full_name"] = full_name;
+                                    building["address"] = address;
 
-                                                    var temp_s = "a href=\"";
-                                                    room_href = extract_info(room, temp_s, "\"");
+                                    final_buildings.push(building);
+                                }
+                                //change below
+                                //TODO
+                                var lat_lon_list: Promise<Object>[] = [];
+                                for (let i = 0; i < final_buildings.length; i++) {
+                                    lat_lon_list.push(new Promise(function (fulfill, reject) {
+                                        let uri = final_buildings[i]["address"];
+                                        let uri_encoded = encodeURIComponent(uri);
+                                        let url = "http://skaha.cs.ubc.ca:11316/api/v1/team132/" + uri_encoded;
 
-                                                    temp_s = "title=\"Room Details\">";
-                                                    room_number = extract_info(room, temp_s, "</a>");
+                                        request(url, function (error: any, response: any, body: any) {
+                                            if (!error && response.statusCode == 200) {
+                                                fulfill(body);
+                                            } else {
+                                                reject(error);
+                                            }
+                                        })
+                                    }))
+                                }
+                                Promise.all(lat_lon_list).then((lat_lon_list) => {
+                                    //change abvoe
 
-                                                    temp_s = "room-capacity\" >";
-                                                    room_seats = extract_info(room, temp_s, "</td>");
+                                    let parsed_list = JSON.parse(JSON.stringify(lat_lon_list));
+                                    var final_rooms: any[] = [];
 
-                                                    temp_s = "room-furniture\" >";
-                                                    room_furniture = extract_info(room, temp_s, "</td>");
+                                    var num_rooms = 0;
+                                    var invalid_count=0;
+                                    for (var i = 0; i < list.length; i++) {
+                                        var item = list[i];
+                                        for (var j = 0; j < final_buildings.length; j++) {
 
-                                                    temp_s = "room-type\" >";
-                                                    room_type = extract_info(room, temp_s, "</td>");
+                                            if ("./" + name_list[i] == final_buildings[j]["a_href"]) {
 
-                                                    room_name = final_buildings[j]["short_name"] + "_" + room_number;
-
-                                                    room_obj["rooms_fullname"] = room_fullname;
-                                                    room_obj["rooms_shortname"] = room_shortname;
-                                                    room_obj["rooms_name"] = room_name;
-                                                    room_obj["rooms_number"] = room_number;
-                                                    room_obj["rooms_address"] = room_address;
-                                                    room_obj["rooms_seats"] = room_seats;
-                                                    room_obj["rooms_furniture"] = room_furniture;
-                                                    room_obj["rooms_href"] = room_href;
-                                                    room_obj["rooms_lat"] = room_lat;
-                                                    room_obj["rooms_lon"] = room_lon;
-
-                                                    room_obj["id"]=num_rooms;
-                                                    num_rooms++;
-                                                    final_rooms.push(room_obj);
+                                                try{
+                                                    parse5.parse(item);
                                                 }
+                                                catch(err){
+                                                    invalid_count++;
+                                                    console.log("file "+i+" is invalid");
+                                                    continue;
+                                                }
+
+                                                var room_shortname = final_buildings[j]["short_name"];
+                                                var room_fullname = final_buildings[j]["full_name"];
+                                                var room_address = final_buildings[j]["address"];
+                                                var room_href = null;
+                                                var room_number = null;
+                                                var room_seats = null;
+                                                var room_furniture = null;
+                                                var room_type = null;
+                                                var room_name = null;
+
+                                                let lat_lon = JSON.parse(parsed_list[j]);
+                                                var room_lat = lat_lon["lat"];
+                                                var room_lon = lat_lon["lon"];
+
+                                                tbody_start = item.indexOf("<tbody>");
+                                                tbody_end = item.indexOf("</tbody>");
+                                                if (tbody_start != -1) {
+                                                    temp = item.substring(tbody_start + "<tbody>".length, tbody_end);
+                                                    var rooms = temp.split("</tr>");
+
+                                                    rooms.pop();
+                                                    for (let room of rooms) {
+
+                                                        let room_obj: {[index: string]: any} = {};
+
+                                                        var temp_s = "a href=\"";
+                                                        room_href = extract_info(room, temp_s, "\"");
+
+                                                        temp_s = "title=\"Room Details\">";
+                                                        room_number = extract_info(room, temp_s, "</a>");
+
+                                                        temp_s = "room-capacity\" >";
+                                                        room_seats = extract_info(room, temp_s, "</td>");
+
+                                                        temp_s = "room-furniture\" >";
+                                                        room_furniture = extract_info(room, temp_s, "</td>");
+
+                                                        temp_s = "room-type\" >";
+                                                        room_type = extract_info(room, temp_s, "</td>");
+
+                                                        room_name = final_buildings[j]["short_name"] + "_" + room_number;
+
+                                                        room_obj["rooms_fullname"] = room_fullname;
+                                                        room_obj["rooms_shortname"] = room_shortname;
+                                                        room_obj["rooms_name"] = room_name;
+                                                        room_obj["rooms_number"] = room_number;
+                                                        room_obj["rooms_address"] = room_address;
+                                                        room_obj["rooms_seats"] = room_seats;
+                                                        room_obj["rooms_furniture"] = room_furniture;
+                                                        room_obj["rooms_href"] = room_href;
+                                                        room_obj["rooms_lat"] = room_lat;
+                                                        room_obj["rooms_lon"] = room_lon;
+
+                                                        room_obj["id"] = num_rooms;
+                                                        num_rooms++;
+                                                        final_rooms.push(room_obj);
+                                                    }
+
+                                                }
+
+
+                                                // else {
+                                                //     let room_obj: {[index: string]: any} = {};
+                                                //     room_href = final_buildings[j]["a_href"];
+                                                //     room_obj["rooms_href"] = room_href;
+                                                //     room_obj["rooms_fullname"] = room_fullname;
+                                                //     room_obj["rooms_shortname"] = room_shortname;
+                                                //     room_obj["rooms_address"] = room_address;
+                                                //
+                                                //     room_obj["rooms_name"] = room_name;
+                                                //     room_obj["rooms_number"] = room_number;
+                                                //     room_obj["rooms_seats"] = room_seats;
+                                                //     room_obj["rooms_furniture"] = room_furniture;
+                                                //     room_obj["rooms_lat"] = room_lat;
+                                                //     room_obj["rooms_lon"] = room_lon;
+                                                //
+                                                //     room_obj["rooms_id"]=num_rooms;
+                                                //     num_rooms++;
+                                                //     final_rooms.push(room_obj);
+                                                //
+                                                // }
+
+                                                // var interest_info = ["rooms_fullname", "rooms_shortname", "rooms_name", "rooms_number",
+                                                //     "rooms_address", "rooms_lat", "rooms_lon", "rooms_seats", "rooms_furniture","rooms_href"];
+
+
+                                                break;
 
                                             }
 
-
-                                            // else {
-                                            //     let room_obj: {[index: string]: any} = {};
-                                            //     room_href = final_buildings[j]["a_href"];
-                                            //     room_obj["rooms_href"] = room_href;
-                                            //     room_obj["rooms_fullname"] = room_fullname;
-                                            //     room_obj["rooms_shortname"] = room_shortname;
-                                            //     room_obj["rooms_address"] = room_address;
-                                            //
-                                            //     room_obj["rooms_name"] = room_name;
-                                            //     room_obj["rooms_number"] = room_number;
-                                            //     room_obj["rooms_seats"] = room_seats;
-                                            //     room_obj["rooms_furniture"] = room_furniture;
-                                            //     room_obj["rooms_lat"] = room_lat;
-                                            //     room_obj["rooms_lon"] = room_lon;
-                                            //
-                                            //     room_obj["rooms_id"]=num_rooms;
-                                            //     num_rooms++;
-                                            //     final_rooms.push(room_obj);
-                                            //
-                                            // }
-
-                                            // var interest_info = ["rooms_fullname", "rooms_shortname", "rooms_name", "rooms_number",
-                                            //     "rooms_address", "rooms_lat", "rooms_lon", "rooms_seats", "rooms_furniture","rooms_href"];
-
-
-                                            break;
-
                                         }
 
                                     }
-
-                                }
-
-                                var room_file = {"rooms": final_rooms};
-                                var j_objs = JSON.stringify(room_file);
-                                fs.writeFile('src/' + id + '.txt', j_objs, (err: Error) => {
-                                    if (err) {
-
-                                        ret_obj = {code: 400, body: {"error": err.message}};
-                                        //console.log("write file error if line 216");
-                                        return reject(ret_obj);
+                                    if (invalid_count==final_buildings.length){
+                                        let ret_obj={code:400, body:"no valid files 613"};
+                                        return reject (ret_obj);
                                     }
-                                    else {
-                                        //console.log("write file error else line 220");
-                                        if (exist) {
-                                            ret_obj = {code: 201, body: j_objs};
+
+                                    var room_file = {"rooms": final_rooms};
+                                    var j_objs = JSON.stringify(room_file);
+                                    fs.writeFile('src/' + id + '.txt', j_objs, (err: Error) => {
+                                        if (err) {
+
+                                            ret_obj = {code: 400, body: {"error": err.message}};
+                                            //console.log("write file error if line 216");
+                                            return reject(ret_obj);
                                         }
                                         else {
-                                            ret_obj = {code: 204, body: j_objs};
+                                            //console.log("write file error else line 220");
+                                            if (exist) {
+                                                ret_obj = {code: 201, body: j_objs};
+                                            }
+                                            else {
+                                                ret_obj = {code: 204, body: j_objs};
+                                            }
+                                            return fulfill(ret_obj);
                                         }
-                                        return fulfill(ret_obj);
-                                    }
+                                    });
                                 });
-                            });
-
+                          //  } else {
+                          //      reject("invalid index at 619");
+                          //  }
 //                                fulfill({code: 555, body:"at line 252"});
                         }).catch(function (err) {
                             return reject({code: 400, body: "error catched 535"});
@@ -676,8 +709,8 @@ export default class InsightFacade implements IInsightFacade {
             }
 
 
-            var column0=columns[0];
-            var id:string=column0.substring(0,column0.indexOf("_"));
+            var column0 = columns[0];
+            var id: string = column0.substring(0, column0.indexOf("_"));
 
             var exist: boolean = fs.existsSync("src/" + id + ".txt");
 
@@ -689,12 +722,12 @@ export default class InsightFacade implements IInsightFacade {
                     }
                     else {
 
-                        var table:Dataset_obj[];
-                        if (id=="courses"){
-                            table=build_table(data);
+                        var table: Dataset_obj[];
+                        if (id == "courses") {
+                            table = build_table(data);
                         }
                         else {
-                            table=build_table_rooms(data);
+                            table = build_table_rooms(data);
                         }
 
                         var missing_col: string[] = [];
@@ -733,7 +766,7 @@ export default class InsightFacade implements IInsightFacade {
 
                         missing_col = [];
                         var body = null;
-                       try {
+                        try {
                             body = filter(table, query, missing_col, error_400);  ///**type
                         } catch (err) {
                             return reject({code: 400, body: err.message});
@@ -795,7 +828,7 @@ function build_table(data: string): Array<Course_obj> {
 
     var course_list: Course_obj[] = [];
 
-    var interest_info = ["Subject", "Course", "Avg", "Professor", "Title", "Pass", "Fail", "Audit", "id","Year"];
+    var interest_info = ["Subject", "Course", "Avg", "Professor", "Title", "Pass", "Fail", "Audit", "id", "Year"];
 
     for (let course of courses) {
 
@@ -833,7 +866,7 @@ function build_table_rooms(data: string): Array<Rooms_obj> {
 
 
     var interest_info = ["rooms_fullname", "rooms_shortname", "rooms_name", "rooms_number",
-        "rooms_address", "rooms_lat", "rooms_lon", "rooms_seats", "rooms_furniture", "rooms_href","id"];
+        "rooms_address", "rooms_lat", "rooms_lon", "rooms_seats", "rooms_furniture", "rooms_href", "id"];
 
     var room_list: Rooms_obj[] = [];
     for (let room of rooms) {
