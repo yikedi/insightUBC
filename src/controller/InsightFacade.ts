@@ -711,7 +711,7 @@ export default class InsightFacade implements IInsightFacade {
                 var form = options["FORM"];
             }
             catch (err) {
-                return reject({code: 400, body: {"error": "invalid json or query 307"}});
+                return reject({code: 400, body: {"error": "invalid json or query 714"}});
             }
 
 
@@ -877,7 +877,7 @@ function build_table_rooms(data: string): Array<Rooms_obj> {
 
 
     var interest_info = ["rooms_fullname", "rooms_shortname", "rooms_name", "rooms_number",
-        "rooms_address", "rooms_lat", "rooms_lon", "rooms_seats", "rooms_furniture", "rooms_href", "id"];
+        "rooms_address", "rooms_lat", "rooms_lon", "rooms_seats", "rooms_furniture", "rooms_href", "id","rooms_type"];
 
     var room_list: Rooms_obj[] = [];
     for (let room of rooms) {

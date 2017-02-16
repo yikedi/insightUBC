@@ -82,7 +82,60 @@ describe("EchoSpec", function () {
 
         var temp = new InsightFacade();
 
-        temp.addDataset("rooms", f)
+        temp.addDataset("courses", f)
+            .then((response) => {
+                console.log(response.code);
+                //console.log(response.body);
+                done();
+            })
+            .catch((err) => {
+                console.log(err.code);
+                console.log(err.body)
+                done();
+            });
+
+    });
+
+
+    it("test simple query courses year", function (done) {
+        this.timeout(10000)
+
+
+        var s1 = {
+            "WHERE": {
+
+                    "OR": [
+                        {
+                            "GT": {
+                                "courses_year": 2016
+                            }
+                        },
+                        {
+                            "EQ":{
+                                "courses_year": 1900
+                            }
+                        }
+                    ]
+
+
+            },
+
+
+            "OPTIONS": {
+                "COLUMNS": [
+                    "courses_id",
+                    "courses_year"
+                ],
+                "ORDER": "courses_year",
+                "FORM": "TABLE"
+            }
+        };
+        var query = s1;
+
+
+        var temp = new InsightFacade();
+
+        temp.performQuery(query)
             .then((response) => {
                 console.log(response.code);
                 console.log(response.body);
@@ -95,6 +148,8 @@ describe("EchoSpec", function () {
             });
 
     });
+
+
 /*
 
     it("test add courses.zip", function (done) {
@@ -2377,7 +2432,7 @@ describe("EchoSpec", function () {
     });
 */
 
-    it("test Adddataset rooms", function (done) {
+    xit("test Adddataset rooms", function (done) {
         this.timeout(10000)
 
 
@@ -2416,10 +2471,20 @@ describe("EchoSpec", function () {
             },
             "OPTIONS": {
                 "COLUMNS": [
-                    "rooms_id",
-                    "rooms_seats","rooms_href"
+                    "rooms_fullname",
+                    "rooms_shortname",
+                    "rooms_name",
+                    "rooms_number",
+                    "rooms_address",
+                    "rooms_lat",
+                    "rooms_lon",
+                    "rooms_seats",
+                    "rooms_furniture",
+                    "rooms_href",
+                    "rooms_type"
+
                 ],
-                "ORDER": "rooms_seats",
+
                 "FORM": "TABLE"
             }
         };
@@ -2442,7 +2507,7 @@ describe("EchoSpec", function () {
 
     });
 
-    it("test simple query rooms 2", function (done) {
+    it("test simple invalid query rooms 2", function (done) {
         this.timeout(10000)
 
 
@@ -2472,7 +2537,6 @@ describe("EchoSpec", function () {
                     "rooms_seats",
                     "rooms_shortname"
                 ],
-                "ORDER": "rooms_seats",
                 "FORM": "TABLE"
             }
         };
