@@ -550,8 +550,13 @@ export default class InsightFacade implements IInsightFacade {
                                                         temp_s = "room-capacity\" >";
                                                         room_seats = extract_info(room, temp_s, "</td>");
 
+                                                        if(num_rooms == 100){
+                                                            console.log();
+                                                        }
                                                         temp_s = "room-furniture\" >";
-                                                        room_furniture = extract_info(room, temp_s, "</td>");
+                                                        let furniture = extract_info(room, temp_s, "</td>");
+                                                        room_furniture = furniture.replace(/&amp;/g, '&');
+
 
                                                         temp_s = "room-type\" >";
                                                         room_type = extract_info(room, temp_s, "</td>");
@@ -846,7 +851,12 @@ function build_table(data: string): Array<Course_obj> {
                     if (s == "id" || s == "Course") {
                         each_course.setValue(s, value.toString());
                     } else {
-                        each_course.setValue(s, value);
+                        if (s=="Year" && item["Section"]=="overall"){
+                            each_course.setValue(s,"1900");
+                        }
+                        else {
+                            each_course.setValue(s, value);
+                        }
                     }
                 }
             } catch (err) {

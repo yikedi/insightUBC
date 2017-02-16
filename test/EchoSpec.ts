@@ -2417,9 +2417,9 @@ describe("EchoSpec", function () {
             "OPTIONS": {
                 "COLUMNS": [
                     "rooms_id",
-                    "rooms_seats"
+                    "rooms_seats","rooms_href"
                 ],
-                "ORDER": "rooms_id",
+                "ORDER": "rooms_seats",
                 "FORM": "TABLE"
             }
         };
