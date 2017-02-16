@@ -486,9 +486,9 @@ export default class InsightFacade implements IInsightFacade {
 
                                         request(url, function (error: any, response: any, body: any) {
                                             if (!error && response.statusCode == 200) {
-                                                fulfill(body);
+                                                return fulfill(body);
                                             } else {
-                                                fulfill("{\"lat\":\"\",\"lon\":\"\"}");
+                                                return fulfill("{\"lat\":\"\",\"lon\":\"\"}");
                                             }
                                         })
                                     }))
