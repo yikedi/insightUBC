@@ -817,7 +817,8 @@ export default class InsightFacade implements IInsightFacade {
 
             }
             else {
-                var ret_obj = {code: 400, body: {"error": "file not exist    819"}};
+
+                var ret_obj = {code: 424, body: {"missing":[id]}};
                 return reject(ret_obj);
             }
 

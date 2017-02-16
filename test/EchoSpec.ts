@@ -96,8 +96,8 @@ describe("EchoSpec", function () {
 
     });
 
-
-    xit("test simple query courses year", function (done) {
+    /*
+    it("test simple query courses year", function (done) {
         this.timeout(10000)
 
 
@@ -2431,7 +2431,7 @@ describe("EchoSpec", function () {
         })
     });
 
-
+*/
     xit("test Adddataset rooms", function (done) {
         this.timeout(10000)
 
@@ -2517,12 +2517,12 @@ describe("EchoSpec", function () {
                     "OR": [
                         {
                             "LT": {
-                                "rooms_avg": "aa"
+                                "rooms_seats": 100
                             }
                         },
                         {
                             "IS":{
-                                "rooms_title":"*C*"
+                                "rooms_shortname":"*C*"
                             }
                         }
                     ]
@@ -2533,11 +2533,62 @@ describe("EchoSpec", function () {
 
             "OPTIONS": {
                 "COLUMNS": [
-                    "courses_id",
-                    "courses_avg",
-                    "courses_seats"
+                    "rooms_seats",
+                    "rooms_id"
+
                 ],
-                "ORDER":"courses_id",
+                "FORM": "TABLE"
+            }
+        };
+        var query = s1;
+
+
+        var temp = new InsightFacade();
+
+        temp.performQuery(query)
+            .then((response) => {
+                console.log(response.code);
+                console.log(response.body);
+                done();
+            })
+            .catch((err) => {
+                console.log(err.code);
+                console.log(err.body)
+                done();
+            });
+
+    });
+
+
+    it("test simple query rooms 3 with rooms dataset removed", function (done) {
+        this.timeout(10000)
+
+
+        var s1 = {
+            "WHERE": {
+                "NOT": {
+                    "OR": [
+                        {
+                            "LT": {
+                                "rooms_seats": 100
+                            }
+                        },
+                        {
+                            "IS":{
+                                "courses_title":"*C*"
+                            }
+                        }
+                    ]
+                }
+
+            },
+
+
+            "OPTIONS": {
+                "COLUMNS": [
+                    "courses_uuid"
+
+                ],
                 "FORM": "TABLE"
             }
         };
