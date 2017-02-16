@@ -568,6 +568,7 @@ export default class InsightFacade implements IInsightFacade {
                                                         room_obj["rooms_href"] = room_href;
                                                         room_obj["rooms_lat"] = room_lat;
                                                         room_obj["rooms_lon"] = room_lon;
+                                                        room_obj["rooms_type"]=room_type;
 
                                                         room_obj["id"] = num_rooms;
                                                         num_rooms++;

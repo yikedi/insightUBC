@@ -2377,7 +2377,7 @@ describe("EchoSpec", function () {
     });
 */
 
-    xit("test Adddataset rooms", function (done) {
+    it("test Adddataset rooms", function (done) {
         this.timeout(10000)
 
 
