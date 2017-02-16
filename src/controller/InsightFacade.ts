@@ -482,7 +482,7 @@ export default class InsightFacade implements IInsightFacade {
                                     lat_lon_list.push(new Promise(function (fulfill, reject) {
                                         let uri = final_buildings[i]["address"];
                                         let uri_encoded = encodeURIComponent(uri);
-                                        let url = "http://skaha.cs.ubc.ca:11316/api/v1/team132/" + "sss"+uri_encoded;
+                                        let url = "http://skaha.cs.ubc.ca:11316/api/v1/team132/" +uri_encoded;
 
                                         request(url, function (error: any, response: any, body: any) {
                                             if (!error && response.statusCode == 200) {
@@ -677,7 +677,7 @@ export default class InsightFacade implements IInsightFacade {
             else {
                 fs.unlink(path, (err: Error) => {
                     if (err) {
-                        ret_obj = {code: 404, body: {"error": err.message}};
+                        ret_obj = {code: 404, body: {"error": err.message} +" 680"};
                         return reject(ret_obj);
                     } else {
                         ret_obj = {code: 204, body: "The operation was successful"};
@@ -744,11 +744,11 @@ export default class InsightFacade implements IInsightFacade {
                         for (let column of columns) {
                             var value = dictionary[column];
 
-                            if (isUndefined(value)) {
+                            // if (isUndefined(value)) {
                                 if (column.substring(0, column.indexOf("_")) != id) {
                                     missing_col.push(column);
                                 }
-                            }
+                           // }
                             if (order == column) {
                                 order_valid = true;
                             }
@@ -1001,7 +1001,7 @@ function filter_helper(table: Array<Dataset_obj>, query: QueryRequest, missing_c
                         error_400.push({"error": "type error IS"});
                     }
                 } catch (err) {
-                    error_400.push({"error": err.message});
+                    error_400.push({"error": err.message+" 1004"});
                 }
 
             }
@@ -1072,7 +1072,7 @@ function filter_helper(table: Array<Dataset_obj>, query: QueryRequest, missing_c
                         error_400.push({"error": "type error LT"});
                     }
                 } catch (err) {
-                    error_400.push({"error": err.message});
+                    error_400.push({"error": err.message+" 1075"});
                 }
 
             }
@@ -1105,7 +1105,7 @@ function filter_helper(table: Array<Dataset_obj>, query: QueryRequest, missing_c
                         error_400.push({"error": "type error EQ"});
                     }
                 } catch (err) {
-                    error_400.push({"error": err.message});
+                    error_400.push({"error": err.message +" 1108"});
                 }
 
             }

@@ -2458,7 +2458,7 @@ describe("EchoSpec", function () {
     });
 
 
-    it("test query rooms", function (done) {
+    xit("test query rooms", function (done) {
         this.timeout(10000)
 
 
@@ -2517,12 +2517,12 @@ describe("EchoSpec", function () {
                     "OR": [
                         {
                             "LT": {
-                                "rooms_seats": 100
+                                "courses_avg": 100
                             }
                         },
                         {
                             "IS":{
-                                "rooms_shortname":"A*"
+                                "courses_title":"*C*"
                             }
                         }
                     ]
@@ -2534,8 +2534,8 @@ describe("EchoSpec", function () {
             "OPTIONS": {
                 "COLUMNS": [
                     "courses_id",
-                    "rooms_seats",
-                    "rooms_shortname"
+                    "courses_avg",
+                    "rooms_seats"
                 ],
                 "FORM": "TABLE"
             }
