@@ -482,13 +482,13 @@ export default class InsightFacade implements IInsightFacade {
                                     lat_lon_list.push(new Promise(function (fulfill, reject) {
                                         let uri = final_buildings[i]["address"];
                                         let uri_encoded = encodeURIComponent(uri);
-                                        let url = "http://skaha.cs.ubc.ca:11316/api/v1/team132/" + uri_encoded;
+                                        let url = "http://skaha.cs.ubc.ca:11316/api/v1/team132/" + "sss"+uri_encoded;
 
                                         request(url, function (error: any, response: any, body: any) {
                                             if (!error && response.statusCode == 200) {
                                                 fulfill(body);
                                             } else {
-                                                reject(error);
+                                                fulfill("{\"lat\":\"\",\"lon\":\"\"}");
                                             }
                                         })
                                     }))
