@@ -708,14 +708,18 @@ export default class InsightFacade implements IInsightFacade {
                 var form = options["FORM"];
             }
             catch (err) {
-                 //reject({code: 400, body: {"error": "invalid json or query 714"}});
+                 reject({code: 400, body: {"error": "invalid json or query 714"}});
             }
 
 
-            var column0 = columns[0];
-            var id: string = column0.substring(0, column0.indexOf("_"));
+            if(columns.length != 0) {
+                var column0 = columns[0];
+                var id: string = column0.substring(0, column0.indexOf("_"));
 
-            var exist: boolean = fs.existsSync("src/" + id + ".txt");
+                var exist: boolean = fs.existsSync("src/" + id + ".txt");
+            }else{
+                return reject({code: 400, body: {"error": " empty column 721"}});
+            }
 
             if (exist) {
                 var file = fs.readFile("src/" + id + ".txt", 'utf-8', (err: Error, data: string) => {

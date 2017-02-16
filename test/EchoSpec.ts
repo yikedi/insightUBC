@@ -97,7 +97,7 @@ describe("EchoSpec", function () {
     });
 
 
-    it("test simple query courses year", function (done) {
+    xit("test simple query courses year", function (done) {
         this.timeout(10000)
 
 
@@ -150,7 +150,7 @@ describe("EchoSpec", function () {
     });
 
 
-/*
+
 
     it("test add courses.zip", function (done) {
         this.timeout(50000)
@@ -2430,7 +2430,7 @@ describe("EchoSpec", function () {
             done();
         })
     });
-*/
+
 
     xit("test Adddataset rooms", function (done) {
         this.timeout(10000)
@@ -2517,12 +2517,12 @@ describe("EchoSpec", function () {
                     "OR": [
                         {
                             "LT": {
-                                "courses_avg": 100
+                                "rooms_avg": "aa"
                             }
                         },
                         {
                             "IS":{
-                                "courses_title":"*C*"
+                                "rooms_title":"*C*"
                             }
                         }
                     ]
@@ -2535,8 +2535,9 @@ describe("EchoSpec", function () {
                 "COLUMNS": [
                     "courses_id",
                     "courses_avg",
-                    "rooms_seats"
+                    "courses_seats"
                 ],
+                "ORDER":"courses_id",
                 "FORM": "TABLE"
             }
         };
