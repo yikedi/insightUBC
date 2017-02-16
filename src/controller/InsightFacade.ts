@@ -377,7 +377,7 @@ export default class InsightFacade implements IInsightFacade {
 
                             }
                             catch (err) {
-                                ret_obj = {code: 400, body: {"error": err.message}};
+                                ret_obj = {code: 400, body: {"error": err.message+"     380"}};
                                 return reject(ret_obj)
                             }
 
@@ -385,7 +385,7 @@ export default class InsightFacade implements IInsightFacade {
                             fs.writeFile('src/' + id + '.txt', j_objs, (err: Error) => {
                                 if (err) {
 
-                                    ret_obj = {code: 400, body: {"error": err.message}};
+                                    ret_obj = {code: 400, body: {"error": err.message+"      388"}};
                                     //console.log("write file error if line 216");
                                     return reject(ret_obj);
                                 }
@@ -403,7 +403,7 @@ export default class InsightFacade implements IInsightFacade {
 
                         }).catch(function (err: Error) {
                             //console.log("in write file catch line 228");
-                            ret_obj = {code: 400, body: {"error": err.message}};
+                            ret_obj = {code: 400, body: {"error": err.message+"      406"}};
                             return reject(ret_obj);
                         });
 
@@ -429,7 +429,7 @@ export default class InsightFacade implements IInsightFacade {
                                         try {
                                             parse5.parse(index_file);
                                         }catch (err){
-                                            let ret_obj={code:400, body:"invalid index.htm 431"};
+                                            let ret_obj={code:400, body:"invalid index.htm  431"};
                                             return reject(ret_obj);
                                         }
                                         break;
@@ -550,9 +550,6 @@ export default class InsightFacade implements IInsightFacade {
                                                         temp_s = "room-capacity\" >";
                                                         room_seats = extract_info(room, temp_s, "</td>");
 
-                                                        if(num_rooms == 100){
-                                                            console.log();
-                                                        }
                                                         temp_s = "room-furniture\" >";
                                                         let furniture = extract_info(room, temp_s, "</td>");
                                                         room_furniture = furniture.replace(/&amp;/g, '&');
@@ -625,7 +622,7 @@ export default class InsightFacade implements IInsightFacade {
                                     fs.writeFile('src/' + id + '.txt', j_objs, (err: Error) => {
                                         if (err) {
 
-                                            ret_obj = {code: 400, body: {"error": err.message}};
+                                            ret_obj = {code: 400, body: {"error": err.message + "    628"}};
                                             //console.log("write file error if line 216");
                                             return reject(ret_obj);
                                         }
@@ -655,7 +652,7 @@ export default class InsightFacade implements IInsightFacade {
 
                 }).catch(function (err: Error) {
                 //console.log("in JSZip catch line 235");
-                ret_obj = {code: 400, body: {"error": err.message}};
+                ret_obj = {code: 400, body: {"error": err.message+ "  658"}};
                 return reject(ret_obj);
             });
 
@@ -724,7 +721,7 @@ export default class InsightFacade implements IInsightFacade {
                 var file = fs.readFile("src/" + id + ".txt", 'utf-8', (err: Error, data: string) => {
                     if (err) {
                         //console.log("in exist err line 154");
-                        return reject({code: 400, body: {"error": err.message}});
+                        return reject({code: 400, body: {"error": err.message+"    727"}});
                     }
                     else {
 
@@ -745,13 +742,13 @@ export default class InsightFacade implements IInsightFacade {
 
 
                         for (let column of columns) {
-                            //var value = dictionary[column];
+                            var value = dictionary[column];
 
-                            //if (isUndefined(value)) {
+                            if (isUndefined(value)) {
                                 if (column.substring(0, column.indexOf("_")) != id) {
                                     missing_col.push(column);
                                 }
-                            //}
+                            }
                             if (order == column) {
                                 order_valid = true;
                             }
@@ -775,7 +772,7 @@ export default class InsightFacade implements IInsightFacade {
                         try {
                             body = filter(table, query, missing_col, error_400);  ///**type
                         } catch (err) {
-                            return reject({code: 400, body: err.message});
+                            return reject({code: 400, body: err.message+"   778"});
                         }
 
                         if (missing_col.length > 0) {
@@ -790,7 +787,7 @@ export default class InsightFacade implements IInsightFacade {
                                     }
                                 }
                                 catch (err) {
-                                    return reject({code: 400, body: err.message});
+                                    return reject({code: 400, body: err.message+"   793"});
                                 }
                             }
 
@@ -802,7 +799,7 @@ export default class InsightFacade implements IInsightFacade {
 
 
                         } else if (error_400.length > 0) {
-                            return reject({code: 400, body: error_400[0]});
+                            return reject({code: 400, body: error_400[0]+ "   805 "});
                         }
 
                         var ret_obj = {render: form, result: body};
@@ -816,7 +813,7 @@ export default class InsightFacade implements IInsightFacade {
 
             }
             else {
-                var ret_obj = {code: 400, body: {"error": "file not exist"}};
+                var ret_obj = {code: 400, body: {"error": "file not exist    819"}};
                 return reject(ret_obj);
             }
 
