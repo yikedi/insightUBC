@@ -708,7 +708,7 @@ export default class InsightFacade implements IInsightFacade {
                 var form = options["FORM"];
             }
             catch (err) {
-                return reject({code: 400, body: {"error": "invalid json or query 714"}});
+                 //reject({code: 400, body: {"error": "invalid json or query 714"}});
             }
 
 
