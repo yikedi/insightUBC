@@ -336,14 +336,14 @@ export default class InsightFacade implements IInsightFacade {
         // a.setValue("Subject","5");
         // console.log(a.Subject);
 
-        return new Promise(function (fulfill, reject) {
+        return new Promise( (fulfill, reject)=> {
 
             var ret_obj = null;
             var zip = new JSZip();
             var exist: boolean = fs.existsSync("src/" + id + ".txt");
 
             zip.loadAsync(content, {"base64": true})
-                .then(function (data: JSZip) {
+                .then( (data: JSZip) =>{
 
 
                     var promise_list: Promise<string>[] = [];
@@ -358,7 +358,7 @@ export default class InsightFacade implements IInsightFacade {
 
                         var final_string = "{\"" + id + "\":[";
 
-                        Promise.all(promise_list).then(function (list) {
+                        Promise.all(promise_list).then( (list)=> {
 
                             var i = 0;
 
@@ -437,7 +437,7 @@ export default class InsightFacade implements IInsightFacade {
 
                         });
 
-                        Promise.all(promise_list).then(function (list) {
+                        Promise.all(promise_list).then( (list)=> {
                             //let index_valid:boolean = true;
 
                             try {
@@ -659,7 +659,7 @@ export default class InsightFacade implements IInsightFacade {
     }
 
     removeDataset(id: string): Promise<InsightResponse> {
-        return new Promise(function (fulfill, reject) {
+        return new Promise( (fulfill, reject)=> {
             var ret_obj = null;
             var path = "src/" + id + ".txt";
             var exist: boolean = fs.existsSync("src/" + id + ".txt");

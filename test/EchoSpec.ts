@@ -14,58 +14,58 @@ var JSZip = require('jszip');
 describe("EchoSpec", function () {
 
 
-    function sanityCheck(response: InsightResponse) {
+    function sanxityCheck(response: InsightResponse) {
         expect(response).to.have.property('code');
         expect(response).to.have.property('body');
         expect(response.code).to.be.a('number');
     }
 
     before(function () {
-        Log.test('Before: ' + (<any>this).test.parent.title);
+        Log.test('Before: ' + (<any>this).test.parent.txitle);
     });
 
     beforeEach(function () {
-        Log.test('BeforeTest: ' + (<any>this).currentTest.title);
+        Log.test('BeforeTest: ' + (<any>this).currentTest.txitle);
     });
 
     after(function () {
-        Log.test('After: ' + (<any>this).test.parent.title);
+        Log.test('After: ' + (<any>this).test.parent.txitle);
     });
 
     afterEach(function () {
-        Log.test('AfterTest: ' + (<any>this).currentTest.title);
+        Log.test('AfterTest: ' + (<any>this).currentTest.txitle);
     });
 
-    it("Should be able to echo", function () {
+    xit("Should be able to echo", function () {
 
 
         let out = Server.performEcho('echo');
         Log.test(JSON.stringify(out));
-        sanityCheck(out);
+        sanxityCheck(out);
         expect(out.code).to.equal(200);
         expect(out.body).to.deep.equal({message: 'echo...echo'});
     });
 
-    it("Should be able to echo silence", function () {
+    xit("Should be able to echo silence", function () {
         let out = Server.performEcho('');
         Log.test(JSON.stringify(out));
-        sanityCheck(out);
+        sanxityCheck(out);
         expect(out.code).to.equal(200);
         expect(out.body).to.deep.equal({message: '...'});
     });
 
-    it("Should be able to handle a missing echo message sensibly", function () {
+    xit("Should be able to handle a missing echo message sensibly", function () {
         let out = Server.performEcho(undefined);
         Log.test(JSON.stringify(out));
-        sanityCheck(out);
+        sanxityCheck(out);
         expect(out.code).to.equal(400);
         expect(out.body).to.deep.equal({error: 'Message not provided'});
     });
 
-    it("Should be able to handle a null echo message sensibly", function () {
+    xit("Should be able to handle a null echo message sensibly", function () {
         let out = Server.performEcho(null);
         Log.test(JSON.stringify(out));
-        sanityCheck(out);
+        sanxityCheck(out);
         expect(out.code).to.equal(400);
         expect(out.body).to.have.property('error');
         expect(out.body).to.deep.equal({error: 'Message not provided'});
@@ -96,8 +96,8 @@ describe("EchoSpec", function () {
 
     });
 
-    /*
-    it("test simple query courses year", function (done) {
+
+    xit("test simple query courses year", function (done) {
         this.timeout(10000)
 
 
@@ -152,7 +152,7 @@ describe("EchoSpec", function () {
 
 
 
-    it("test add courses.zip", function (done) {
+    xit("test add courses.zip", function (done) {
         this.timeout(50000)
 
         var zip = new JSZip();
@@ -172,7 +172,7 @@ describe("EchoSpec", function () {
             });
 
     });
-    it("test add courses.zip again", function (done) {
+    xit("test add courses.zip again", function (done) {
         this.timeout(50000)
 
         var zip = new JSZip();
@@ -194,7 +194,7 @@ describe("EchoSpec", function () {
     });
 
 
-    it("invalid query-> order", function (done) {
+    xit("invalid query-> order", function (done) {
 
         this.timeout(500000);
 
@@ -246,7 +246,7 @@ describe("EchoSpec", function () {
     });
 
 
-    it("test 424 1 ", function (done) {
+    xit("test 424 1 ", function (done) {
         this.timeout(50000)
 
 
@@ -297,7 +297,7 @@ describe("EchoSpec", function () {
 
     });
 
-    it("test single NOT ", function (done) {
+    xit("test single NOT ", function (done) {
         this.timeout(50000)
 
 
@@ -358,7 +358,7 @@ describe("EchoSpec", function () {
     });
 
 
-    it("test complex 424  ", function (done) {
+    xit("test complex 424  ", function (done) {
         this.timeout(50000)
 
 
@@ -435,7 +435,7 @@ describe("EchoSpec", function () {
     });
 
 
-    it("test courses in one dept 70-80 ", function (done) {
+    xit("test courses in one dept 70-80 ", function (done) {
         this.timeout(50000)
 
 
@@ -487,7 +487,7 @@ describe("EchoSpec", function () {
     });
 
 
-    it("empty GT ", function (done) {
+    xit("empty GT ", function (done) {
         this.timeout(50000)
 
 
@@ -540,7 +540,7 @@ describe("EchoSpec", function () {
     });
 
 
-    it("test contradictory query ", function (done) {
+    xit("test contradictory query ", function (done) {
         this.timeout(50000)
 
 
@@ -595,7 +595,7 @@ describe("EchoSpec", function () {
     });
 
 
-    it("test 400 1 invalid key ", function (done) {
+    xit("test 400 1 invalid key ", function (done) {
         this.timeout(50000)
 
 
@@ -649,7 +649,7 @@ describe("EchoSpec", function () {
     });
 
 
-    it("test 400 2 undefined and ", function (done) {
+    xit("test 400 2 undefined and ", function (done) {
         this.timeout(50000)
 
 
@@ -685,7 +685,7 @@ describe("EchoSpec", function () {
     });
 
 
-    it("test 400 4  ", function (done) {
+    xit("test 400 4  ", function (done) {
         this.timeout(50000)
 
 
@@ -726,7 +726,7 @@ describe("EchoSpec", function () {
 
     });
 
-    it("test 400 3  ", function (done) {
+    xit("test 400 3  ", function (done) {
         this.timeout(50000)
 
 
@@ -772,49 +772,49 @@ describe("EchoSpec", function () {
     });
 
 
-    // it("test performquery after remove", function (done) {
-    //
-    //     this.timeout(500000);
-    //
-    //
-    //     var temp = new InsightFacade();
-    //
-    //     var s1 = {
-    //         "WHERE": {
-    //             "NOT": {
-    //                 "GT": {
-    //                     "courses_avg": 80
-    //                 }
-    //             }
-    //
-    //         },
-    //         "OPTIONS": {
-    //             "COLUMNS": [
-    //                 "courses_dept",
-    //                 "courses_avg"
-    //             ],
-    //             "ORDER": "courses_dept",
-    //             "FORM": "TABLE"
-    //         }
-    //     };
-    //
-    //
-    //     var query = s1;
-    //
-    //     temp.performQuery(query).then(function (body) {
-    //         console.log(body.code);
-    //         //console.log(body.body);
-    //         done();
-    //     }).catch(function (err) {
-    //         console.log(err.code);
-    //         //console.log(err.body);
-    //         done();
-    //     })
-    //
-    // });
+    xit("test performquery after remove", function (done) {
+
+        this.timeout(500000);
 
 
-    it("test double negation 99 ", function (done) {
+        var temp = new InsightFacade();
+
+        var s1 = {
+            "WHERE": {
+                "NOT": {
+                    "GT": {
+                        "courses_avg": 80
+                    }
+                }
+
+            },
+            "OPTIONS": {
+                "COLUMNS": [
+                    "courses_dept",
+                    "courses_avg"
+                ],
+                "ORDER": "courses_dept",
+                "FORM": "TABLE"
+            }
+        };
+
+
+        var query = s1;
+
+        temp.performQuery(query).then(function (body) {
+            console.log(body.code);
+            //console.log(body.body);
+            done();
+        }).catch(function (err) {
+            console.log(err.code);
+            //console.log(err.body);
+            done();
+        })
+
+    });
+
+
+    xit("test double negation 99 ", function (done) {
         this.timeout(50000);
 
 
@@ -863,7 +863,7 @@ describe("EchoSpec", function () {
 
     });
 
-    it("test complex double negation ", function (done) {
+    xit("test complex double negation ", function (done) {
         this.timeout(50000);
 
 
@@ -926,7 +926,7 @@ describe("EchoSpec", function () {
     });
 
 
-    it("invlid order ", function (done) {
+    xit("invlid order ", function (done) {
         this.timeout(50000);
 
 
@@ -986,7 +986,7 @@ describe("EchoSpec", function () {
     });
 
 
-    it("test invalid query ", function (done) {
+    xit("test invalid query ", function (done) {
         this.timeout(50000);
 
 
@@ -1031,7 +1031,7 @@ describe("EchoSpec", function () {
 
     });
 
-    it("test 424 abcd ", function (done) {
+    xit("test 424 abcd ", function (done) {
         this.timeout(50000)
 
 
@@ -1068,10 +1068,10 @@ describe("EchoSpec", function () {
                     "courses_dept",
                     "courses_avg",
                     "courses_uuid",
-                    "courses_title",
+                    "courses_txitle",
                     "courses_instructor",
                     "courses_fail",
-                    "courses_audit",
+                    "courses_audxit",
                     "courses_pass"
                 ],
                 "ORDER": "courses_avg",
@@ -1099,7 +1099,7 @@ describe("EchoSpec", function () {
     });
 
 
-    it("test EQ 1 ", function (done) {
+    xit("test EQ 1 ", function (done) {
         this.timeout(50000)
 
 
@@ -1151,7 +1151,7 @@ describe("EchoSpec", function () {
     });
 
 
-    // it("test EQ 2 ", function (done) {
+    // xit("test EQ 2 ", function (done) {
     //     this.timeout(50000)
     //
     //
@@ -1171,10 +1171,10 @@ describe("EchoSpec", function () {
     //                 "courses_dept",
     //                 "courses_avg",
     //                 "courses_uuid",
-    //                 "courses_title",
+    //                 "courses_txitle",
     //                 "courses_instructor",
     //                 "courses_fail",
-    //                 "courses_audit",
+    //                 "courses_audxit",
     //                 "courses_pass"
     //             ],
     //             "ORDER": "courses_avg",
@@ -1202,7 +1202,7 @@ describe("EchoSpec", function () {
     // });
 
 
-    it("test EQ 2 ", function (done) {
+    xit("test EQ 2 ", function (done) {
         this.timeout(50000)
 
 
@@ -1222,10 +1222,10 @@ describe("EchoSpec", function () {
                     "courses_dept",
                     "courses_avg",
                     "courses_uuid",
-                    "courses_title",
+                    "courses_txitle",
                     "courses_instructor",
                     "courses_fail",
-                    "courses_audit",
+                    "courses_audxit",
                     "courses_pass"
                 ],
                 "ORDER": "courses_avg",
@@ -1252,7 +1252,7 @@ describe("EchoSpec", function () {
 
     });
 
-    it("test partial ", function (done) {
+    xit("test partial ", function (done) {
         this.timeout(50000)
 
 
@@ -1311,7 +1311,7 @@ describe("EchoSpec", function () {
     });
 
 
-    it("test partial 3 all courses in one dept but taught by ", function (done) {
+    xit("test partial 3 all courses in one dept but taught by ", function (done) {
         this.timeout(50000)
 
 
@@ -1371,7 +1371,7 @@ describe("EchoSpec", function () {
     });
 
 
-    it("test partial all courses in one dept except some specific example ", function (done) {
+    xit("test partial all courses in one dept except some specific example ", function (done) {
         this.timeout(50000)
 
 
@@ -1431,7 +1431,7 @@ describe("EchoSpec", function () {
     });
 
 
-    it("test partial 4 ", function (done) {
+    xit("test partial 4 ", function (done) {
         this.timeout(50000)
 
         //All courses in cpsc except for some course of which uuid range is some specified range
@@ -1501,7 +1501,7 @@ describe("EchoSpec", function () {
     });
 
 
-    it("test not ", function (done) {
+    xit("test not ", function (done) {
         this.timeout(10000)
 
         //All courses in cpsc except for some course of which uuid range is some specified range
@@ -1549,7 +1549,7 @@ describe("EchoSpec", function () {
     });
 
 
-    it("test 424 2223 ", function (done) {
+    xit("test 424 2223 ", function (done) {
         this.timeout(10000)
 
 
@@ -1601,7 +1601,7 @@ describe("EchoSpec", function () {
 
     });
 
-    it("test 424 2222 ", function (done) {
+    xit("test 424 2222 ", function (done) {
         this.timeout(10000)
 
 
@@ -1638,10 +1638,10 @@ describe("EchoSpec", function () {
                     "courses_dept",
                     "courses_avg",
                     "courses_uuid",
-                    "courses_title",
+                    "courses_txitle",
                     "courses_instructor",
                     "courses_fail",
-                    "courses_audit",
+                    "courses_audxit",
                     "courses_pass"
                 ],
                 "ORDER": "courses_avg",
@@ -1664,7 +1664,7 @@ describe("EchoSpec", function () {
     });
 
 
-    it("test set of instructors ", function (done) {
+    xit("test set of instructors ", function (done) {
         this.timeout(10000)
 
 
@@ -1690,10 +1690,10 @@ describe("EchoSpec", function () {
                     "courses_dept",
                     "courses_avg",
                     "courses_uuid",
-                    "courses_title",
+                    "courses_txitle",
                     "courses_instructor",
                     "courses_fail",
-                    "courses_audit",
+                    "courses_audxit",
                     "courses_pass"
                 ],
                 "ORDER": "courses_avg",
@@ -1715,7 +1715,7 @@ describe("EchoSpec", function () {
 
     });
 
-    it("test 424 abcd ", function (done) {
+    xit("test 424 abcd ", function (done) {
         this.timeout(10000)
 
 
@@ -1752,10 +1752,10 @@ describe("EchoSpec", function () {
                     "courses_dept",
                     "courses_avg",
                     "courses_uuisd",
-                    "courses_title",
+                    "courses_txitle",
                     "courses_insftructor",
                     "courses_fail",
-                    "courses_ausddit",
+                    "courses_ausddxit",
                     "courses_pass"
                 ],
                 "FORM": "TABLE"
@@ -1781,7 +1781,7 @@ describe("EchoSpec", function () {
 
     });
 
-    it("test Empty not", function (done) {
+    xit("test Empty not", function (done) {
         this.timeout(10000)
 
         var s1 = {
@@ -1814,7 +1814,7 @@ describe("EchoSpec", function () {
 
     });
 
-    it("test too many param not", function (done) {
+    xit("test too many param not", function (done) {
         this.timeout(10000)
 
         var s1 = {
@@ -1854,7 +1854,7 @@ describe("EchoSpec", function () {
 
     });
 
-    it("test empty or", function (done) {
+    xit("test empty or", function (done) {
         this.timeout(10000)
 
         var s1 = '{'+
@@ -1883,7 +1883,7 @@ describe("EchoSpec", function () {
 
     });
 
-    it("test empty and", function (done) {
+    xit("test empty and", function (done) {
         this.timeout(10000)
 
         var s1 = '{'+
@@ -1912,7 +1912,7 @@ describe("EchoSpec", function () {
 
     });
 
-    it("test empty eq", function (done) {
+    xit("test empty eq", function (done) {
         this.timeout(10000)
 
         var s1 = {
@@ -1942,7 +1942,7 @@ describe("EchoSpec", function () {
             done();
         })
     });
-    it("test too many param eq", function (done) {
+    xit("test too many param eq", function (done) {
         this.timeout(10000)
 
         var s1 = {
@@ -1977,7 +1977,7 @@ describe("EchoSpec", function () {
     });
 
 
-    it("test tpye error eq", function (done) {
+    xit("test tpye error eq", function (done) {
         this.timeout(10000)
 
         var s1 = {
@@ -2009,7 +2009,7 @@ describe("EchoSpec", function () {
             done();
         })
     });
-    it("test tpye error IS", function (done) {
+    xit("test tpye error IS", function (done) {
         this.timeout(10000)
 
         var s1 = {
@@ -2048,7 +2048,7 @@ describe("EchoSpec", function () {
         })
     });
 
-    it("test empty LT", function (done) {
+    xit("test empty LT", function (done) {
         this.timeout(10000)
 
         var s1 = {
@@ -2078,7 +2078,7 @@ describe("EchoSpec", function () {
             done();
         })
     });
-    it("test too many param LT", function (done) {
+    xit("test too many param LT", function (done) {
         this.timeout(10000)
 
         var s1 = {
@@ -2113,7 +2113,7 @@ describe("EchoSpec", function () {
     });
 
 
-    it("test tpye error LT", function (done) {
+    xit("test tpye error LT", function (done) {
         this.timeout(10000)
 
         var s1 = {
@@ -2146,7 +2146,7 @@ describe("EchoSpec", function () {
         })
     });
 
-    it("test too many param GT", function (done) {
+    xit("test too many param GT", function (done) {
         this.timeout(10000)
 
         var s1 = {
@@ -2179,7 +2179,7 @@ describe("EchoSpec", function () {
             done();
         })
     });
-    it("test empty IS", function (done) {
+    xit("test empty IS", function (done) {
         this.timeout(10000)
 
         var s1 = {
@@ -2209,7 +2209,7 @@ describe("EchoSpec", function () {
             done();
         })
     });
-    it("test too many param IS", function (done) {
+    xit("test too many param IS", function (done) {
         this.timeout(10000)
 
         var s1 = {
@@ -2243,7 +2243,7 @@ describe("EchoSpec", function () {
         })
     });
 
-    it("test FORM error", function (done) {
+    xit("test FORM error", function (done) {
         this.timeout(10000)
 
         var s1 = {
@@ -2276,7 +2276,7 @@ describe("EchoSpec", function () {
         })
     });
 
-    it("test column error", function (done) {
+    xit("test column error", function (done) {
         this.timeout(10000)
 
         var s1 = {
@@ -2309,7 +2309,7 @@ describe("EchoSpec", function () {
         })
     });
 
-    it("test invalid setValue", function (done) {
+    xit("test invalid setValue", function (done) {
         this.timeout(10000)
 
         var s1 = {
@@ -2380,7 +2380,7 @@ describe("EchoSpec", function () {
 
     });
 
-    it("test double remove ", function (done) {
+    xit("test double remove ", function (done) {
         this.timeout(10000)
 
 
@@ -2398,7 +2398,7 @@ describe("EchoSpec", function () {
         })
 
     });
-    it("test readError", function (done) {
+    xit("test readError", function (done) {
         this.timeout(10000)
 
         var s1 = {
@@ -2431,7 +2431,7 @@ describe("EchoSpec", function () {
         })
     });
 
-*/
+
     xit("test Adddataset rooms", function (done) {
         this.timeout(10000)
 
@@ -2479,7 +2479,7 @@ describe("EchoSpec", function () {
                     "rooms_lat",
                     "rooms_lon",
                     "rooms_seats",
-                    "rooms_furniture",
+                    "rooms_furnxiture",
                     "rooms_href",
                     "rooms_type"
 
@@ -2560,7 +2560,7 @@ describe("EchoSpec", function () {
     });
 
 
-    it("test new sort", function (done) {
+    xit("test new sort", function (done) {
         this.timeout(10000)
 
 
@@ -2575,7 +2575,7 @@ describe("EchoSpec", function () {
                         },
                         // {
                         //     "IS":{
-                        //         "courses_title":"*C*"
+                        //         "courses_txitle":"*C*"
                         //     }
                         // }
                     ]
