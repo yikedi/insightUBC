@@ -752,6 +752,7 @@ export default class InsightFacade implements IInsightFacade {
                 });
             }
 
+            else {
             if(columns.length != 0) {
                 var column0 = columns[0];
                 var id: string = column0.substring(0, column0.indexOf("_"));
@@ -762,108 +763,105 @@ export default class InsightFacade implements IInsightFacade {
             }
 
             if (exist) {
-               // var file = fs.readFile("src/" + id + ".txt", 'utf-8', (err: Error, data: string) => {
-               //      if (err) {
-               //          //console.log("in exist err line 154");
-               //          return reject({code: 400, body: {"error": err.message+"    727"}});
-               //      }
-               //     else {
-                        let data:string;
-                        if(id == "courses"){
-                            data = this.courses_dataset;
-                        }else if (id == "rooms"){
-                            data = this.rooms_dataset;
-                        }
-                        var table: Dataset_obj[];
-                        if (id == "courses") {
-                            table = build_table(data);
-                        }
-                        else {
-                            table = build_table_rooms(data);
-                        }
+                // var file = fs.readFile("src/" + id + ".txt", 'utf-8', (err: Error, data: string) => {
+                //      if (err) {
+                //          //console.log("in exist err line 154");
+                //          return reject({code: 400, body: {"error": err.message+"    727"}});
+                //      }
+                //     else {
+                let data: string;
+                if (id == "courses") {
+                    data = this.courses_dataset;
+                } else if (id == "rooms") {
+                    data = this.rooms_dataset;
+                }
+                var table: Dataset_obj[];
+                if (id == "courses") {
+                    table = build_table(data);
+                }
+                else {
+                    table = build_table_rooms(data);
+                }
 
-                        var missing_col: string[] = [];
-                        var error_400: Object[] = [];
-
-
-                        var order_valid: boolean = false;
-                        var order_check = dictionary[order];
+                var missing_col: string[] = [];
+                var error_400: Object[] = [];
 
 
-                        for (let column of columns) {
-                            var value = dictionary[column];
+                var order_valid: boolean = false;
+                var order_check = dictionary[order];
 
-                                if (column.substring(0, column.indexOf("_")) != id) {
-                                    missing_col.push(column);
-                                }
 
-                            if (order == column) {
-                                order_valid = true;
-                            }
-                        }
+                for (let column of columns) {
+                    var value = dictionary[column];
 
-                        var order_keys=Object.keys(order);
-                        if (order_keys.length>1){
-                            // check a lot of things
-                        }
-                        else {
-                            if (!isUndefined(order)) {
-                                if (isUndefined(order_check) || !order_valid)
-                                    missing_col.push(order);
-                            }
-                        }
+                    if (column.substring(0, column.indexOf("_")) != id) {
+                        missing_col.push(column);
+                    }
 
-                        if (form != "TABLE") {
-                            missing_col.push(form);
-                        }
+                    if (order == column) {
+                        order_valid = true;
+                    }
+                }
 
-                        if (missing_col.length > 0) {
-                            return reject({code: 400, body: {"error": "invalid query 764"}});
-                        }
+                var order_keys = Object.keys(order);
+                if (order_keys.length > 1) {
+                    // check a lot of things
+                }
+                else {
+                    if (!isUndefined(order)) {
+                        if (isUndefined(order_check) || !order_valid)
+                            missing_col.push(order);
+                    }
+                }
 
-                        missing_col = [];
-                        var body = null;
+                if (form != "TABLE") {
+                    missing_col.push(form);
+                }
+
+                if (missing_col.length > 0) {
+                    return reject({code: 400, body: {"error": "invalid query 764"}});
+                }
+
+                missing_col = [];
+                var body = null;
+                try {
+                    body = filter(table, query, missing_col, error_400);  ///**type
+                } catch (err) {
+                    return reject({code: 400, body: err.message + "   778"});
+                }
+
+                if (missing_col.length > 0) {
+                    var missing_ids: string[] = [];
+                    for (let missing_item of missing_col) {
                         try {
-                            body = filter(table, query, missing_col, error_400);  ///**type
-                        } catch (err) {
-                            return reject({code: 400, body: err.message+"   778"});
-                        }
-
-                        if (missing_col.length > 0) {
-                            var missing_ids: string[] = [];
-                            for (let missing_item of missing_col) {
-                                try {
-                                    var vals = missing_item.toString();
-                                    var missing_id = vals.substring(0, vals.indexOf("_"));  //Could trigger error
-                                    var exist: boolean = fs.existsSync("src/" + missing_id + ".txt");
-                                    if (!exist) {
-                                        missing_ids.push(missing_id);
-                                    }
-                                }
-                                catch (err) {
-                                    return reject({code: 400, body: err.message+"   793"});
-                                }
+                            var vals = missing_item.toString();
+                            var missing_id = vals.substring(0, vals.indexOf("_"));  //Could trigger error
+                            var exist: boolean = fs.existsSync("src/" + missing_id + ".txt");
+                            if (!exist) {
+                                missing_ids.push(missing_id);
                             }
-
-                            if (missing_ids.length > 0) {
-                                return reject({code: 424, body: {"missing": missing_ids}});
-                            }
-
-                            return reject({code: 400, body: {"missing": missing_col}});
-
-
-                        } else if (error_400.length > 0) {
-                            return reject({code: 400, body: error_400[0]+ "   805 "});
                         }
+                        catch (err) {
+                            return reject({code: 400, body: err.message + "   793"});
+                        }
+                    }
 
-                        let ret_obj = {render: form, result: body};
-                        return fulfill({code: 200, body: ret_obj});
+                    if (missing_ids.length > 0) {
+                        return reject({code: 424, body: {"missing": missing_ids}});
+                    }
+
+                    return reject({code: 400, body: {"missing": missing_col}});
 
 
-                //    }
+                } else if (error_400.length > 0) {
+                    return reject({code: 400, body: error_400[0] + "   805 "});
+                }
+
+                let ret_obj = {render: form, result: body};
+                return fulfill({code: 200, body: ret_obj});
 
 
-               // });
+            }
 
             }
             else {
@@ -1365,6 +1363,7 @@ function perform_Query_transform(query: QueryRequest) :Promise<InsightResponse>{
         }
     };
 
+
     return new Promise( (fulfill,reject)=>{
         this.performQuery(helper_query).then(function (response:InsightResponse) {
             let groups:any[][];
@@ -1375,8 +1374,6 @@ function perform_Query_transform(query: QueryRequest) :Promise<InsightResponse>{
             }
 
             // apply functions
-
-
 
 
            fulfill({code: 100, body: {"message":"ok"}}) ;
