@@ -798,15 +798,17 @@ export default class InsightFacade implements IInsightFacade {
                                 order_valid = true;
                             }
                         }
+                        if(!isUndefined(order)) {
+                            var order_keys = Object.keys(order);
+                            if (order_keys.length > 1) {
+                                // check a lot of things
+                            }
 
-                        var order_keys = Object.keys(order);
-                        if (order_keys.length > 1) {
-                            // check a lot of things
-                        }
-                        else {
-                            if (!isUndefined(order)) {
-                                if (isUndefined(order_check) || !order_valid)
-                                    missing_col.push(order);
+                            else {
+                                if (!isUndefined(order)) {
+                                    if (isUndefined(order_check) || !order_valid)
+                                        missing_col.push(order);
+                                }
                             }
                         }
 
@@ -957,9 +959,10 @@ function filter(table: Array<Dataset_obj>, query: QueryRequest, missing_col: str
 
     var columns = options["COLUMNS"];
     var order = options["ORDER"];
-    let order_keys = Object.keys(order);
+
 
     if (!isUndefined(order)) {
+        let order_keys = Object.keys(order);
         if (order_keys.length > 1) {
             let dir = order["dir"];
             let keys = order["keys"];
@@ -1362,9 +1365,6 @@ function perform_Query_transform(query: QueryRequest, this_obj:InsightFacade): P
 
 
     return new Promise((fulfill, reject) => {
-        console.log("a");
-        console.log(this_obj.rooms_dataset);
-        console.log("b");
         this_obj.performQuery(helper_query).then(function (response: InsightResponse) {
             let groups: any[][];
             // get the groups

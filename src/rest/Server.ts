@@ -59,20 +59,11 @@ export default class Server {
                     return next();
                 });
 
-
                 // provides the echo service
                 // curl -is  http://localhost:4321/echo/myMessage
                 that.rest.get('/echo/:msg', Server.echo);
 
-
-                //TODO
-                that.rest.put('/dataset/:courses',function(req: restify.Request, res: restify.Response, next: restify.Next) {
-                    res.send(200);
-                    return next();
-                });
-
-
-
+                that.rest.put('/dataset/:id',Server.put);
 
                 // Other endpoints will go here
 
@@ -118,4 +109,24 @@ export default class Server {
         }
     }
 
+    public static put(req: restify.Request, res: restify.Response, next: restify.Next) {
+        Log.trace('Server::echo(..) - params: ' + JSON.stringify(req.params));
+        try {
+            let result = Server.performPut(req.params.msg);
+            Log.info('Server::echo(..) - responding ' + result.code);
+            res.json(result.code, result.body);
+        } catch (err) {
+            Log.error('Server::echo(..) - responding 400');
+            res.json(400, {error: err.message});
+        }
+        return next();
+    }
+
+    public static performPut(content: string): InsightResponse {
+        if (typeof content !== 'undefined' && content !== null) {
+            return {code: 200, body: {message: content + '...' + content}};
+        } else {
+            return {code: 400, body: {error: 'Message not provided'}};
+        }
+    }
 }
