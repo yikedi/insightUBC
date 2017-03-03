@@ -59,6 +59,7 @@ export default class Server {
                     return next();
                 });
 
+
                 // provides the echo service
                 // curl -is  http://localhost:4321/echo/myMessage
                 that.rest.get('/echo/:msg', Server.echo);

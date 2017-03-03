@@ -73,7 +73,7 @@ describe("EchoSpec", function () {
 
     });
 
-    it("test add courses.zip", function (done) {
+    xit("test add courses.zip", function (done) {
         this.timeout(50000)
 
         var zip = new JSZip();
@@ -96,7 +96,7 @@ describe("EchoSpec", function () {
 
     });
 
-
+    /*
     it("test simple query courses year", function (done) {
         this.timeout(10000)
 
@@ -2431,8 +2431,8 @@ describe("EchoSpec", function () {
         })
     });
 
-
-    it("test Adddataset rooms", function (done) {
+*/
+    xit("test Adddataset rooms", function (done) {
         this.timeout(10000)
 
 
@@ -2458,7 +2458,7 @@ describe("EchoSpec", function () {
     });
 
 
-    it("test query rooms", function (done) {
+    xit("test query rooms", function (done) {
         this.timeout(10000)
 
 
@@ -2507,7 +2507,7 @@ describe("EchoSpec", function () {
 
     });
 
-    it("test col-courses, where-rooms", function (done) {
+    xit("test simple invalid query rooms 2", function (done) {
         this.timeout(10000)
 
 
@@ -2517,12 +2517,12 @@ describe("EchoSpec", function () {
                     "OR": [
                         {
                             "LT": {
-                                "rooms_avg": "aa"
+                                "rooms_seats": 100
                             }
                         },
                         {
                             "IS":{
-                                "rooms_title":"*C*"
+                                "rooms_shortname":"*C*"
                             }
                         }
                     ]
@@ -2533,11 +2533,10 @@ describe("EchoSpec", function () {
 
             "OPTIONS": {
                 "COLUMNS": [
-                    "courses_id",
-                    "courses_avg",
-                    "courses_seats"
+                    "rooms_seats",
+                    "rooms_id"
+
                 ],
-                "ORDER":"courses_id",
                 "FORM": "TABLE"
             }
         };
@@ -2560,37 +2559,46 @@ describe("EchoSpec", function () {
 
     });
 
-    it("test col-courses & rooms, where-rooms", function (done) {
+
+    it("test new sort", function (done) {
         this.timeout(10000)
 
 
         var s1 = {
             "WHERE": {
-                "NOT": {
+
                     "OR": [
                         {
-                            "LT": {
-                                "rooms_avg": "aa"
+                            "GT": {
+                                "courses_avg": 95
                             }
                         },
-                        {
-                            "IS":{
-                                "rooms_title":"*C*"
-                            }
-                        }
+                        // {
+                        //     "IS":{
+                        //         "courses_title":"*C*"
+                        //     }
+                        // }
                     ]
-                }
+
 
             },
 
 
             "OPTIONS": {
                 "COLUMNS": [
-                    "courses_id",
                     "courses_avg",
-                    "rooms_seats"
+                    "courses_uuid"
+
                 ],
-                "ORDER":"courses_id",
+
+                "ORDER":{
+                   "dir":"UP",
+                    "keys":[
+                        "courses_avg",
+                        "courses_uuid"
+
+                    ]
+                },
                 "FORM": "TABLE"
             }
         };
