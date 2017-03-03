@@ -336,24 +336,24 @@ class Rooms_obj extends Dataset_obj {
 }
 
 export default class InsightFacade implements IInsightFacade {
-    rooms_dataset:string;
-    courses_dataset:string;
+    rooms_dataset: string;
+    courses_dataset: string;
 
     constructor() {
 
 
-        var path: string ="src/courses.txt";
+        var path: string = "src/courses.txt";
         var exist: boolean = fs.existsSync(path);
-        if(exist) {
+        if (exist) {
             this.courses_dataset = fs.readFileSync(path, 'utf-8');
-        }else{
+        } else {
             this.courses_dataset = null;
         }
-        var path: string ="src/rooms.txt";
+        var path: string = "src/rooms.txt";
         var exist: boolean = fs.existsSync(path);
-        if(exist) {
+        if (exist) {
             this.rooms_dataset = fs.readFileSync(path, 'utf-8');
-        }else{
+        } else {
             this.rooms_dataset = null;
         }
 
@@ -368,14 +368,14 @@ export default class InsightFacade implements IInsightFacade {
         // a.setValue("Subject","5");
         // console.log(a.Subject);
 
-        return new Promise( (fulfill, reject)=> {
+        return new Promise((fulfill, reject) => {
 
             var ret_obj = null;
             var zip = new JSZip();
             var exist: boolean = fs.existsSync("src/" + id + ".txt");
 
             zip.loadAsync(content, {"base64": true})
-                .then( (data: JSZip) =>{
+                .then((data: JSZip) => {
 
 
                     var promise_list: Promise<string>[] = [];
@@ -390,7 +390,7 @@ export default class InsightFacade implements IInsightFacade {
 
                         var final_string = "{\"" + id + "\":[";
 
-                        Promise.all(promise_list).then( (list)=> {
+                        Promise.all(promise_list).then((list) => {
 
                             var i = 0;
 
@@ -428,7 +428,7 @@ export default class InsightFacade implements IInsightFacade {
 
                             }
                             catch (err) {
-                                ret_obj = {code: 400, body: {"error": err.message+"     380"}};
+                                ret_obj = {code: 400, body: {"error": err.message + "     380"}};
                                 return reject(ret_obj)
                             }
 
@@ -436,7 +436,7 @@ export default class InsightFacade implements IInsightFacade {
                             fs.writeFile('src/' + id + '.txt', j_objs, (err: Error) => {
                                 if (err) {
 
-                                    ret_obj = {code: 400, body: {"error": err.message+"      388"}};
+                                    ret_obj = {code: 400, body: {"error": err.message + "      388"}};
                                     //console.log("write file error if line 216");
                                     return reject(ret_obj);
                                 }
@@ -455,7 +455,7 @@ export default class InsightFacade implements IInsightFacade {
 
                         }).catch(function (err: Error) {
                             //console.log("in write file catch line 228");
-                            ret_obj = {code: 400, body: {"error": err.message+"      406"}};
+                            ret_obj = {code: 400, body: {"error": err.message + "      406"}};
                             return reject(ret_obj);
                         });
 
@@ -469,7 +469,7 @@ export default class InsightFacade implements IInsightFacade {
 
                         });
 
-                        Promise.all(promise_list).then( (list)=> {
+                        Promise.all(promise_list).then((list) => {
                             //let index_valid:boolean = true;
 
                             try {
@@ -480,8 +480,8 @@ export default class InsightFacade implements IInsightFacade {
                                         index_file = list[i];
                                         try {
                                             parse5.parse(index_file);
-                                        }catch (err){
-                                            let ret_obj={code:400, body:"invalid index.htm  431"};
+                                        } catch (err) {
+                                            let ret_obj = {code: 400, body: "invalid index.htm  431"};
                                             return reject(ret_obj);
                                         }
                                         break;
@@ -489,186 +489,186 @@ export default class InsightFacade implements IInsightFacade {
                                     parse5.parse(list[i]);
                                 }
                             } catch (error) {
-                              //  index_valid=false;
+                                //  index_valid=false;
                                 console.log("line 413");
                             }
 
                             //if (index_valid) {
-                                var tbody_start = index_file.indexOf("<tbody>");
-                                var tbody_end = index_file.indexOf("</tbody>");
-                                var temp = index_file.substring(tbody_start + "<tbody>".length, tbody_end);
+                            var tbody_start = index_file.indexOf("<tbody>");
+                            var tbody_end = index_file.indexOf("</tbody>");
+                            var temp = index_file.substring(tbody_start + "<tbody>".length, tbody_end);
 
 
-                                var buildings = temp.split("</tr>");
-                                buildings.pop();
-                                var final_buildings: any[] = [];
-                                for (let item of buildings) {
+                            var buildings = temp.split("</tr>");
+                            buildings.pop();
+                            var final_buildings: any[] = [];
+                            for (let item of buildings) {
 
-                                    let building: {[index: string]: any} = {};
-                                    var temp_s = "a href=\"";
-                                    var a_href = extract_info(item, temp_s, "\"");
+                                let building: {[index: string]: any} = {};
+                                var temp_s = "a href=\"";
+                                var a_href = extract_info(item, temp_s, "\"");
 
-                                    temp_s = "building-code\" >";
-                                    var short_name = extract_info(item, temp_s, "</td>");
+                                temp_s = "building-code\" >";
+                                var short_name = extract_info(item, temp_s, "</td>");
 
-                                    temp_s = "views-field-title\" >";
-                                    var full_name_index = item.indexOf(temp_s) + temp_s.length;
-                                    temp_s = "title=\"Building Details and Map\">";
-                                    var full_name_index = item.indexOf(temp_s, full_name_index) + temp_s.length;
-                                    var full_name = item.substring(full_name_index, item.indexOf("</a>", full_name_index));
+                                temp_s = "views-field-title\" >";
+                                var full_name_index = item.indexOf(temp_s) + temp_s.length;
+                                temp_s = "title=\"Building Details and Map\">";
+                                var full_name_index = item.indexOf(temp_s, full_name_index) + temp_s.length;
+                                var full_name = item.substring(full_name_index, item.indexOf("</a>", full_name_index));
 
-                                    temp_s = "field-building-address\" >";
-                                    var address = extract_info(item, temp_s, "</td>");
+                                temp_s = "field-building-address\" >";
+                                var address = extract_info(item, temp_s, "</td>");
 
-                                    building["a_href"] = a_href;
-                                    building["short_name"] = short_name;
-                                    building["full_name"] = full_name;
-                                    building["address"] = address;
+                                building["a_href"] = a_href;
+                                building["short_name"] = short_name;
+                                building["full_name"] = full_name;
+                                building["address"] = address;
 
-                                    final_buildings.push(building);
-                                }
+                                final_buildings.push(building);
+                            }
 
 
-                                var lat_lon_list: Promise<Object>[] = [];
-                                for (let i = 0; i < final_buildings.length; i++) {
-                                    lat_lon_list.push(new Promise(function (fulfill, reject) {
-                                        let uri = final_buildings[i]["address"];
-                                        let uri_encoded = encodeURIComponent(uri);
-                                        let url = "http://skaha.cs.ubc.ca:11316/api/v1/team132/" +uri_encoded;
+                            var lat_lon_list: Promise<Object>[] = [];
+                            for (let i = 0; i < final_buildings.length; i++) {
+                                lat_lon_list.push(new Promise(function (fulfill, reject) {
+                                    let uri = final_buildings[i]["address"];
+                                    let uri_encoded = encodeURIComponent(uri);
+                                    let url = "http://skaha.cs.ubc.ca:11316/api/v1/team132/" + uri_encoded;
 
-                                        request(url, function (error: any, response: any, body: any) {
-                                            if (!error && response.statusCode == 200) {
-                                                return fulfill(body);
-                                            } else {
-                                                return fulfill("{\"lat\":\"\",\"lon\":\"\"}");
+                                    request(url, function (error: any, response: any, body: any) {
+                                        if (!error && response.statusCode == 200) {
+                                            return fulfill(body);
+                                        } else {
+                                            return fulfill("{\"lat\":\"\",\"lon\":\"\"}");
+                                        }
+                                    })
+                                }))
+                            }
+                            Promise.all(lat_lon_list).then((lat_lon_list) => {
+                                //change abvoe
+
+                                let parsed_list = JSON.parse(JSON.stringify(lat_lon_list));
+                                var final_rooms: any[] = [];
+
+                                var num_rooms = 0;
+                                var invalid_count = 0;
+                                for (var i = 0; i < list.length; i++) {
+                                    var item = list[i];
+                                    for (var j = 0; j < final_buildings.length; j++) {
+
+                                        if ("./" + name_list[i] == final_buildings[j]["a_href"]) {
+
+                                            try {
+                                                parse5.parse(item);
                                             }
-                                        })
-                                    }))
-                                }
-                                Promise.all(lat_lon_list).then((lat_lon_list) => {
-                                    //change abvoe
+                                            catch (err) {
+                                                invalid_count++;
+                                                console.log("file " + i + " is invalid");
+                                                continue;
+                                            }
 
-                                    let parsed_list = JSON.parse(JSON.stringify(lat_lon_list));
-                                    var final_rooms: any[] = [];
+                                            var room_shortname = final_buildings[j]["short_name"];
+                                            var room_fullname = final_buildings[j]["full_name"];
+                                            var room_address = final_buildings[j]["address"];
+                                            var room_href = null;
+                                            var room_number = null;
+                                            var room_seats = null;
+                                            var room_furniture = null;
+                                            var room_type = null;
+                                            var room_name = null;
 
-                                    var num_rooms = 0;
-                                    var invalid_count=0;
-                                    for (var i = 0; i < list.length; i++) {
-                                        var item = list[i];
-                                        for (var j = 0; j < final_buildings.length; j++) {
+                                            let lat_lon = JSON.parse(parsed_list[j]);
+                                            var room_lat = lat_lon["lat"];
+                                            var room_lon = lat_lon["lon"];
 
-                                            if ("./" + name_list[i] == final_buildings[j]["a_href"]) {
+                                            tbody_start = item.indexOf("<tbody>");
+                                            tbody_end = item.indexOf("</tbody>");
+                                            if (tbody_start != -1) {
+                                                temp = item.substring(tbody_start + "<tbody>".length, tbody_end);
+                                                var rooms = temp.split("</tr>");
 
-                                                try{
-                                                    parse5.parse(item);
+                                                rooms.pop();
+                                                for (let room of rooms) {
+
+                                                    let room_obj: {[index: string]: any} = {};
+
+                                                    var temp_s = "a href=\"";
+                                                    room_href = extract_info(room, temp_s, "\"");
+
+                                                    temp_s = "title=\"Room Details\">";
+                                                    room_number = extract_info(room, temp_s, "</a>");
+
+                                                    temp_s = "room-capacity\" >";
+                                                    room_seats = extract_info(room, temp_s, "</td>");
+
+                                                    temp_s = "room-furniture\" >";
+                                                    let furniture = extract_info(room, temp_s, "</td>");
+                                                    room_furniture = furniture.replace(/&amp;/g, '&');
+
+
+                                                    temp_s = "room-type\" >";
+                                                    room_type = extract_info(room, temp_s, "</td>");
+
+                                                    room_name = final_buildings[j]["short_name"] + "_" + room_number;
+
+                                                    room_obj["rooms_fullname"] = room_fullname;
+                                                    room_obj["rooms_shortname"] = room_shortname;
+                                                    room_obj["rooms_name"] = room_name;
+                                                    room_obj["rooms_number"] = room_number;
+                                                    room_obj["rooms_address"] = room_address;
+                                                    room_obj["rooms_seats"] = room_seats;
+                                                    room_obj["rooms_furniture"] = room_furniture;
+                                                    room_obj["rooms_href"] = room_href;
+                                                    room_obj["rooms_lat"] = room_lat;
+                                                    room_obj["rooms_lon"] = room_lon;
+                                                    room_obj["rooms_type"] = room_type;
+
+                                                    room_obj["id"] = num_rooms;
+                                                    num_rooms++;
+                                                    final_rooms.push(room_obj);
                                                 }
-                                                catch(err){
-                                                    invalid_count++;
-                                                    console.log("file "+i+" is invalid");
-                                                    continue;
-                                                }
-
-                                                var room_shortname = final_buildings[j]["short_name"];
-                                                var room_fullname = final_buildings[j]["full_name"];
-                                                var room_address = final_buildings[j]["address"];
-                                                var room_href = null;
-                                                var room_number = null;
-                                                var room_seats = null;
-                                                var room_furniture = null;
-                                                var room_type = null;
-                                                var room_name = null;
-
-                                                let lat_lon = JSON.parse(parsed_list[j]);
-                                                var room_lat = lat_lon["lat"];
-                                                var room_lon = lat_lon["lon"];
-
-                                                tbody_start = item.indexOf("<tbody>");
-                                                tbody_end = item.indexOf("</tbody>");
-                                                if (tbody_start != -1) {
-                                                    temp = item.substring(tbody_start + "<tbody>".length, tbody_end);
-                                                    var rooms = temp.split("</tr>");
-
-                                                    rooms.pop();
-                                                    for (let room of rooms) {
-
-                                                        let room_obj: {[index: string]: any} = {};
-
-                                                        var temp_s = "a href=\"";
-                                                        room_href = extract_info(room, temp_s, "\"");
-
-                                                        temp_s = "title=\"Room Details\">";
-                                                        room_number = extract_info(room, temp_s, "</a>");
-
-                                                        temp_s = "room-capacity\" >";
-                                                        room_seats = extract_info(room, temp_s, "</td>");
-
-                                                        temp_s = "room-furniture\" >";
-                                                        let furniture = extract_info(room, temp_s, "</td>");
-                                                        room_furniture = furniture.replace(/&amp;/g, '&');
-
-
-                                                        temp_s = "room-type\" >";
-                                                        room_type = extract_info(room, temp_s, "</td>");
-
-                                                        room_name = final_buildings[j]["short_name"] + "_" + room_number;
-
-                                                        room_obj["rooms_fullname"] = room_fullname;
-                                                        room_obj["rooms_shortname"] = room_shortname;
-                                                        room_obj["rooms_name"] = room_name;
-                                                        room_obj["rooms_number"] = room_number;
-                                                        room_obj["rooms_address"] = room_address;
-                                                        room_obj["rooms_seats"] = room_seats;
-                                                        room_obj["rooms_furniture"] = room_furniture;
-                                                        room_obj["rooms_href"] = room_href;
-                                                        room_obj["rooms_lat"] = room_lat;
-                                                        room_obj["rooms_lon"] = room_lon;
-                                                        room_obj["rooms_type"]=room_type;
-
-                                                        room_obj["id"] = num_rooms;
-                                                        num_rooms++;
-                                                        final_rooms.push(room_obj);
-                                                    }
-
-                                                }
-
-
-                                                break;
 
                                             }
+
+
+                                            break;
 
                                         }
 
                                     }
-                                    if (invalid_count==final_buildings.length){
-                                        let ret_obj={code:400, body:"no valid files 613"};
-                                        return reject (ret_obj);
+
+                                }
+                                if (invalid_count == final_buildings.length) {
+                                    let ret_obj = {code: 400, body: "no valid files 613"};
+                                    return reject(ret_obj);
+                                }
+
+                                var room_file = {"rooms": final_rooms};
+                                var j_objs = JSON.stringify(room_file);
+                                fs.writeFile('src/' + id + '.txt', j_objs, (err: Error) => {
+                                    if (err) {
+
+                                        ret_obj = {code: 400, body: {"error": err.message + "    628"}};
+                                        //console.log("write file error if line 216");
+                                        return reject(ret_obj);
                                     }
-
-                                    var room_file = {"rooms": final_rooms};
-                                    var j_objs = JSON.stringify(room_file);
-                                    fs.writeFile('src/' + id + '.txt', j_objs, (err: Error) => {
-                                        if (err) {
-
-                                            ret_obj = {code: 400, body: {"error": err.message + "    628"}};
-                                            //console.log("write file error if line 216");
-                                            return reject(ret_obj);
+                                    else {
+                                        //console.log("write file error else line 220");
+                                        if (exist) {
+                                            ret_obj = {code: 201, body: j_objs};
                                         }
                                         else {
-                                            //console.log("write file error else line 220");
-                                            if (exist) {
-                                                ret_obj = {code: 201, body: j_objs};
-                                            }
-                                            else {
-                                                ret_obj = {code: 204, body: j_objs};
-                                            }
-                                            this.rooms_dataset = j_objs;
-                                            return fulfill(ret_obj);
+                                            ret_obj = {code: 204, body: j_objs};
                                         }
-                                    });
+                                        this.rooms_dataset = j_objs;
+                                        return fulfill(ret_obj);
+                                    }
                                 });
-                          //  } else {
-                          //      reject("invalid index at 619");
-                          //  }
+                            });
+                            //  } else {
+                            //      reject("invalid index at 619");
+                            //  }
 //                                fulfill({code: 555, body:"at line 252"});
                         }).catch(function (err) {
                             return reject({code: 400, body: "error catched 535"});
@@ -680,7 +680,7 @@ export default class InsightFacade implements IInsightFacade {
 
                 }).catch(function (err: Error) {
                 //console.log("in JSZip catch line 235");
-                ret_obj = {code: 400, body: {"error": err.message+ "  658"}};
+                ret_obj = {code: 400, body: {"error": err.message + "  658"}};
                 return reject(ret_obj);
             });
 
@@ -691,7 +691,7 @@ export default class InsightFacade implements IInsightFacade {
     }
 
     removeDataset(id: string): Promise<InsightResponse> {
-        return new Promise( (fulfill, reject)=> {
+        return new Promise((fulfill, reject) => {
             var ret_obj = null;
             var path = "src/" + id + ".txt";
             var exist: boolean = fs.existsSync("src/" + id + ".txt");
@@ -705,14 +705,14 @@ export default class InsightFacade implements IInsightFacade {
             else {
                 fs.unlink(path, (err: Error) => {
                     if (err) {
-                        ret_obj = {code: 404, body: {"error": err.message} +" 680"};
+                        ret_obj = {code: 404, body: {"error": err.message} + " 680"};
                         return reject(ret_obj);
                     } else {
                         ret_obj = {code: 204, body: "The operation was successful"};
-                        if(id == "courses"){
+                        if (id == "courses") {
                             this.courses_dataset = null;
                         }
-                        else if(id == "rooms"){
+                        else if (id == "rooms") {
                             this.rooms_dataset = null;
                         }
                         return fulfill(ret_obj);
@@ -724,154 +724,152 @@ export default class InsightFacade implements IInsightFacade {
     }
 
     performQuery(query: QueryRequest): Promise <InsightResponse> {
-        return new Promise((fulfill, reject) =>{
+        return new Promise((fulfill, reject) => {
 
-            /*******/
-            // var id = "courses";
+                /*******/
+                // var id = "courses";
 
-            // var exist: boolean = fs.existsSync("src/" + id + ".txt");
+                // var exist: boolean = fs.existsSync("src/" + id + ".txt");
 
-            try {
-                var j_query = JSON.stringify(query);
-                var j_obj = JSON.parse(j_query);
-
-                var where = j_obj["WHERE"];
-                var options = j_obj["OPTIONS"];
-                var columns = options["COLUMNS"];
-                var order = options["ORDER"];
-                var form = options["FORM"];
-                var transformations=j_obj["TRANSFORMATIONS"];
-            }
-            catch (err) {
-                 reject({code: 400, body: {"error": "invalid json or query 714"}});
-            }
-
-            if (!isUndefined(transformations)){
-                perform_Query_transform(query).then(function (response) {
-                    return fulfill(response);
-                });
-            }
-
-            else {
-            if(columns.length != 0) {
-                var column0 = columns[0];
-                var id: string = column0.substring(0, column0.indexOf("_"));
-
-                var exist: boolean = fs.existsSync("src/" + id + ".txt");
-            }else{
-                return reject({code: 400, body: {"error": " empty column 721"}});
-            }
-
-            if (exist) {
-                // var file = fs.readFile("src/" + id + ".txt", 'utf-8', (err: Error, data: string) => {
-                //      if (err) {
-                //          //console.log("in exist err line 154");
-                //          return reject({code: 400, body: {"error": err.message+"    727"}});
-                //      }
-                //     else {
-                let data: string;
-                if (id == "courses") {
-                    data = this.courses_dataset;
-                } else if (id == "rooms") {
-                    data = this.rooms_dataset;
-                }
-                var table: Dataset_obj[];
-                if (id == "courses") {
-                    table = build_table(data);
-                }
-                else {
-                    table = build_table_rooms(data);
-                }
-
-                var missing_col: string[] = [];
-                var error_400: Object[] = [];
-
-
-                var order_valid: boolean = false;
-                var order_check = dictionary[order];
-
-
-                for (let column of columns) {
-                    var value = dictionary[column];
-
-                    if (column.substring(0, column.indexOf("_")) != id) {
-                        missing_col.push(column);
-                    }
-
-                    if (order == column) {
-                        order_valid = true;
-                    }
-                }
-
-                var order_keys = Object.keys(order);
-                if (order_keys.length > 1) {
-                    // check a lot of things
-                }
-                else {
-                    if (!isUndefined(order)) {
-                        if (isUndefined(order_check) || !order_valid)
-                            missing_col.push(order);
-                    }
-                }
-
-                if (form != "TABLE") {
-                    missing_col.push(form);
-                }
-
-                if (missing_col.length > 0) {
-                    return reject({code: 400, body: {"error": "invalid query 764"}});
-                }
-
-                missing_col = [];
-                var body = null;
                 try {
-                    body = filter(table, query, missing_col, error_400);  ///**type
-                } catch (err) {
-                    return reject({code: 400, body: err.message + "   778"});
+                    var j_query = JSON.stringify(query);
+                    var j_obj = JSON.parse(j_query);
+
+                    var where = j_obj["WHERE"];
+                    var options = j_obj["OPTIONS"];
+                    var columns = options["COLUMNS"];
+                    var order = options["ORDER"];
+                    var form = options["FORM"];
+                    var transformations = j_obj["TRANSFORMATIONS"];
+                }
+                catch (err) {
+                    reject({code: 400, body: {"error": "invalid json or query 714"}});
                 }
 
-                if (missing_col.length > 0) {
-                    var missing_ids: string[] = [];
-                    for (let missing_item of missing_col) {
-                        try {
-                            var vals = missing_item.toString();
-                            var missing_id = vals.substring(0, vals.indexOf("_"));  //Could trigger error
-                            var exist: boolean = fs.existsSync("src/" + missing_id + ".txt");
-                            if (!exist) {
-                                missing_ids.push(missing_id);
+                if (!isUndefined(transformations)) {
+                    perform_Query_transform(query).then(function (response) {
+                        return fulfill(response);
+                    }).catch(function (err) {
+                        return reject({code: 400, body: {"error": "invalid json or query 753"}});
+                    });
+                }
+
+                else {
+                    if (columns.length != 0) {
+                        var column0 = columns[0];
+                        var id: string = column0.substring(0, column0.indexOf("_"));
+
+                        var exist: boolean = fs.existsSync("src/" + id + ".txt");
+                    } else {
+                        return reject({code: 400, body: {"error": " empty column 721"}});
+                    }
+
+                    if (exist) {
+                        let data: string;
+                        if (id == "courses") {
+                            data = this.courses_dataset;
+                        } else if (id == "rooms") {
+                            data = this.rooms_dataset;
+                        }
+                        var table: Dataset_obj[];
+                        if (id == "courses") {
+                            table = build_table(data);
+                        }
+                        else {
+                            table = build_table_rooms(data);
+                        }
+
+                        var missing_col: string[] = [];
+                        var error_400: Object[] = [];
+
+
+                        var order_valid: boolean = false;
+                        var order_check = dictionary[order];
+
+
+                        for (let column of columns) {
+                            var value = dictionary[column];
+
+                            if (column.substring(0, column.indexOf("_")) != id) {
+                                missing_col.push(column);
+                            }
+
+                            if (order == column) {
+                                order_valid = true;
                             }
                         }
-                        catch (err) {
-                            return reject({code: 400, body: err.message + "   793"});
+
+                        var order_keys = Object.keys(order);
+                        if (order_keys.length > 1) {
+                            // check a lot of things
                         }
+                        else {
+                            if (!isUndefined(order)) {
+                                if (isUndefined(order_check) || !order_valid)
+                                    missing_col.push(order);
+                            }
+                        }
+
+                        if (form != "TABLE") {
+                            missing_col.push(form);
+                        }
+
+                        if (missing_col.length > 0) {
+                            return reject({code: 400, body: {"error": "invalid query 764"}});
+                        }
+
+                        missing_col = [];
+                        var body = null;
+                        try {
+                            body = filter(table, query, missing_col, error_400);  ///**type
+                        } catch (err) {
+                            return reject({code: 400, body: err.message + "   778"});
+                        }
+
+                        if (missing_col.length > 0) {
+                            var missing_ids: string[] = [];
+                            for (let missing_item of missing_col) {
+                                try {
+                                    var vals = missing_item.toString();
+                                    var missing_id = vals.substring(0, vals.indexOf("_"));  //Could trigger error
+                                    var exist: boolean = fs.existsSync("src/" + missing_id + ".txt");
+                                    if (!exist) {
+                                        missing_ids.push(missing_id);
+                                    }
+                                }
+                                catch (err) {
+                                    return reject({code: 400, body: err.message + "   793"});
+                                }
+                            }
+
+                            if (missing_ids.length > 0) {
+                                return reject({code: 424, body: {"missing": missing_ids}});
+                            }
+
+                            return reject({code: 400, body: {"missing": missing_col}});
+
+
+                        } else if (error_400.length > 0) {
+                            return reject({code: 400, body: error_400[0] + "   805 "});
+                        }
+
+                        let ret_obj = {render: form, result: body};
+                        return fulfill({code: 200, body: ret_obj});
+
+
                     }
 
-                    if (missing_ids.length > 0) {
-                        return reject({code: 424, body: {"missing": missing_ids}});
+
+                    else {
+
+                        let ret_obj = {code: 424, body: {"missing": [id]}};
+                        return reject(ret_obj);
                     }
 
-                    return reject({code: 400, body: {"missing": missing_col}});
 
-
-                } else if (error_400.length > 0) {
-                    return reject({code: 400, body: error_400[0] + "   805 "});
                 }
-
-                let ret_obj = {render: form, result: body};
-                return fulfill({code: 200, body: ret_obj});
-
-
             }
-
-            }
-            else {
-
-                let ret_obj = {code: 424, body: {"missing":[id]}};
-                return reject(ret_obj);
-            }
-
-        });
-
+        )
     }
 
 }
@@ -901,8 +899,8 @@ function build_table(data: string): Array<Course_obj> {
                     if (s == "id" || s == "Course") {
                         each_course.setValue(s, value.toString());
                     } else {
-                        if (s=="Year" && item["Section"]=="overall"){
-                            each_course.setValue(s,"1900");
+                        if (s == "Year" && item["Section"] == "overall") {
+                            each_course.setValue(s, "1900");
                         }
                         else {
                             each_course.setValue(s, value);
@@ -927,7 +925,7 @@ function build_table_rooms(data: string): Array<Rooms_obj> {
 
 
     var interest_info = ["rooms_fullname", "rooms_shortname", "rooms_name", "rooms_number",
-        "rooms_address", "rooms_lat", "rooms_lon", "rooms_seats", "rooms_furniture", "rooms_href", "id","rooms_type"];
+        "rooms_address", "rooms_lat", "rooms_lon", "rooms_seats", "rooms_furniture", "rooms_href", "id", "rooms_type"];
 
     var room_list: Rooms_obj[] = [];
     for (let room of rooms) {
@@ -959,7 +957,7 @@ function filter(table: Array<Dataset_obj>, query: QueryRequest, missing_col: str
 
     var columns = options["COLUMNS"];
     var order = options["ORDER"];
-    let order_keys=Object.keys(order);
+    let order_keys = Object.keys(order);
 
     if (!isUndefined(order)) {
         if (order_keys.length > 1) {
@@ -1098,7 +1096,7 @@ function filter_helper(table: Array<Dataset_obj>, query: QueryRequest, missing_c
                         error_400.push({"error": "type error IS"});
                     }
                 } catch (err) {
-                    error_400.push({"error": err.message+" 1004"});
+                    error_400.push({"error": err.message + " 1004"});
                 }
 
             }
@@ -1169,7 +1167,7 @@ function filter_helper(table: Array<Dataset_obj>, query: QueryRequest, missing_c
                         error_400.push({"error": "type error LT"});
                     }
                 } catch (err) {
-                    error_400.push({"error": err.message+" 1075"});
+                    error_400.push({"error": err.message + " 1075"});
                 }
 
             }
@@ -1202,7 +1200,7 @@ function filter_helper(table: Array<Dataset_obj>, query: QueryRequest, missing_c
                         error_400.push({"error": "type error EQ"});
                     }
                 } catch (err) {
-                    error_400.push({"error": err.message +" 1108"});
+                    error_400.push({"error": err.message + " 1108"});
                 }
 
             }
@@ -1309,21 +1307,21 @@ function filter_helper(table: Array<Dataset_obj>, query: QueryRequest, missing_c
     return ret_array;
 }
 
-function perform_Query_transform(query: QueryRequest) :Promise<InsightResponse>{
+function perform_Query_transform(query: QueryRequest): Promise<InsightResponse> {
     let j_query = JSON.stringify(query);
     let j_obj = JSON.parse(j_query);
 
     let where = j_obj["WHERE"];
-    let transformation=j_obj["TRANSFORMATIONS"];
-    let group=transformation["GROUP"];
-    let apply=transformation["APPLY"];
-    let temp :string=group[0];
-    let id=temp.substring(0,temp.indexOf("_"));
-   // let local_dictionary: {[index: string]: string} = {};
+    let transformation = j_obj["TRANSFORMATIONS"];
+    let group = transformation["GROUP"];
+    let apply = transformation["APPLY"];
+    let temp: string = group[0];
+    let id = temp.substring(0, temp.indexOf("_"));
+    // let local_dictionary: {[index: string]: string} = {};
 
-    let all_columns:string[];
-    if (id=="courses"){
-        all_columns=[
+    let all_columns: string[];
+    if (id == "courses") {
+        all_columns = [
             "courses_dept",
             "courses_avg",
             "courses_uuid",
@@ -1335,9 +1333,9 @@ function perform_Query_transform(query: QueryRequest) :Promise<InsightResponse>{
             "courses_year"
         ];
     }
-    else if (id=="rooms"){
+    else if (id == "rooms") {
 
-        all_columns=[
+        all_columns = [
             "rooms_fullname",
             "rooms_shortname",
             "rooms_name",
@@ -1353,8 +1351,7 @@ function perform_Query_transform(query: QueryRequest) :Promise<InsightResponse>{
     }
 
 
-
-    let helper_query ={
+    let helper_query = {
         "WHERE": where,
         "OPTIONS": {
             "COLUMNS": all_columns
@@ -1364,19 +1361,19 @@ function perform_Query_transform(query: QueryRequest) :Promise<InsightResponse>{
     };
 
 
-    return new Promise( (fulfill,reject)=>{
-        this.performQuery(helper_query).then(function (response:InsightResponse) {
-            let groups:any[][];
+    return new Promise((fulfill, reject) => {
+        this.performQuery(helper_query).then(function (response: InsightResponse) {
+            let groups: any[][];
             // get the groups
-            let j_response=JSON.parse(response.body.toString());
-            for (let tuple of j_response["result"]){
+            let j_response = JSON.parse(response.body.toString());
+            for (let tuple of j_response["result"]) {
                 console.log(tuple);
             }
 
             // apply functions
 
 
-           fulfill({code: 100, body: {"message":"ok"}}) ;
+            fulfill({code: 100, body: {"message": "ok"}});
         });
     })
 
