@@ -2344,24 +2344,7 @@ describe("EchoSpec", function () {
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    it("test remove ", function (done) {
+    xit("test remove ", function (done) {
         this.timeout(10000)
 
 
@@ -2602,6 +2585,48 @@ describe("EchoSpec", function () {
                     ]
                 },
                 "FORM": "TABLE"
+            }
+        };
+        var query = s1;
+
+
+        var temp = new InsightFacade();
+
+        temp.performQuery(query)
+            .then((response) => {
+                console.log(response.code);
+                console.log(response.body);
+                done();
+            })
+            .catch((err) => {
+                console.log(err.code);
+                console.log(err.body)
+                done();
+            });
+
+    });
+
+
+    it("test transformation ", function (done) {
+        this.timeout(10000)
+
+
+        var s1 = {
+            "WHERE": {
+                "GT":{
+                "rooms_seats":200
+            }
+            },
+            "OPTIONS": {
+                "COLUMNS": [
+                    "rooms_furniture"
+                ],
+                "ORDER": "rooms_furniture",
+                "FORM": "TABLE"
+            },
+            "TRANSFORMATIONS": {
+                "GROUP": ["rooms_furniture"],
+                "APPLY": []
             }
         };
         var query = s1;

@@ -40,6 +40,38 @@ dictionary = {
 
 };
 
+let dictionary_courses: {[index: string]: string} = {};
+
+dictionary = {
+    "courses_dept": "Subject",
+    "courses_id": "Course",
+    "courses_avg": "Avg",
+    "courses_instructor": "Professor",
+    "courses_title": "Title",
+    "courses_pass": "Pass",
+    "courses_fail": "Fail",
+    "courses_audit": "Audit",
+    "courses_uuid": "id",
+    "courses_year": "Year"
+};
+
+let dictionary_rooms: {[index: string]: string} = {};
+
+dictionary = {
+    "rooms_fullname": "rooms_fullname",
+    "rooms_shortname": "rooms_shortname",
+    "rooms_number": "rooms_number",
+    "rooms_name": "rooms_name",
+    "rooms_address": "rooms_address",
+    "rooms_lat": "rooms_lat",
+    "rooms_lon": "rooms_lon",
+    "rooms_seats": "rooms_seats",
+    "rooms_type": "rooms_type",
+    "rooms_furniture": "rooms_furniture",
+    "rooms_href": "rooms_href",
+    "rooms_id": "id"
+};
+
 class Dataset_obj {
     id: string;
 
@@ -714,6 +746,11 @@ export default class InsightFacade implements IInsightFacade {
                  reject({code: 400, body: {"error": "invalid json or query 714"}});
             }
 
+            if (!isUndefined(transformations)){
+                perform_Query_transform(query).then(function (response) {
+                    return fulfill(response);
+                });
+            }
 
             if(columns.length != 0) {
                 var column0 = columns[0];
@@ -926,52 +963,54 @@ function filter(table: Array<Dataset_obj>, query: QueryRequest, missing_col: str
     var order = options["ORDER"];
     let order_keys=Object.keys(order);
 
-    if (order_keys.length>1){
-        let dir=order["dir"];
-        let keys=order["keys"];
+    if (!isUndefined(order)) {
+        if (order_keys.length > 1) {
+            let dir = order["dir"];
+            let keys = order["keys"];
 
-        if (dir=="UP"){
-            if (!isUndefined(order)) {
-                ret_table.sort((a: Dataset_obj, b: Dataset_obj) => {
-                    for (let i=0;i<keys.length;i++){
-                        if (a.getValue(dictionary[keys[i]])<b.getValue(dictionary[keys[i]])){
-                            return -1;
+            if (dir == "UP") {
+                if (!isUndefined(order)) {
+                    ret_table.sort((a: Dataset_obj, b: Dataset_obj) => {
+                        for (let i = 0; i < keys.length; i++) {
+                            if (a.getValue(dictionary[keys[i]]) < b.getValue(dictionary[keys[i]])) {
+                                return -1;
+                            }
+                            else if (a.getValue(dictionary[keys[i]]) > b.getValue(dictionary[keys[i]])) {
+                                return 1;
+                            }
                         }
-                        else if (a.getValue(dictionary[keys[i]])>b.getValue(dictionary[keys[i]])){
-                            return 1;
-                        }
-                    }
-                    return 0;
-                });
+                        return 0;
+                    });
+                }
             }
-        }
-        else if (dir=="DOWN"){
-            if (!isUndefined(order)) {
-                ret_table.sort((a: Dataset_obj, b: Dataset_obj) => {
-                    for (let i=0;i<keys.length;i++){
-                        if (a.getValue(dictionary[keys[i]])<b.getValue(dictionary[keys[i]])){
-                            return 1;
+            else if (dir == "DOWN") {
+                if (!isUndefined(order)) {
+                    ret_table.sort((a: Dataset_obj, b: Dataset_obj) => {
+                        for (let i = 0; i < keys.length; i++) {
+                            if (a.getValue(dictionary[keys[i]]) < b.getValue(dictionary[keys[i]])) {
+                                return 1;
+                            }
+                            else if (a.getValue(dictionary[keys[i]]) > b.getValue(dictionary[keys[i]])) {
+                                return -1;
+                            }
                         }
-                        else if (a.getValue(dictionary[keys[i]])>b.getValue(dictionary[keys[i]])){
-                            return -1;
-                        }
-                    }
-                    return 0;
-                });
+                        return 0;
+                    });
+                }
+            }
+            else {
+                throw Error("invalid direction line 903");
             }
         }
         else {
-            throw Error("invalid direction line 903");
-        }
-    }
-    else {
-        if (!isUndefined(order)) {
+
             ret_table.sort((a: Dataset_obj, b: Dataset_obj) => {
                 if (typeof b.getValue(dictionary[order]) == "number")
                     return a.getValue(dictionary[order]) - b.getValue(dictionary[order]);
                 else
                     return a.getValue(dictionary[order]).localeCompare(b.getValue(dictionary[order]));
             });
+
         }
     }
 
@@ -1272,37 +1311,79 @@ function filter_helper(table: Array<Dataset_obj>, query: QueryRequest, missing_c
     return ret_array;
 }
 
-function perform_Query_transform(query: QueryRequest){
+function perform_Query_transform(query: QueryRequest) :Promise<InsightResponse>{
     let j_query = JSON.stringify(query);
     let j_obj = JSON.parse(j_query);
 
     let where = j_obj["WHERE"];
     let transformation=j_obj["TRANSFORMATIONS"];
     let group=transformation["GROUP"];
+    let apply=transformation["APPLY"];
     let temp :string=group[0];
     let id=temp.substring(0,temp.indexOf("_"));
+   // let local_dictionary: {[index: string]: string} = {};
 
-    let helper_query={
-        "WHERE": {
-        },
+    let all_columns:string[];
+    if (id=="courses"){
+        all_columns=[
+            "courses_dept",
+            "courses_avg",
+            "courses_uuid",
+            "courses_txitle",
+            "courses_instructor",
+            "courses_fail",
+            "courses_audxit",
+            "courses_pass",
+            "courses_year"
+        ];
+    }
+    else if (id=="rooms"){
+
+        all_columns=[
+            "rooms_fullname",
+            "rooms_shortname",
+            "rooms_name",
+            "rooms_number",
+            "rooms_address",
+            "rooms_lat",
+            "rooms_lon",
+            "rooms_seats",
+            "rooms_furnxiture",
+            "rooms_href",
+            "rooms_type"
+        ];
+    }
+
+
+
+    let helper_query ={
+        "WHERE": where,
         "OPTIONS": {
-            "COLUMNS": [
-                "courses_avg",
-                "courses_uuid"
-
-            ],
-
-            "ORDER":{
-                "dir":"UP",
-                "keys":[
-                    "courses_avg",
-                    "courses_uuid"
-
-                ]
-            },
+            "COLUMNS": all_columns
+            ,
             "FORM": "TABLE"
         }
     };
+
+    return new Promise( (fulfill,reject)=>{
+        this.performQuery(helper_query).then(function (response:InsightResponse) {
+            let groups:any[][];
+            // get the groups
+            let j_response=JSON.parse(response.body.toString());
+            for (let tuple of j_response["result"]){
+                console.log(tuple);
+            }
+
+            // apply functions
+
+
+
+
+           fulfill({code: 100, body: {"message":"ok"}}) ;
+        });
+    })
+
+
 }
 
 function compare(a: Dataset_obj, b: Dataset_obj): number {
