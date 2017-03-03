@@ -1412,7 +1412,7 @@ function perform_Query_transform(query: QueryRequest, this_obj: InsightFacade): 
             }
 
 
-           // console.log(groups);
+            //console.log(groups);
             let group_keys= Object.keys(groups);
 
             for (let key of group_keys) {
@@ -1466,6 +1466,7 @@ function perform_Query_transform(query: QueryRequest, this_obj: InsightFacade): 
                             break;
                         case "AVG":
                             let sum=0;
+                            result=0;
                             if (typeof group[0][function_target]!="number") {
                                 throw Error ("Invalid type 1440");
                             }
@@ -1478,8 +1479,11 @@ function perform_Query_transform(query: QueryRequest, this_obj: InsightFacade): 
                                 }
 
 
+                            console.log(counter);
                             result=sum/counter;
-                            result=Number(result.toFixed(4));
+                            console.log(result);
+                            result=Number(result.toFixed(2));
+                            console.log()
 
                             break;
                         case"COUNT":
