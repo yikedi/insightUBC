@@ -747,7 +747,7 @@ export default class InsightFacade implements IInsightFacade {
                 }
 
                 if (!isUndefined(transformations)) {
-                    perform_Query_transform(query).then(function (response) {
+                    perform_Query_transform(query,this).then(function (response) {
                         return fulfill(response);
                     }).catch(function (err) {
                         return reject({code: 400, body: {"error": "invalid json or query 753"}});
@@ -1307,7 +1307,7 @@ function filter_helper(table: Array<Dataset_obj>, query: QueryRequest, missing_c
     return ret_array;
 }
 
-function perform_Query_transform(query: QueryRequest): Promise<InsightResponse> {
+function perform_Query_transform(query: QueryRequest, this_obj:InsightFacade): Promise<InsightResponse> {
     let j_query = JSON.stringify(query);
     let j_obj = JSON.parse(j_query);
 
@@ -1362,7 +1362,10 @@ function perform_Query_transform(query: QueryRequest): Promise<InsightResponse> 
 
 
     return new Promise((fulfill, reject) => {
-        this.performQuery(helper_query).then(function (response: InsightResponse) {
+        console.log("a");
+        console.log(this_obj.rooms_dataset);
+        console.log("b");
+        this_obj.performQuery(helper_query).then(function (response: InsightResponse) {
             let groups: any[][];
             // get the groups
             let j_response = JSON.parse(response.body.toString());
