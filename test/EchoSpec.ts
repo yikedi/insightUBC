@@ -2587,6 +2587,7 @@ describe("EchoSpec", function () {
             "OPTIONS": {
                 "COLUMNS": [
                     "courses_avg",
+                    "courses_year",
                     "courses_uuid"
 
                 ],
@@ -2595,6 +2596,7 @@ describe("EchoSpec", function () {
                    "dir":"UP",
                     "keys":[
                         "courses_avg",
+                        "courses_year",
                         "courses_uuid"
 
                     ]

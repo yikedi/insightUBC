@@ -304,8 +304,27 @@ class Rooms_obj extends Dataset_obj {
 }
 
 export default class InsightFacade implements IInsightFacade {
+    rooms_dataset:string;
+    courses_dataset:string;
 
     constructor() {
+
+
+        var path: string ="src/courses.txt";
+        var exist: boolean = fs.existsSync(path);
+        if(exist) {
+            this.courses_dataset = fs.readFileSync(path, 'utf-8');
+        }else{
+            this.courses_dataset = null;
+        }
+        var path: string ="src/rooms.txt";
+        var exist: boolean = fs.existsSync(path);
+        if(exist) {
+            this.rooms_dataset = fs.readFileSync(path, 'utf-8');
+        }else{
+            this.rooms_dataset = null;
+        }
+
         Log.trace('InsightFacadeImpl::init()');
     }
 
@@ -397,6 +416,7 @@ export default class InsightFacade implements IInsightFacade {
                                     else {
                                         ret_obj = {code: 204, body: j_objs};
                                     }
+                                    this.courses_dataset = j_objs;
                                     return fulfill(ret_obj);
                                 }
                             });
@@ -609,6 +629,7 @@ export default class InsightFacade implements IInsightFacade {
                                             else {
                                                 ret_obj = {code: 204, body: j_objs};
                                             }
+                                            this.rooms_dataset = j_objs;
                                             return fulfill(ret_obj);
                                         }
                                     });
@@ -656,6 +677,12 @@ export default class InsightFacade implements IInsightFacade {
                         return reject(ret_obj);
                     } else {
                         ret_obj = {code: 204, body: "The operation was successful"};
+                        if(id == "courses"){
+                            this.courses_dataset = null;
+                        }
+                        else if(id == "rooms"){
+                            this.rooms_dataset = null;
+                        }
                         return fulfill(ret_obj);
                     }
                 });
@@ -665,7 +692,7 @@ export default class InsightFacade implements IInsightFacade {
     }
 
     performQuery(query: QueryRequest): Promise <InsightResponse> {
-        return new Promise(function (fulfill, reject) {
+        return new Promise((fulfill, reject) =>{
 
             /*******/
             // var id = "courses";
@@ -698,13 +725,18 @@ export default class InsightFacade implements IInsightFacade {
             }
 
             if (exist) {
-                var file = fs.readFile("src/" + id + ".txt", 'utf-8', (err: Error, data: string) => {
-                    if (err) {
-                        //console.log("in exist err line 154");
-                        return reject({code: 400, body: {"error": err.message+"    727"}});
-                    }
-                    else {
-
+               // var file = fs.readFile("src/" + id + ".txt", 'utf-8', (err: Error, data: string) => {
+               //      if (err) {
+               //          //console.log("in exist err line 154");
+               //          return reject({code: 400, body: {"error": err.message+"    727"}});
+               //      }
+               //     else {
+                        let data:string;
+                        if(id == "courses"){
+                            data = this.courses_dataset;
+                        }else if (id == "rooms"){
+                            data = this.rooms_dataset;
+                        }
                         var table: Dataset_obj[];
                         if (id == "courses") {
                             table = build_table(data);
@@ -787,19 +819,19 @@ export default class InsightFacade implements IInsightFacade {
                             return reject({code: 400, body: error_400[0]+ "   805 "});
                         }
 
-                        var ret_obj = {render: form, result: body};
+                        let ret_obj = {render: form, result: body};
                         return fulfill({code: 200, body: ret_obj});
 
 
-                    }
+                //    }
 
 
-                });
+               // });
 
             }
             else {
 
-                var ret_obj = {code: 424, body: {"missing":[id]}};
+                let ret_obj = {code: 424, body: {"missing":[id]}};
                 return reject(ret_obj);
             }
 

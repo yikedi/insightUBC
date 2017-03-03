@@ -64,6 +64,16 @@ export default class Server {
                 // curl -is  http://localhost:4321/echo/myMessage
                 that.rest.get('/echo/:msg', Server.echo);
 
+
+                //TODO
+                that.rest.put('/dataset/:courses',function(req: restify.Request, res: restify.Response, next: restify.Next) {
+                    res.send(200);
+                    return next();
+                });
+
+
+
+
                 // Other endpoints will go here
 
                 that.rest.listen(that.port, function () {
