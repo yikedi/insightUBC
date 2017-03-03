@@ -97,6 +97,7 @@ describe("EchoSpec", function () {
     });
 
 
+    /*
     xit("test simple query courses year", function (done) {
         this.timeout(10000)
 
@@ -2542,6 +2543,8 @@ describe("EchoSpec", function () {
 
     });
 
+    */
+
 
     xit("test new sort", function (done) {
         this.timeout(10000)
@@ -2610,25 +2613,78 @@ describe("EchoSpec", function () {
     it("test transformation ", function (done) {
         this.timeout(10000)
 
-
-        var s1 = {
+        var s1={
             "WHERE": {
-                "GT":{
-                "rooms_seats":200
-            }
-            },
+            "AND": [ {
+                "GT": {
+                    "rooms_seats": 10
+                }
+            }]
+        },
             "OPTIONS": {
-                "COLUMNS": [
-                    "rooms_furniture"
-                ],
-                "ORDER": "rooms_furniture",
-                "FORM": "TABLE"
+            "COLUMNS": [
+                "rooms_shortname",
+                "maxSeats",
+                "minSeats",
+                "avgSeats",
+                "sumSeats",
+                "countSeats"
+            ],
+                "ORDER": {
+                "dir": "DOWN",
+                    "keys": ["maxSeats"]
             },
+            "FORM": "TABLE"
+        },
             "TRANSFORMATIONS": {
-                "GROUP": ["rooms_furniture"],
-                "APPLY": []
-            }
+            "GROUP": ["rooms_shortname"],
+                "APPLY": [{
+                "maxSeats": {
+                    "MAX": "rooms_seats"
+                }
+            },
+                    {
+                        "minSeats":{
+                            "MIN":"rooms_seats"
+                        }
+                    },
+                    {
+                        "avgSeats":{
+                            "AVG":"rooms_seats"
+                        }
+                    },
+                    {
+                        "sumSeats":{
+                            "SUM":"rooms_seats"
+                        }
+                    },
+                    {
+                        "countSeats":{
+                            "COUNT":"rooms_seats"
+                        }
+                    }
+            ]
+        }
         };
+
+        // var s1 = {
+        //     "WHERE": {
+        //         "GT":{
+        //         "rooms_seats":200
+        //     }
+        //     },
+        //     "OPTIONS": {
+        //         "COLUMNS": [
+        //             "rooms_furniture"
+        //         ],
+        //         "ORDER": "rooms_furniture",
+        //         "FORM": "TABLE"
+        //     },
+        //     "TRANSFORMATIONS": {
+        //         "GROUP": ["rooms_furniture", "rooms_type"],
+        //         "APPLY": []
+        //     }
+        // };
         var query = s1;
 
 
