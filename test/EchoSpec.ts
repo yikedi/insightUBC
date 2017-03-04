@@ -2617,7 +2617,7 @@ describe("EchoSpec", function () {
             "WHERE": {
             "AND": [ {
                 "GT": {
-                    "rooms_seats": 10
+                    "rooms_seats": 300
                 }
             }]
         },
