@@ -2627,8 +2627,7 @@ describe("EchoSpec", function () {
                 "maxSeats",
                 "minSeats",
                 "avgSeats",
-                "sumSeats",
-                "countSeats"
+                "sumSeats"
             ],
                 "ORDER": {
                 "dir": "DOWN",
