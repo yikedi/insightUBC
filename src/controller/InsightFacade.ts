@@ -40,38 +40,6 @@ dictionary = {
 
 };
 
-let dictionary_courses: {[index: string]: string} = {};
-
-dictionary = {
-    "courses_dept": "Subject",
-    "courses_id": "Course",
-    "courses_avg": "Avg",
-    "courses_instructor": "Professor",
-    "courses_title": "Title",
-    "courses_pass": "Pass",
-    "courses_fail": "Fail",
-    "courses_audit": "Audit",
-    "courses_uuid": "id",
-    "courses_year": "Year"
-};
-
-let dictionary_rooms: {[index: string]: string} = {};
-
-dictionary = {
-    "rooms_fullname": "rooms_fullname",
-    "rooms_shortname": "rooms_shortname",
-    "rooms_number": "rooms_number",
-    "rooms_name": "rooms_name",
-    "rooms_address": "rooms_address",
-    "rooms_lat": "rooms_lat",
-    "rooms_lon": "rooms_lon",
-    "rooms_seats": "rooms_seats",
-    "rooms_type": "rooms_type",
-    "rooms_furniture": "rooms_furniture",
-    "rooms_href": "rooms_href",
-    "rooms_id": "id"
-};
-
 class Dataset_obj {
     id: string;
 
