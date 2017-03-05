@@ -73,7 +73,7 @@ describe("EchoSpec", function () {
 
     });
 
-    xit("test add courses.zip", function (done) {
+    it("test add courses.zip", function (done) {
         this.timeout(50000)
 
         var zip = new JSZip();
