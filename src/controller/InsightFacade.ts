@@ -784,9 +784,6 @@ export default class InsightFacade implements IInsightFacade {
                         var missing_col: string[] = [];
                         var error_400: Object[] = [];
 
-
-                        // var order_valid: boolean = false;
-                        // var order_check = dictionary[order];
                         let order_valid=check_order(order,columns);
 
                         for (let column of columns) {
@@ -967,7 +964,7 @@ function filter(table: Array<Dataset_obj>, query: QueryRequest, missing_col: str
 
     if (!isUndefined(order)) {
         let order_keys = Object.keys(order);
-        if (order_keys.length > 1) {
+        if (typeof order =="object") {
             let dir = order["dir"];
             let keys = order["keys"];
 
@@ -1693,8 +1690,21 @@ function local_compare(a: any, b: any, keys: any[]): number {
 function check_order(order:any, columns:any) :boolean {
 
     if (!isUndefined(order)) {
-        let order_keys = Object.keys(order);
-        if (order_keys.length > 1) {
+        if (typeof order =="string"){
+            let valid = false;
+            for (let column of columns) {
+                if (order == column) {
+                    valid = true;
+                    break;
+                }
+
+
+            }
+            if (!valid || isUndefined(dictionary[order])) {
+                return false;
+            }
+        }
+        else {
             if (order["dir"] != "UP" && order["dir"] != "DOWN") {
                 return false;
             }
@@ -1712,24 +1722,45 @@ function check_order(order:any, columns:any) :boolean {
 
 
             }
-
-        } else {
-            let valid = false;
-            for (let column of columns) {
-                if (order == column) {
-                    valid = true;
-                    break;
-                }
-                if (!valid || isUndefined(dictionary[order])) {
-                    return false;
-                }
-
-            }
-
-
         }
-        return true;
+
+        // if (order_keys.length > 1) {
+        //     if (order["dir"] != "UP" && order["dir"] != "DOWN") {
+        //         return false;
+        //     }
+        //     for (let item of order["keys"]) {
+        //         let valid: boolean = false;
+        //         for (let column of columns) {
+        //             if (item == column) {
+        //                 valid = true;
+        //                 break;
+        //             }
+        //         }
+        //         if (!valid) {
+        //             return false
+        //         }
+        //
+        //
+        //     }
+        //
+        // } else {
+        //     let valid = false;
+        //     for (let column of columns) {
+        //         if (order == column) {
+        //             valid = true;
+        //             break;
+        //         }
+        //         if (!valid || isUndefined(dictionary[order])) {
+        //             return false;
+        //         }
+        //
+        //     }
+        //
+        //
+        // }
+
     }
+    return true;
 }
 
 
