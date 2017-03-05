@@ -739,6 +739,42 @@ export default class InsightFacade implements IInsightFacade {
                 }
 
                 if (!isUndefined(transformations)) {
+                    if (!isUndefined(order)) {
+                        let order_keys = Object.keys(order);
+                        if (order_keys.length > 1) {
+                            if (order["dir"] != "UP" && order["dir"] != "DOWN") {
+                                return reject({code: 400, body: {"error": "invalid direction 746"}});
+                            }
+                            for (let item of order["keys"]) {
+                                let valid: boolean = false;
+                                for (let column of columns) {
+                                    if (item == column) {
+                                        valid = true;
+                                        break;
+                                    }
+                                }
+                                    if (!valid) {
+                                        return reject({code: 400, body: {"error": "invalid order 755"}});
+                                    }
+
+
+                            }
+                        } else {
+                            let valid = false;
+                            for (let column of columns) {
+                                if (order == column) {
+                                    valid = true;
+                                    break;
+                                }
+                                if (!valid) {
+                                    return reject({code: 400, body: {"error": "invalid order 769"}});
+                                }
+
+                            }
+                        }
+
+                    }
+
                     perform_Query_transform(query, this).then(function (response) {
                         return fulfill(response);
                     }).catch(function (err) {
@@ -791,16 +827,9 @@ export default class InsightFacade implements IInsightFacade {
                             }
                         }
                         if (!isUndefined(order)) {
-                            var order_keys = Object.keys(order);
-                            if (order_keys.length > 1) {
-                                // check a lot of things
-                            }
-
-                            else {
-                                if (!isUndefined(order)) {
-                                    if (isUndefined(order_check) || !order_valid)
-                                        missing_col.push(order);
-                                }
+                            if (!isUndefined(order)) {
+                                if (isUndefined(order_check) || !order_valid)
+                                    missing_col.push(order);
                             }
                         }
 
@@ -941,12 +970,23 @@ function filter(table: Array<Dataset_obj>, query: QueryRequest, missing_col: str
     var options = j_obj["OPTIONS"];
     var where = j_obj["WHERE"];
 
+    let where_keys=Object.keys(where);
+    // console.log(where_keys);
+    // console.log(where_keys.length);
+
+
     var query: QueryRequest = where;
     var ret_table = [];
-    try {
-        ret_table = filter_helper(table, query, missing_col, error_400);
-    } catch (err) {
-        throw err;
+
+    if (where_keys.length<1){
+        ret_table=table;
+    }
+    else {
+        try {
+            ret_table = filter_helper(table, query, missing_col, error_400);
+        } catch (err) {
+            throw err;
+        }
     }
 
     var columns = options["COLUMNS"];
@@ -1317,7 +1357,6 @@ function perform_Query_transform(query: QueryRequest, this_obj: InsightFacade): 
 
     let temp: string = group[0];
     let id = temp.substring(0, temp.indexOf("_"));
-    // let local_dictionary: {[index: string]: string} = {};
 
     let all_columns: string[];
     if (id == "courses") {
@@ -1359,7 +1398,6 @@ function perform_Query_transform(query: QueryRequest, this_obj: InsightFacade): 
             "FORM": "TABLE"
         }
     };
-
 
     return new Promise((fulfill, reject) => {
         this_obj.performQuery(helper_query).then(function (response: InsightResponse) {

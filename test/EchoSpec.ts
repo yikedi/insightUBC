@@ -2615,11 +2615,11 @@ describe("EchoSpec", function () {
 
         var s1={
             "WHERE": {
-            "AND": [ {
-                "GT": {
-                    "rooms_seats": 300
-                }
-            }]
+            // "AND": [ {
+            //     "GT": {
+            //         "rooms_seats": 300
+            //     }
+            // }]
         },
             "OPTIONS": {
             "COLUMNS": [
