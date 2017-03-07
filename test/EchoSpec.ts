@@ -2350,44 +2350,6 @@ describe("EchoSpec", function () {
     });
 
 
-
-    xit("test remove ", function (done) {
-        this.timeout(10000)
-
-
-        var temp = new InsightFacade();
-
-
-        temp.removeDataset("courses").then(function (body) {
-            console.log(body.code);
-            //console.log(body.body);
-            done();
-        }).catch(function (err) {
-            console.log(err.code);
-            //console.log(err.body);
-            done();
-        })
-
-    });
-
-    xit("test double remove ", function (done) {
-        this.timeout(10000)
-
-
-        var temp = new InsightFacade();
-
-
-        temp.removeDataset("courses").then(function (body) {
-            console.log(body.code);
-            //console.log(body.body);
-            done();
-        }).catch(function (err) {
-            console.log(err.code);
-            //console.log(err.body);
-            done();
-        })
-
-    });
     xit("test readError", function (done) {
         this.timeout(10000)
 
@@ -2615,16 +2577,12 @@ describe("EchoSpec", function () {
 
     });
 
-    xit("test transformation ", function (done) {
+    it("test transformation ", function (done) {
         this.timeout(10000)
 
         var s1={
             "WHERE": {
-            "AND": [ {
-                "GT": {
-                    "rooms_seats": 300
-                }
-            }]
+
         },
             "OPTIONS": {
             "COLUMNS": [
@@ -2634,10 +2592,10 @@ describe("EchoSpec", function () {
                 "avgSeats",
                 "sumSeats"
             ],
-                "ORDER": {
-                "dir": "DOWN",
-                    "keys": ["maxSeats"]
-            },
+            //     "ORDER": {
+            //     "dir": "DOWN",
+            //         "keys": ["maxSeats"]
+            // },
             "FORM": "TABLE"
         },
             "TRANSFORMATIONS": {
@@ -2677,6 +2635,44 @@ describe("EchoSpec", function () {
         var temp = new InsightFacade();
 
         temp.performQuery(query)
+            .then((response:any) => {
+                console.log(response.code);
+                console.log(response.body);
+                console.log(response.body["result"].length);
+                done();
+            })
+            .catch((err) => {
+                console.log(err.code);
+                console.log(err.body)
+                done();
+            });
+
+    });
+
+    it("test d3 test", function (done) {
+        this.timeout(10000)
+
+        var s1={
+            "WHERE": {},
+            "OPTIONS": {
+                "COLUMNS": [
+                    "rooms_furniture"
+                ],
+                "ORDER": "rooms_furniture",
+                "FORM": "TABLE"
+            },
+            "TRANSFORMATIONS": {
+                "GROUP": ["rooms_furniture"],
+                "APPLY": []
+            }
+        };
+
+        var query = s1;
+
+
+        var temp = new InsightFacade();
+
+        temp.performQuery(query)
             .then((response) => {
                 console.log(response.code);
                 console.log(response.body);
@@ -2690,7 +2686,7 @@ describe("EchoSpec", function () {
 
     });
 
-    it("test put", function (done) {
+    xit("test put", function (done) {
         this.timeout(20000);
         server.start().then(function () {
             let dataset = fs.readFileSync("./src/rooms.zip");
@@ -2705,22 +2701,22 @@ describe("EchoSpec", function () {
 
     });
 
-    // it("PUT description", function () {
-    //     return chai.request('http://localhost:4321')
-    //         .put('/dataset/rooms')
-    //         .attach("body", fs.readFileSync("./src/rooms.zip"), "rooms.zip")
-    //         .then(function (res: any) {
-    //             Log.trace('then:');
-    //             // some assertions
-    //         })
-    //         .catch(function (err:any) {
-    //             Log.trace('catch:');
-    //             // some assertions
-    //             expect.fail();
-    //         });
-    // });
+    xit("PUT description", function () {
+        return chai.request('http://localhost:4321')
+            .put('/dataset/rooms')
+            .attach("body", fs.readFileSync("./src/rooms.zip"), "rooms.zip")
+            .then(function (res: any) {
+                Log.trace('then:');
+                // some assertions
+            })
+            .catch(function (err:any) {
+                Log.trace('catch:');
+                // some assertions
+                expect.fail();
+            });
+    });
 
-    it("test post", function (done) {
+    xit("test post", function (done) {
         this.timeout(20000);
         let query = {
             "WHERE": {
@@ -2766,7 +2762,7 @@ describe("EchoSpec", function () {
         }).catch();
     });
 
-    it("test del", function (done) {
+    xit("test del", function (done) {
         this.timeout(20000);
         server.start().then(function () {
             chai.request("http://localhost:4321")
@@ -2777,5 +2773,60 @@ describe("EchoSpec", function () {
                 })
         }).catch();
     });
+
+
+
+    it("test simple query courses year", function (done) {
+        this.timeout(10000)
+
+
+        var s1 = {
+            "WHERE": {
+
+                "OR": [
+                    {
+                        "GT": {
+                            "courses_year": 2016
+                        }
+                    },
+                    {
+                        "EQ":{
+                            "courses_year": 1900
+                        }
+                    }
+                ]
+
+
+            },
+
+
+            "OPTIONS": {
+                "COLUMNS": [
+                    "courses_id",
+                    "courses_year"
+                ],
+                "ORDER": "courses_year",
+                "FORM": "TABLE"
+            }
+        };
+        var query = s1;
+
+
+        var temp = new InsightFacade();
+
+        temp.performQuery(query)
+            .then((response) => {
+                console.log(response.code);
+                console.log(response.body);
+                done();
+            })
+            .catch((err) => {
+                console.log(err.code);
+                console.log(err.body)
+                done();
+            });
+
+    });
+
 });
 
