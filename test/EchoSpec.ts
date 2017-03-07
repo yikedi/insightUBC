@@ -2693,10 +2693,10 @@ describe("EchoSpec", function () {
     it("test put", function (done) {
         this.timeout(20000);
         server.start().then(function () {
-            let dataset = fs.readFileSync("./src/rooms.zip","base64");
+            let dataset = fs.readFileSync("./src/rooms.zip");
             chai.request("http://localhost:4321")
                 .put('/dataset/rooms')
-                .send(dataset)
+                .attach("body", dataset, "rooms.zip")
                 .end(function () {
                     server.stop().then();
                     done();
@@ -2704,6 +2704,21 @@ describe("EchoSpec", function () {
         }).catch();
 
     });
+
+    // it("PUT description", function () {
+    //     return chai.request('http://localhost:4321')
+    //         .put('/dataset/rooms')
+    //         .attach("body", fs.readFileSync("./src/rooms.zip"), "rooms.zip")
+    //         .then(function (res: any) {
+    //             Log.trace('then:');
+    //             // some assertions
+    //         })
+    //         .catch(function (err:any) {
+    //             Log.trace('catch:');
+    //             // some assertions
+    //             expect.fail();
+    //         });
+    // });
 
     it("test post", function (done) {
         this.timeout(20000);
