@@ -2350,6 +2350,44 @@ describe("EchoSpec", function () {
     });
 
 
+
+    xit("test remove ", function (done) {
+        this.timeout(10000)
+
+
+        var temp = new InsightFacade();
+
+
+        temp.removeDataset("courses").then(function (body) {
+            console.log(body.code);
+            //console.log(body.body);
+            done();
+        }).catch(function (err) {
+            console.log(err.code);
+            //console.log(err.body);
+            done();
+        })
+
+    });
+
+    xit("test double remove ", function (done) {
+        this.timeout(10000)
+
+
+        var temp = new InsightFacade();
+
+
+        temp.removeDataset("courses").then(function (body) {
+            console.log(body.code);
+            //console.log(body.body);
+            done();
+        }).catch(function (err) {
+            console.log(err.code);
+            //console.log(err.body);
+            done();
+        })
+
+    });
     xit("test readError", function (done) {
         this.timeout(10000)
 
@@ -2577,17 +2615,20 @@ describe("EchoSpec", function () {
 
     });
 
-    it("test transformation ", function (done) {
+    xit("test transformation ", function (done) {
         this.timeout(10000)
 
         var s1={
             "WHERE": {
-
+            "AND": [ {
+                "GT": {
+                    "rooms_seats": 300
+                }
+            }]
         },
             "OPTIONS": {
             "COLUMNS": [
                 "rooms_shortname",
-                "rooms_number",
                 "maxSeats",
                 "minSeats",
                 "avgSeats",
@@ -2600,9 +2641,8 @@ describe("EchoSpec", function () {
             "FORM": "TABLE"
         },
             "TRANSFORMATIONS": {
-            "GROUP": ["rooms_shortname","rooms_number"],
-                "APPLY":
-                    [{
+            "GROUP": ["rooms_shortname"],
+                "APPLY": [{
                 "maxSeats": {
                     "MAX": "rooms_seats"
                 }
@@ -2637,10 +2677,9 @@ describe("EchoSpec", function () {
         var temp = new InsightFacade();
 
         temp.performQuery(query)
-            .then((response:any) => {
+            .then((response) => {
                 console.log(response.code);
                 console.log(response.body);
-                console.log(response.body["result"].length);
                 done();
             })
             .catch((err) => {
@@ -2650,43 +2689,6 @@ describe("EchoSpec", function () {
             });
 
     });
-
-    // it("test d3 test", function (done) {
-    //     this.timeout(10000)
-    //
-    //     var s1={
-    //         "WHERE": {},
-    //         "OPTIONS": {
-    //             "COLUMNS": [
-    //                 "rooms_furniture"
-    //             ],
-    //             "ORDER": "rooms_furniture",
-    //             "FORM": "TABLE"
-    //         },
-    //         "TRANSFORMATIONS": {
-    //             "GROUP": ["rooms_furniture"],
-    //             "APPLY": []
-    //         }
-    //     };
-    //
-    //     var query = s1;
-    //
-    //
-    //     var temp = new InsightFacade();
-    //
-    //     temp.performQuery(query)
-    //         .then((response) => {
-    //             console.log(response.code);
-    //             console.log(response.body);
-    //             done();
-    //         })
-    //         .catch((err) => {
-    //             console.log(err.code);
-    //             console.log(err.body)
-    //             done();
-    //         });
-    //
-    // });
 
     xit("test put", function (done) {
         this.timeout(20000);
@@ -2703,20 +2705,20 @@ describe("EchoSpec", function () {
 
     });
 
-    xit("PUT description", function () {
-        return chai.request('http://localhost:4321')
-            .put('/dataset/rooms')
-            .attach("body", fs.readFileSync("./src/rooms.zip"), "rooms.zip")
-            .then(function (res: any) {
-                Log.trace('then:');
-                // some assertions
-            })
-            .catch(function (err:any) {
-                Log.trace('catch:');
-                // some assertions
-                expect.fail();
-            });
-    });
+    // it("PUT description", function () {
+    //     return chai.request('http://localhost:4321')
+    //         .put('/dataset/rooms')
+    //         .attach("body", fs.readFileSync("./src/rooms.zip"), "rooms.zip")
+    //         .then(function (res: any) {
+    //             Log.trace('then:');
+    //             // some assertions
+    //         })
+    //         .catch(function (err:any) {
+    //             Log.trace('catch:');
+    //             // some assertions
+    //             expect.fail();
+    //         });
+    // });
 
     xit("test post", function (done) {
         this.timeout(20000);
@@ -2776,41 +2778,28 @@ describe("EchoSpec", function () {
         }).catch();
     });
 
-
-
-    xit("test simple query courses year", function (done) {
+    it("test d3 test", function (done) {
         this.timeout(10000)
 
-
-        var s1 = {
-            "WHERE": {
-
-                "OR": [
-                    {
-                        "GT": {
-                            "courses_year": 2016
-                        }
-                    },
-                    {
-                        "EQ":{
-                            "courses_year": 1900
-                        }
-                    }
-                ]
-
-
-            },
-
-
+        var s1={
+            "WHERE": {},
             "OPTIONS": {
                 "COLUMNS": [
-                    "courses_id",
-                    "courses_year"
+                    "courses_dept",
+                    "courses_id"
                 ],
-                "ORDER": "courses_year",
                 "FORM": "TABLE"
+            },
+            "TRANSFORMATIONS": {
+                "GROUP": ["courses_dept","courses_id"],
+                "APPLY": [{
+                    "maxSeats": {
+                        "MAX": "courses_avg"
+                    }
+                }]
             }
         };
+
         var query = s1;
 
 

@@ -1294,12 +1294,13 @@ function perform_Query_transform(query: QueryRequest, this_obj: InsightFacade): 
             "courses_dept",
             "courses_avg",
             "courses_uuid",
-            "courses_txitle",
+            "courses_title",
             "courses_instructor",
             "courses_fail",
-            "courses_audxit",
+            "courses_audit",
             "courses_pass",
-            "courses_year"
+            "courses_year",
+            "courses_id"
         ];
     }
     else if (id == "rooms") {
