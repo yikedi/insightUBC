@@ -2690,7 +2690,7 @@ describe("EchoSpec", function () {
 
     });
 
-    it("test put", function (done) {
+    xit("test put", function (done) {
         this.timeout(20000);
         server.start().then(function () {
             let dataset = fs.readFileSync("./src/rooms.zip","base64");
@@ -2711,6 +2711,52 @@ describe("EchoSpec", function () {
             chai.request("http://localhost:4321")
                 .del('/dataset/:rooms')
                 .end(function () {
+                    server.stop().then();
+                    done();
+                })
+        }).catch();
+    });
+
+    it("test post", function (done) {
+        this.timeout(20000);
+        let query = {
+            "WHERE": {
+                "AND": [{
+                    "IS": {
+                        "rooms_furniture": "*Tables*"
+                    }
+                }, {
+                    "GT": {
+                        "rooms_seats": 300
+                    }
+                }]
+            },
+            "OPTIONS": {
+                "COLUMNS": [
+                    "rooms_shortname",
+                    "maxSeats"
+                ],
+                "ORDER": {
+                    "dir": "DOWN",
+                    "keys": ["maxSeats"]
+                },
+                "FORM": "TABLE"
+            },
+            "TRANSFORMATIONS": {
+                "GROUP": ["rooms_shortname"],
+                "APPLY": [{
+                    "maxSeats": {
+                        "MAX": "rooms_seats"
+                    }
+                }]
+            }
+        };
+        server.start().then(function () {
+            chai.request("http://localhost:4321")
+                .post('/query')
+                .send(query)
+                .end(function (err: any, res:any) {
+                    console.log(res.body);
                     server.stop().then();
                     done();
                 })
