@@ -979,6 +979,7 @@ function filter(table: Array<Dataset_obj>, query: QueryRequest, missing_col: str
     var ret_array: any = [];
 
     for (let item of ret_table) {
+
         let ret_obj: {[index: string]: any} = {};
         for (let column of columns) {
             try {
@@ -1335,9 +1336,13 @@ function perform_Query_transform(query: QueryRequest, this_obj: InsightFacade): 
             // get the groups
 
             let j_response = JSON.parse(JSON.stringify(response.body));
+            console.log(j_response);
 
             let table = j_response["result"];
 
+            if (table.length < 1) {
+                return fulfill(response);
+            }
             for (let tuple of table) {
 
                 let group_id_value: string = "";
@@ -1392,125 +1397,125 @@ function perform_Query_transform(query: QueryRequest, this_obj: InsightFacade): 
                 final_group_obj["group_id"] = key;
 
 
-                    for (let item of apply) {
+                for (let item of apply) {
 
-                        let item_key = Object.keys(item)[0];  //ie maxSeats
-                        let function_use = Object.keys(item[item_key])[0]; // "MAX"
-                        let function_target = item[item_key][function_use]; //"rooms_seats"
+                    let item_key = Object.keys(item)[0];  //ie maxSeats
+                    let function_use = Object.keys(item[item_key])[0]; // "MAX"
+                    let function_target = item[item_key][function_use]; //"rooms_seats"
 
-                        let result;
+                    let result;
 
-                        switch (function_use) {
-                            case "MAX":
+                    switch (function_use) {
+                        case "MAX":
 
-                                //groups[group_keys[0]]   [{...}, {...}, {...} ]  same as  groups[key]  = group
-                                // groups[group_keys[0]][0]    {....}   group[0]
-                                // group[group_keys[0]][0] [function_target]  group[0][function_target] a specific value
+                            //groups[group_keys[0]]   [{...}, {...}, {...} ]  same as  groups[key]  = group
+                            // groups[group_keys[0]][0]    {....}   group[0]
+                            // group[group_keys[0]][0] [function_target]  group[0][function_target] a specific value
 
-                                if (typeof group[0][function_target] != "number") {
-                                    throw Error("Invalid type 1440");
+                            if (typeof group[0][function_target] != "number") {
+                                throw Error("Invalid type 1440");
+                            }
+
+                            let max = group[0][function_target];
+
+                            // console.log(max);
+                            for (let obj of group) {
+                                if (obj[function_target] > max) {
+                                    max = obj[function_target];
                                 }
+                            }
 
-                                let max = group[0][function_target];
+                            result = max;
+                            break;
+                        case "MIN":
 
-                                // console.log(max);
-                                for (let obj of group) {
-                                    if (obj[function_target] > max) {
-                                        max = obj[function_target];
+                            if (typeof group[0][function_target] != "number") {
+                                throw Error("Invalid type 1440");
+                            }
+
+                            let min = group[0][function_target];
+
+                            for (let obj of group) {
+                                if (obj[function_target] < min) {
+                                    min = obj[function_target];
+                                }
+                            }
+                            result = min;
+                            break;
+                        case "AVG":
+                            let sum = 0;
+                            result = 0;
+                            if (typeof group[0][function_target] != "number") {
+                                throw Error("Invalid type 1440");
+                            }
+
+                            let counter = 0;
+
+                            for (let obj of group) {
+                                sum += obj[function_target];
+                                counter++;
+                            }
+
+                            result = sum / counter;
+                            result = Number(result.toFixed(2));
+
+                            break;
+                        case"COUNT":
+
+                            result = 0;
+                            let temp = group;
+                            if (temp.length > 0) {
+
+                                temp.sort((a: any, b: any) => {
+
+                                    if (a[function_target] < b[function_target]) {
+                                        return -1;
+                                    }
+                                    else if (a[function_target] > b[function_target]) {
+                                        return 1;
+                                    }
+                                    else
+                                        return 0;
+                                });
+
+                                let prev_val = temp[0][function_target];
+                                result = 1;
+                                for (let obj of temp) {
+                                    if (obj[function_target] != prev_val) {
+                                        result++;
+                                        prev_val = obj[function_target];
                                     }
                                 }
 
-                                result = max;
-                                break;
-                            case "MIN":
+                            }
+                            else {
+                                console.log("empty list 1501,count =0");
+                            }
 
-                                if (typeof group[0][function_target] != "number") {
-                                    throw Error("Invalid type 1440");
-                                }
+                            break;
+                        case"SUM":
+                            result = 0;
+                            if (typeof group[0][function_target] != "number") {
+                                throw Error("Invalid type 1440");
+                            }
 
-                                let min = group[0][function_target];
+                            for (let obj of group) {
+                                result += obj[function_target];
+                            }
 
-                                for (let obj of group) {
-                                    if (obj[function_target] < min) {
-                                        min = obj[function_target];
-                                    }
-                                }
-                                result = min;
-                                break;
-                            case "AVG":
-                                let sum = 0;
-                                result = 0;
-                                if (typeof group[0][function_target] != "number") {
-                                    throw Error("Invalid type 1440");
-                                }
-
-                                let counter = 0;
-
-                                for (let obj of group) {
-                                    sum += obj[function_target];
-                                    counter++;
-                                }
-
-                                result = sum / counter;
-                                result = Number(result.toFixed(2));
-
-                                break;
-                            case"COUNT":
-
-                                result = 0;
-                                let temp = group;
-                                if (temp.length > 0) {
-
-                                    temp.sort((a: any, b: any) => {
-
-                                        if (a[function_target] < b[function_target]) {
-                                            return -1;
-                                        }
-                                        else if (a[function_target] > b[function_target]) {
-                                            return 1;
-                                        }
-                                        else
-                                            return 0;
-                                    });
-
-                                    let prev_val = temp[0][function_target];
-                                    result = 1;
-                                    for (let obj of temp) {
-                                        if (obj[function_target] != prev_val) {
-                                            result++;
-                                            prev_val = obj[function_target];
-                                        }
-                                    }
-
-                                }
-                                else {
-                                    console.log("empty list 1501,count =0");
-                                }
-
-                                break;
-                            case"SUM":
-                                result = 0;
-                                if (typeof group[0][function_target] != "number") {
-                                    throw Error("Invalid type 1440");
-                                }
-
-                                for (let obj of group) {
-                                    result += obj[function_target];
-                                }
-
-                                break;
-                            default:
-                                throw Error("invalid function to use 1447");
-                        }
-
-                        result_list.push(result);
-                        final_group_obj[item_key] = result;
-
-
-                        // group item also need a column
-
-
+                            break;
+                        default:
+                            throw Error("invalid function to use 1447");
                     }
+
+                    result_list.push(result);
+                    final_group_obj[item_key] = result;
+
+
+                    // group item also need a column
+
+
+                }
 
 
                 let temp_group = transformation["GROUP"];
@@ -1529,14 +1534,14 @@ function perform_Query_transform(query: QueryRequest, this_obj: InsightFacade): 
 
             //console.log(valid_list);
 
-                let apply_keys = [];
-                for (let item of apply) {
-                    let item_key = Object.keys(item)[0];
-                    apply_keys.push(item_key);
-                }
+            let apply_keys = [];
+            for (let item of apply) {
+                let item_key = Object.keys(item)[0];
+                apply_keys.push(item_key);
+            }
 
 
-                valid_list = valid_list.concat(apply_keys);
+            valid_list = valid_list.concat(apply_keys);
 
             // console.log(apply_keys);
             // console.log(valid_list);
@@ -1697,7 +1702,43 @@ function check_order(order: any, columns: any): boolean {
 
 function validate(query: QueryRequest): boolean {
 
+    let valid: boolean = true;
+    try {
+        var j_query = JSON.stringify(query);
+        var j_obj = JSON.parse(j_query);
 
-    return false;
+        var where = j_obj["WHERE"];
+        var options = j_obj["OPTIONS"];
+        var columns = options["COLUMNS"];
+        var order = options["ORDER"];
+        var form = options["FORM"];
+        var transformations = j_obj["TRANSFORMATIONS"];
+    }
+    catch (err) {
+        return false;
+    }
+
+    if (columns.length != 0) {
+        var column0 = columns[0];
+        var id: string = column0.substring(0, column0.indexOf("_"));
+
+        var exist: boolean = fs.existsSync("src/" + id + ".txt");
+    } else {
+        return false;
+    }
+
+    for (let column of columns) {
+        var value = dictionary[column];
+
+        if (column.substring(0, column.indexOf("_")) != id || isUndefined(dictionary[value])) {
+            return false;
+        }
+    }
+
+    if (form != "TABLE") {
+        return false;
+    }
+
+    return check_order(order,columns);
 }
 
