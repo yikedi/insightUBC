@@ -707,41 +707,6 @@ export default class InsightFacade implements IInsightFacade {
                 }
 
                 if (!isUndefined(transformations)) {
-                    // if (!isUndefined(order)) {
-                    //     let order_keys = Object.keys(order);
-                    //     if (order_keys.length > 1) {
-                    //         if (order["dir"] != "UP" && order["dir"] != "DOWN") {
-                    //             return reject({code: 400, body: {"error": "invalid direction 746"}});
-                    //         }
-                    //         for (let item of order["keys"]) {
-                    //             let valid: boolean = false;
-                    //             for (let column of columns) {
-                    //                 if (item == column) {
-                    //                     valid = true;
-                    //                     break;
-                    //                 }
-                    //             }
-                    //             if (!valid) {
-                    //                 return reject({code: 400, body: {"error": "invalid order 755"}});
-                    //             }
-                    //
-                    //
-                    //         }
-                    //     } else {
-                    //         let valid = false;
-                    //         for (let column of columns) {
-                    //             if (order == column) {
-                    //                 valid = true;
-                    //                 break;
-                    //             }
-                    //             if (!valid) {
-                    //                 return reject({code: 400, body: {"error": "invalid order 769"}});
-                    //             }
-                    //
-                    //         }
-                    //     }
-                    //
-                    // }
 
                     let valid=check_order(order,columns);
 
@@ -752,7 +717,7 @@ export default class InsightFacade implements IInsightFacade {
                     perform_Query_transform(query, this).then(function (response) {
                         return fulfill(response);
                     }).catch(function (err) {
-                        return reject({code: 400, body: {"error": "invalid json or query 753"}});
+                        return reject({code: 400, body: {"error": "invalid json or query 753 " + err.message}});
                     });
                 }
 
@@ -793,11 +758,8 @@ export default class InsightFacade implements IInsightFacade {
                                 missing_col.push(column);
                             }
 
-                            //order_valid=check_order(order,columns);
                         }
                         if (!isUndefined(order)) {
-                                // if (isUndefined(order_check) || !order_valid)
-                                //     missing_col.push(order);
                             if (!order_valid)
                                 missing_col.push(order);
                         }
@@ -1592,7 +1554,7 @@ function perform_Query_transform(query: QueryRequest, this_obj: InsightFacade): 
             //console.log(order);
             if (!isUndefined(order)) {
                 let order_keys = Object.keys(order);
-                if (order_keys.length > 1) {
+                if (typeof order_keys=="object") {
                     let dir = order["dir"];
                     let keys = order["keys"];
 
@@ -1724,40 +1686,6 @@ function check_order(order:any, columns:any) :boolean {
             }
         }
 
-        // if (order_keys.length > 1) {
-        //     if (order["dir"] != "UP" && order["dir"] != "DOWN") {
-        //         return false;
-        //     }
-        //     for (let item of order["keys"]) {
-        //         let valid: boolean = false;
-        //         for (let column of columns) {
-        //             if (item == column) {
-        //                 valid = true;
-        //                 break;
-        //             }
-        //         }
-        //         if (!valid) {
-        //             return false
-        //         }
-        //
-        //
-        //     }
-        //
-        // } else {
-        //     let valid = false;
-        //     for (let column of columns) {
-        //         if (order == column) {
-        //             valid = true;
-        //             break;
-        //         }
-        //         if (!valid || isUndefined(dictionary[order])) {
-        //             return false;
-        //         }
-        //
-        //     }
-        //
-        //
-        // }
 
     }
     return true;
