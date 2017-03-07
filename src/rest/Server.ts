@@ -117,9 +117,9 @@ export default class Server {
     }
 
     public static put(req: restify.Request, res: restify.Response, next: restify.Next) {
-        Log.trace('Server::put(..) - params: ' + req.body);
+        //Log.trace('Server::put(..) - params: ' + req.body);
         try {
-            Server.performPut(req.params.id.toString(), req.body).then(function (result) {
+            Server.performPut(req.params.id.toString().substring(1), req.body).then(function (result) {
                 Log.info('Server::put(..) - responding ' + result.code);
                 res.json(result.code, result.body);
             }).catch(function (result) {
@@ -141,7 +141,7 @@ export default class Server {
     public static del(req: restify.Request, res: restify.Response, next: restify.Next) {
         Log.trace('Server::del(..) - params: ' + JSON.stringify(req.params.id));
         try {
-            Server.performDel(req.params.id.toString()).then(function (result) {
+            Server.performDel(req.params.id.toString().substring(1)).then(function (result) {
                 Log.info('Server::del(..) - responding ' + result.code);
                 res.json(result.code, result.body);
             }).catch(function (result) {
