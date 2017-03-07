@@ -2695,7 +2695,7 @@ describe("EchoSpec", function () {
         server.start().then(function () {
             let dataset = fs.readFileSync("./src/rooms.zip","base64");
             chai.request("http://localhost:4321")
-                .put('/dataset/:rooms')
+                .put('/dataset/rooms')
                 .send(dataset)
                 .end(function () {
                     server.stop().then();
@@ -2709,7 +2709,7 @@ describe("EchoSpec", function () {
         this.timeout(20000);
         server.start().then(function () {
             chai.request("http://localhost:4321")
-                .del('/dataset/:rooms')
+                .del('/dataset/rooms')
                 .end(function () {
                     server.stop().then();
                     done();
