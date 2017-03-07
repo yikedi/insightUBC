@@ -2690,7 +2690,7 @@ describe("EchoSpec", function () {
 
     });
 
-    xit("test put", function (done) {
+    it("test put", function (done) {
         this.timeout(20000);
         server.start().then(function () {
             let dataset = fs.readFileSync("./src/rooms.zip","base64");
