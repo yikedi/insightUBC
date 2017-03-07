@@ -55,7 +55,7 @@ export default class Server {
                     name: 'insightUBC'
                 });
 
-                that.rest.use(restify.bodyParser());
+                that.rest.use(restify.bodyParser({mapParams: true, mapFiles: true}));
 
                 that.rest.get('/', function (req: restify.Request, res: restify.Response, next: restify.Next) {
                     res.send(200);
@@ -119,7 +119,8 @@ export default class Server {
     public static put(req: restify.Request, res: restify.Response, next: restify.Next) {
         //Log.trace('Server::put(..) - params: ' + req.body);
         try {
-            Server.performPut(req.params.id.toString(), req.body).then(function (result) {
+            let content =  new Buffer(req.params.body).toString('base64');
+            Server.performPut(req.params.id.toString(), content).then(function (result) {
                 Log.info('Server::put(..) - responding ' + result.code);
                 res.json(result.code, result.body);
             }).catch(function (result) {
@@ -135,6 +136,7 @@ export default class Server {
 
     public static performPut(id:string, content: string): Promise<InsightResponse> {
         let temp = new InsightFacade();
+
         return temp.addDataset(id, content);
     }
 

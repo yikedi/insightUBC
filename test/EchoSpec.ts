@@ -2705,18 +2705,6 @@ describe("EchoSpec", function () {
 
     });
 
-    xit("test del", function (done) {
-        this.timeout(20000);
-        server.start().then(function () {
-            chai.request("http://localhost:4321")
-                .del('/dataset/rooms')
-                .end(function () {
-                    server.stop().then();
-                    done();
-                })
-        }).catch();
-    });
-
     it("test post", function (done) {
         this.timeout(20000);
         let query = {
@@ -2757,6 +2745,18 @@ describe("EchoSpec", function () {
                 .send(query)
                 .end(function (err: any, res:any) {
                     console.log(res.body);
+                    server.stop().then();
+                    done();
+                })
+        }).catch();
+    });
+
+    it("test del", function (done) {
+        this.timeout(20000);
+        server.start().then(function () {
+            chai.request("http://localhost:4321")
+                .del('/dataset/rooms')
+                .end(function () {
                     server.stop().then();
                     done();
                 })
