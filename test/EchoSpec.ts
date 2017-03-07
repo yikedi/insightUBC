@@ -25,7 +25,7 @@ describe("EchoSpec", function () {
     }
 
     before(function () {
-        server = new Server(4321);
+        //server = new Server(4321);
         Log.test('Before: ' + (<any>this).test.parent.txitle);
     });
 
@@ -34,7 +34,7 @@ describe("EchoSpec", function () {
     });
 
     after(function () {
-        server.stop().then();
+        //server.stop().then();
         Log.test('After: ' + (<any>this).test.parent.txitle);
     });
 
@@ -2587,20 +2587,22 @@ describe("EchoSpec", function () {
             "OPTIONS": {
             "COLUMNS": [
                 "rooms_shortname",
+                "rooms_number",
                 "maxSeats",
                 "minSeats",
                 "avgSeats",
                 "sumSeats"
             ],
-            //     "ORDER": {
-            //     "dir": "DOWN",
-            //         "keys": ["maxSeats"]
-            // },
+                "ORDER": {
+                "dir": "DOWN",
+                    "keys": ["maxSeats"]
+            },
             "FORM": "TABLE"
         },
             "TRANSFORMATIONS": {
-            "GROUP": ["rooms_shortname"],
-                "APPLY": [{
+            "GROUP": ["rooms_shortname","rooms_number"],
+                "APPLY":
+                    [{
                 "maxSeats": {
                     "MAX": "rooms_seats"
                 }
@@ -2649,42 +2651,42 @@ describe("EchoSpec", function () {
 
     });
 
-    it("test d3 test", function (done) {
-        this.timeout(10000)
-
-        var s1={
-            "WHERE": {},
-            "OPTIONS": {
-                "COLUMNS": [
-                    "rooms_furniture"
-                ],
-                "ORDER": "rooms_furniture",
-                "FORM": "TABLE"
-            },
-            "TRANSFORMATIONS": {
-                "GROUP": ["rooms_furniture"],
-                "APPLY": []
-            }
-        };
-
-        var query = s1;
-
-
-        var temp = new InsightFacade();
-
-        temp.performQuery(query)
-            .then((response) => {
-                console.log(response.code);
-                console.log(response.body);
-                done();
-            })
-            .catch((err) => {
-                console.log(err.code);
-                console.log(err.body)
-                done();
-            });
-
-    });
+    // it("test d3 test", function (done) {
+    //     this.timeout(10000)
+    //
+    //     var s1={
+    //         "WHERE": {},
+    //         "OPTIONS": {
+    //             "COLUMNS": [
+    //                 "rooms_furniture"
+    //             ],
+    //             "ORDER": "rooms_furniture",
+    //             "FORM": "TABLE"
+    //         },
+    //         "TRANSFORMATIONS": {
+    //             "GROUP": ["rooms_furniture"],
+    //             "APPLY": []
+    //         }
+    //     };
+    //
+    //     var query = s1;
+    //
+    //
+    //     var temp = new InsightFacade();
+    //
+    //     temp.performQuery(query)
+    //         .then((response) => {
+    //             console.log(response.code);
+    //             console.log(response.body);
+    //             done();
+    //         })
+    //         .catch((err) => {
+    //             console.log(err.code);
+    //             console.log(err.body)
+    //             done();
+    //         });
+    //
+    // });
 
     xit("test put", function (done) {
         this.timeout(20000);
@@ -2776,7 +2778,7 @@ describe("EchoSpec", function () {
 
 
 
-    it("test simple query courses year", function (done) {
+    xit("test simple query courses year", function (done) {
         this.timeout(10000)
 
 
