@@ -2995,5 +2995,53 @@ describe("EchoSpec", function () {
     });
 
 
+    it("test d3 test 6", function (done) {
+        this.timeout(10000)
+
+        var s1 = {
+            "WHERE": {
+            },
+            "OPTIONS": {
+                "COLUMNS": [
+                    "courses_dept",
+                    "courses_id",
+                    "avg"
+                ],
+                "ORDER": {
+                    "dir": "UP",
+                    "keys": ["courses_dept"]
+                },
+                "FORM": "TABLE"
+            },
+            "TRANSFORMATIONS": {
+                "GROUP": ["courses_dept","courses_id"],
+                "APPLY": [{
+                    "avg": {
+                        "AVG": "courses_avg"
+                    }
+                }]
+            }
+        };
+
+        var query = s1;
+
+
+        var temp = new InsightFacade();
+
+        temp.performQuery(query)
+            .then((response) => {
+                console.log(response.code);
+                console.log(response.body);
+                done();
+            })
+            .catch((err) => {
+                console.log(err.code);
+                console.log(err.body)
+                done();
+            });
+
+    });
+
+
 });
 
