@@ -2602,7 +2602,7 @@ describe("EchoSpec", function () {
                 "GROUP": ["rooms_shortname", "rooms_number"],
                 "APPLY": [{
                     "maxSeats": {
-                        "MAX": "rooms_seats"
+                        "MAX": "rooms_lat"
                     }
                 },
                     {
@@ -2649,7 +2649,7 @@ describe("EchoSpec", function () {
 
     });
 
-    it("test d3 test", function (done) {
+    xit("test d3 test", function (done) {
         this.timeout(10000)
 
         var s1 = {

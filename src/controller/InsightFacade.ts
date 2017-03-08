@@ -6,6 +6,7 @@ import {IInsightFacade, InsightResponse, QueryRequest} from "./IInsightFacade";
 import Log from "../Util";
 import {isUndefined} from "util";
 import forEach = require("core-js/fn/array/for-each");
+import keys = require("core-js/fn/array/keys");
 var JSZip = require('jszip');
 var fs = require('fs');
 var request = require('request');
@@ -691,28 +692,23 @@ export default class InsightFacade implements IInsightFacade {
 
                 // var exist: boolean = fs.existsSync("src/" + id + ".txt");
 
-                try {
-                    var j_query = JSON.stringify(query);
-                    var j_obj = JSON.parse(j_query);
 
-                    var where = j_obj["WHERE"];
-                    var options = j_obj["OPTIONS"];
-                    var columns = options["COLUMNS"];
-                    var order = options["ORDER"];
-                    var form = options["FORM"];
-                    var transformations = j_obj["TRANSFORMATIONS"];
+                let valid = validate(query);
+                if (valid.code == 400) {
+                    return reject({code: 400, body: {"error": "invalid json or query 698   " + valid.body}});
                 }
-                catch (err) {
-                    reject({code: 400, body: {"error": "invalid json or query 714"}});
-                }
+
+                var j_query = JSON.stringify(query);
+                var j_obj = JSON.parse(j_query);
+
+                var options = j_obj["OPTIONS"];
+                var columns = options["COLUMNS"];
+                var order = options["ORDER"];
+                var form = options["FORM"];
+                var transformations = j_obj["TRANSFORMATIONS"];
+
 
                 if (!isUndefined(transformations)) {
-
-                    let valid = check_order(order, columns);
-
-                    if (!valid) {
-                        return reject({code: 400, body: {"error": "invalid order content 748"}});
-                    }
 
                     perform_Query_transform(query, this).then(function (response) {
                         return fulfill(response);
@@ -748,28 +744,28 @@ export default class InsightFacade implements IInsightFacade {
                         var missing_col: string[] = [];
                         var error_400: Object[] = [];
 
-                        let order_valid = check_order(order, columns);
-
-                        for (let column of columns) {
-                            var value = dictionary[column];
-
-                            if (column.substring(0, column.indexOf("_")) != id) {
-                                missing_col.push(column);
-                            }
-
-                        }
-                        if (!isUndefined(order)) {
-                            if (!order_valid)
-                                missing_col.push(order);
-                        }
-
-                        if (form != "TABLE") {
-                            missing_col.push(form);
-                        }
-
-                        if (missing_col.length > 0) {
-                            return reject({code: 400, body: {"error": "invalid query 764"}});
-                        }
+                        // let order_valid = check_order(order, columns);
+                        //
+                        // for (let column of columns) {
+                        //     var value = dictionary[column];
+                        //
+                        //     if (column.substring(0, column.indexOf("_")) != id) {
+                        //         missing_col.push(column);
+                        //     }
+                        //
+                        // }
+                        // if (!isUndefined(order)) {
+                        //     if (!order_valid)
+                        //         missing_col.push(order);
+                        // }
+                        //
+                        // if (form != "TABLE") {
+                        //     missing_col.push(form);
+                        // }
+                        //
+                        // if (missing_col.length > 0) {
+                        //     return reject({code: 400, body: {"error": "invalid query 764"}});
+                        // }
 
                         missing_col = [];
                         var body = null;
@@ -1336,7 +1332,6 @@ function perform_Query_transform(query: QueryRequest, this_obj: InsightFacade): 
             // get the groups
 
             let j_response = JSON.parse(JSON.stringify(response.body));
-            console.log(j_response);
 
             let table = j_response["result"];
 
@@ -1546,19 +1541,19 @@ function perform_Query_transform(query: QueryRequest, this_obj: InsightFacade): 
             // console.log(apply_keys);
             // console.log(valid_list);
 
-            for (let item of columns) {
-
-                let valid: boolean = false;
-                for (let validator of valid_list) {
-                    if (item == validator) {
-                        valid = true;
-                        break;
-                    }
-                }
-                if (!valid) {
-                    throw Error("invalid key in column 1581");
-                }
-            }
+            // for (let item of columns) {
+            //
+            //     let valid: boolean = false;
+            //     for (let validator of valid_list) {
+            //         if (item == validator) {
+            //             valid = true;
+            //             break;
+            //         }
+            //     }
+            //     if (!valid) {
+            //         throw Error("invalid key in column 1581");
+            //     }
+            // }
 
             //console.log(order);
             if (!isUndefined(order)) {
@@ -1669,16 +1664,24 @@ function check_order(order: any, columns: any): boolean {
                     break;
                 }
 
-
             }
             if (!valid || isUndefined(dictionary[order])) {
                 return false;
             }
         }
         else {
+            if (isUndefined(order["dir"]) || isUndefined(order["keys"])) {
+                return false;
+            }
+
             if (order["dir"] != "UP" && order["dir"] != "DOWN") {
                 return false;
             }
+
+            if (order["keys"].length == 0) {
+                return false;
+            }
+
             for (let item of order["keys"]) {
                 let valid: boolean = false;
                 for (let column of columns) {
@@ -1700,45 +1703,115 @@ function check_order(order: any, columns: any): boolean {
     return true;
 }
 
-function validate(query: QueryRequest): boolean {
+function validate(query: QueryRequest): InsightResponse {
 
-    let valid: boolean = true;
+    let ret_obj: InsightResponse = {code: 200, body: "valid"};
+
     try {
         var j_query = JSON.stringify(query);
         var j_obj = JSON.parse(j_query);
 
-        var where = j_obj["WHERE"];
         var options = j_obj["OPTIONS"];
         var columns = options["COLUMNS"];
         var order = options["ORDER"];
         var form = options["FORM"];
         var transformations = j_obj["TRANSFORMATIONS"];
+
     }
     catch (err) {
-        return false;
+        ret_obj = {code: 400, body: "invalid query 1723"};
+        return ret_obj;
     }
 
-    if (columns.length != 0) {
-        var column0 = columns[0];
-        var id: string = column0.substring(0, column0.indexOf("_"));
+    if (!isUndefined(transformations)) {
 
-        var exist: boolean = fs.existsSync("src/" + id + ".txt");
-    } else {
-        return false;
+        let apply = transformations["APPLY"];
+        let group = transformations["GROUP"];
+        if (isUndefined(group) || isUndefined(apply)) {
+            ret_obj = {code: 400, body: "invalid transformations"};
+            return ret_obj;
+        }
+        if (group.length == 0) {
+            ret_obj = {code: 400, body: "empty group"};
+            return ret_obj;
+        }
+
+        let temp = group[0].toString();
+        let id = temp.substring(0, temp.indexOf("_"));
+
+        for (let item of group) {
+            let this_id;
+            this_id = item.toString().substring(0, item.indexOf("_"));
+            if (id != this_id && this_id!="") {
+                return ret_obj = {code: 400, body: "two datasets in group"};
+            }
+
+            if (isUndefined(dictionary[item])) {
+                return ret_obj = {code: 400, body: "invalid group key"};
+            }
+
+        }
+
+        let valid_list: any[] = [];
+        valid_list = valid_list.concat(group);
+
+        let apply_keys = [];
+        for (let item of apply) {
+            let item_key = Object.keys(item)[0];
+            apply_keys.push(item_key);
+        }
+
+
+        valid_list = valid_list.concat(apply_keys);
+
+        for (let item of columns) {
+
+            let valid: boolean = false;
+            for (let validator of valid_list) {
+                if (item == validator) {
+                    valid = true;
+                    break;
+                }
+            }
+            if (!valid) {
+                return ret_obj = {code: 400, body: "invalid key in column key 1786"};
+            }
+        }
+
     }
+    else {
+        if (columns.length != 0) {
+            try {
+                var column0 = columns[0];
+                var id: string = column0.substring(0, column0.indexOf("_"));
+                var exist: boolean = fs.existsSync("src/" + id + ".txt");
+                if (!exist) {
+                    return ret_obj = {code: 400, body: "dataset not exist"};
+                }
+            } catch (err) {
+                return ret_obj = {code: 400, body: "invalid column item"};
+            }
+        } else {
+            return ret_obj = {code: 400, body: "empty column"};
+        }
 
-    for (let column of columns) {
-        var value = dictionary[column];
+        for (let column of columns) {
+            var value = dictionary[column];
 
-        if (column.substring(0, column.indexOf("_")) != id || isUndefined(dictionary[value])) {
-            return false;
+            if (column.substring(0, column.indexOf("_")) != id || isUndefined(dictionary[value])) {
+                return ret_obj = {code: 400, body: "invalid column item"};
+            }
+        }
+
+        if (form != "TABLE") {
+            return ret_obj = {code: 400, body: "invalid form"};
         }
     }
 
-    if (form != "TABLE") {
-        return false;
+    if (!check_order(order, columns)) {
+        return ret_obj = {code: 400, body: "invalid order"};
     }
 
-    return check_order(order,columns);
+    return ret_obj;
 }
 
