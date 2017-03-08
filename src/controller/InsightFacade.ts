@@ -1742,7 +1742,7 @@ function validate(query: QueryRequest): InsightResponse {
         for (let item of group) {
             let this_id;
             this_id = item.toString().substring(0, item.indexOf("_"));
-            if (id != this_id && this_id!="") {
+            if (id != this_id && this_id != "") {
                 return ret_obj = {code: 400, body: "two datasets in group"};
             }
 
@@ -1780,17 +1780,16 @@ function validate(query: QueryRequest): InsightResponse {
 
     }
     else {
+
         if (columns.length != 0) {
-            try {
-                var column0 = columns[0];
-                var id: string = column0.substring(0, column0.indexOf("_"));
-                var exist: boolean = fs.existsSync("src/" + id + ".txt");
-                if (!exist) {
-                    return ret_obj = {code: 400, body: "dataset not exist"};
-                }
-            } catch (err) {
-                return ret_obj = {code: 400, body: "invalid column item"};
+
+            var column0 = columns[0];
+            var id: string = column0.substring(0, column0.indexOf("_"));
+            var exist: boolean = fs.existsSync("src/" + id + ".txt");
+            if (!exist) {
+                return ret_obj = {code: 400, body: "dataset not exist"};
             }
+
         } else {
             return ret_obj = {code: 400, body: "empty column"};
         }
@@ -1798,7 +1797,7 @@ function validate(query: QueryRequest): InsightResponse {
         for (let column of columns) {
             var value = dictionary[column];
 
-            if (column.substring(0, column.indexOf("_")) != id || isUndefined(dictionary[value])) {
+            if (column.substring(0, column.indexOf("_")) != id || isUndefined(value)) {
                 return ret_obj = {code: 400, body: "invalid column item"};
             }
         }

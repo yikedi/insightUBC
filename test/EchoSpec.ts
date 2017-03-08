@@ -2793,7 +2793,7 @@ describe("EchoSpec", function () {
     });
 
 
-    xit("test simple query courses year", function (done) {
+    it("test simple query courses year", function (done) {
         this.timeout(10000)
 
 
@@ -2844,5 +2844,71 @@ describe("EchoSpec", function () {
 
     });
 
+    it("test 424 abcd ", function (done) {
+        this.timeout(50000)
+
+
+        var s1 = {
+            "WHERE": {
+                "AND": [
+                    {
+                        "AND": [
+                            {
+                                "GT": {
+                                    "a_avg": 63.99
+                                }
+                            }
+                            , {
+                                "EQ": {
+                                    "b_avg": 64
+                                }
+                            }
+                        ]
+                        ,
+                        "IS": {
+                            "c_avg": 63.99
+                        }
+                    }
+                    , {
+                        "EQ": {
+                            "d_avg": 64
+                        }
+                    }
+                ]
+            },
+            "OPTIONS": {
+                "COLUMNS": [
+                    "courses_dept",
+                    "courses_avg",
+                    "courses_uuid",
+                    "courses_title",
+                    "courses_instructor",
+                    "courses_fail",
+                    "courses_audit",
+                    "courses_pass"
+                ],
+                "ORDER": "courses_avg",
+                "FORM": "TABLE"
+            }
+        }
+
+
+        var query = s1;
+        var temp = new InsightFacade();
+
+
+        temp.performQuery(query).then(function (result) {
+            console.log(result.code);
+            //console.log(result.body);
+            done();
+        }).catch(function (err) {
+            console.log(err.code);
+            console.log(err.body);
+
+            done();
+        })
+
+
+    });
 });
 
