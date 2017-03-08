@@ -807,10 +807,7 @@ export default class InsightFacade implements IInsightFacade {
 
 
                     }
-
-
                     else {
-
                         let ret_obj = {code: 424, body: {"missing": [id]}};
                         return reject(ret_obj);
                     }
@@ -1787,7 +1784,7 @@ function validate(query: QueryRequest): InsightResponse {
             var id: string = column0.substring(0, column0.indexOf("_"));
             var exist: boolean = fs.existsSync("src/" + id + ".txt");
             if (!exist) {
-                return ret_obj = {code: 400, body: "dataset not exist"};
+                return ret_obj = {code: 424, body: "dataset not exist"};
             }
 
         } else {

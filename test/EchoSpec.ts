@@ -2704,95 +2704,6 @@ describe("EchoSpec", function () {
 
     });
 
-    xit("test put", function (done) {
-        this.timeout(20000);
-        server.start().then(function () {
-            let dataset = fs.readFileSync("./src/rooms.zip");
-            chai.request("http://localhost:4321")
-                .put('/dataset/rooms')
-                .attach("body", dataset, "rooms.zip")
-                .end(function () {
-                    server.stop().then();
-                    done();
-                })
-        }).catch();
-
-    });
-
-    xit("PUT description", function () {
-        return chai.request('http://localhost:4321')
-            .put('/dataset/rooms')
-            .attach("body", fs.readFileSync("./src/rooms.zip"), "rooms.zip")
-            .then(function (res: any) {
-                Log.trace('then:');
-                // some assertions
-            })
-            .catch(function (err: any) {
-                Log.trace('catch:');
-                // some assertions
-                expect.fail();
-            });
-    });
-
-    xit("test post", function (done) {
-        this.timeout(20000);
-        let query = {
-            "WHERE": {
-                "AND": [{
-                    "IS": {
-                        "rooms_furniture": "*Tables*"
-                    }
-                }, {
-                    "GT": {
-                        "rooms_seats": 300
-                    }
-                }]
-            },
-            "OPTIONS": {
-                "COLUMNS": [
-                    "rooms_shortname",
-                    "maxSeats"
-                ],
-                "ORDER": {
-                    "dir": "DOWN",
-                    "keys": ["maxSeats"]
-                },
-                "FORM": "TABLE"
-            },
-            "TRANSFORMATIONS": {
-                "GROUP": ["rooms_shortname"],
-                "APPLY": [{
-                    "maxSeats": {
-                        "MAX": "rooms_seats"
-                    }
-                }]
-            }
-        };
-        server.start().then(function () {
-            chai.request("http://localhost:4321")
-                .post('/query')
-                .send(query)
-                .end(function (err: any, res: any) {
-                    console.log(res.body);
-                    server.stop().then();
-                    done();
-                })
-        }).catch();
-    });
-
-    xit("test del", function (done) {
-        this.timeout(20000);
-        server.start().then(function () {
-            chai.request("http://localhost:4321")
-                .del('/dataset/rooms')
-                .end(function () {
-                    server.stop().then();
-                    done();
-                })
-        }).catch();
-    });
-
-
     it("test simple query courses year", function (done) {
         this.timeout(10000)
 
@@ -2844,7 +2755,7 @@ describe("EchoSpec", function () {
 
     });
 
-    it("test 424 abcd ", function (done) {
+    xit("test 424 abcd ", function (done) {
         this.timeout(50000)
 
 
@@ -2910,5 +2821,179 @@ describe("EchoSpec", function () {
 
 
     });
+
+    it("test d3 test 4 valid", function (done) {
+        this.timeout(10000)
+
+        var s1 = {
+            "WHERE": {
+                "GT":{
+                    "rooms_seats":300
+                }
+
+            },
+            "OPTIONS": {
+                "COLUMNS": [
+                    "rooms_fullname",
+                    "rooms_shortname",
+                    "rooms_name",
+                    "rooms_number",
+                    "rooms_address",
+                    "rooms_lat",
+                    "rooms_lon",
+                    "rooms_seats",
+                    "rooms_furniture",
+                    "rooms_href",
+                    "rooms_type"
+                ],
+                "ORDER": {
+                    "dir": "UP",
+                    "keys": ["rooms_furniture"]
+                },
+                "FORM": "TABLE"
+            },
+            "TRANSFORMATIONS": {
+                "GROUP": [
+                    "rooms_fullname",
+                    "rooms_shortname",
+                    "rooms_name",
+                    "rooms_number",
+                    "rooms_address",
+                    "rooms_lat",
+                    "rooms_lon",
+                    "rooms_seats",
+                    "rooms_furniture",
+                    "rooms_href",
+                    "rooms_type"],
+                "APPLY": [
+                    {
+                        "maxSeats": {
+                            "MAX": "rooms_seats"
+                        }
+                    }
+                ]
+            }
+        };
+
+        var query = s1;
+
+
+        var temp = new InsightFacade();
+
+        temp.performQuery(query)
+            .then((response:any) => {
+                console.log(response.code);
+                console.log(response.body);
+                console.log(response.body["result"].length);
+                done();
+            })
+            .catch((err) => {
+                console.log(err.code);
+                console.log(err.body)
+                done();
+            });
+
+    });
+
+    it("test d3 test 5 courses", function (done) {
+        this.timeout(10000)
+
+        var s1 = {
+            "WHERE": {
+                "GT":{
+                    "courses_avg":98
+                }
+
+            },
+            "OPTIONS": {
+                "COLUMNS": [
+                    "courses_dept",
+                    "courses_avg",
+                    "courses_uuid",
+                    "courses_title",
+                    "courses_instructor",
+                    "courses_fail",
+                    "courses_audit",
+                    "courses_pass",
+                    "courses_year"
+                ],
+                "ORDER": {
+                    "dir": "UP",
+                    "keys": [
+                        "courses_dept",
+                        "courses_avg",
+                        "courses_uuid",
+                        "courses_title",
+                        "courses_instructor",
+                        "courses_fail",
+                        "courses_audit",
+                        "courses_pass",
+                        "courses_year"
+                    ]
+                },
+                "FORM": "TABLE"
+            },
+            "TRANSFORMATIONS": {
+                "GROUP": [
+                    "courses_dept",
+                    "courses_avg",
+                    "courses_uuid",
+                    "courses_title",
+                    "courses_instructor",
+                    "courses_fail",
+                    "courses_audit",
+                    "courses_pass",
+                    "courses_year"
+                ],
+                "APPLY": [{
+                    "maxAvg": {
+                        "MAX": "courses_avg"
+                    }
+                },
+                    {
+                        "minAvg": {
+                            "MIN": "courses_avg"
+                        }
+                    },
+                    {
+                        "avgAvg": {
+                            "AVG": "courses_avg"
+                        }
+                    },
+                    {
+                        "sumAvg": {
+                            "SUM": "courses_avg"
+                        }
+                    },
+                    {
+                        "countAvg": {
+                            "COUNT": "courses_avg"
+                        }
+                    }
+                ]
+            }
+        };
+
+        var query = s1;
+
+
+        var temp = new InsightFacade();
+
+        temp.performQuery(query)
+            .then((response:any) => {
+                console.log(response.code);
+                console.log(response.body);
+                console.log(response.body["result"].length);
+                done();
+            })
+            .catch((err) => {
+                console.log(err.code);
+                console.log(err.body)
+                done();
+            });
+
+    });
+
+
 });
 
