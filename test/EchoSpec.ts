@@ -2579,10 +2579,14 @@ describe("EchoSpec", function () {
     });
 
     it("test transformation ", function (done) {
-        this.timeout(10000)
+        this.timeout(10000);
 
         var s1 = {
-            "WHERE": {},
+            "WHERE": {
+                "GT":{
+                    "rooms_seats":300
+                }
+            },
             "OPTIONS": {
                 "COLUMNS": [
                     "rooms_shortname",
@@ -2602,7 +2606,7 @@ describe("EchoSpec", function () {
                 "GROUP": ["rooms_shortname", "rooms_number"],
                 "APPLY": [{
                     "maxSeats": {
-                        "MAX": "rooms_lat"
+                        "MAX": "rooms_seats"
                     }
                 },
                     {
@@ -2649,13 +2653,13 @@ describe("EchoSpec", function () {
 
     });
 
-    xit("test d3 test", function (done) {
+    it("test d3 test", function (done) {
         this.timeout(10000)
 
         var s1 = {
             "WHERE": {
                 "GT":{
-                    "rooms_seats":600
+                    "rooms_seats":300
                 }
 
             },
@@ -2671,11 +2675,13 @@ describe("EchoSpec", function () {
             },
             "TRANSFORMATIONS": {
                 "GROUP": ["rooms_furniture"],
-                "APPLY": [{
+                "APPLY": [
+                    {
                     "maxSeats": {
                         "MAX": "rooms_seats"
                     }
-                }]
+                }
+                ]
             }
         };
 
@@ -2809,7 +2815,6 @@ describe("EchoSpec", function () {
 
 
             },
-
 
             "OPTIONS": {
                 "COLUMNS": [
