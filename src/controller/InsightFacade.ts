@@ -1662,7 +1662,7 @@ function check_order(order: any, columns: any, valid_list: any[]): boolean {
                 }
 
             }
-            if (!valid || isUndefined(dictionary[order])) {
+            if (!valid ) {
                 return false;
             }
         }
@@ -1678,7 +1678,7 @@ function check_order(order: any, columns: any, valid_list: any[]): boolean {
             if (order["keys"].length == 0) {
                 return false;
             }
-            
+
             for (let item of order["keys"]) {
                 let valid: boolean = false;
                 for (let column of columns) {

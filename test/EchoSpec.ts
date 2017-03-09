@@ -2515,7 +2515,7 @@ describe("EchoSpec", function () {
      */
 
 
-    it("test new sort", function (done) {
+    xit("test new sort", function (done) {
         this.timeout(10000)
 
 
@@ -2822,7 +2822,7 @@ describe("EchoSpec", function () {
 
     });
 
-    xit("test d3 test 4 valid", function (done) {
+    it("test d3 test 4 valid", function (done) {
         this.timeout(10000)
 
         var s1 = {
@@ -3005,7 +3005,7 @@ describe("EchoSpec", function () {
     });
 
 
-    xit("test d3 test 6", function (done) {
+    it("test d3 test 6", function (done) {
         this.timeout(10000)
 
         var s1 = {
@@ -3061,7 +3061,7 @@ describe("EchoSpec", function () {
     });
 
 
-    xit("test d3 test 7", function (done) {
+    it("test d3 test 7", function (done) {
         this.timeout(10000)
 
         var s1 = {
@@ -3070,7 +3070,7 @@ describe("EchoSpec", function () {
             "OPTIONS": {
                 "COLUMNS": [
                     "courses_dept",
-                    "count",
+                    "count"
                 ],
                 "ORDER": {
                     "dir": "UP",
@@ -3124,19 +3124,16 @@ describe("EchoSpec", function () {
             },
             "OPTIONS": {
                 "COLUMNS": [
-                    "courses_dept",
-                    "avg",
-                    "count"
+                    "avg"
+
 
                 ],
-                "ORDER": {
-                    "dir": "DOWN",
-                    "keys": ["courses_dept","count","avg"]
-                },
+                "ORDER": "avg"
+                ,
                 "FORM": "TABLE"
             },
             "TRANSFORMATIONS": {
-                "GROUP": ["courses_dept"],
+                "GROUP": ["courses_dept","courses_id"],
                 "APPLY": [
                     {
                         "sum": {
