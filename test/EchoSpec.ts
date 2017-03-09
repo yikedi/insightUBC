@@ -2515,7 +2515,7 @@ describe("EchoSpec", function () {
      */
 
 
-    it("test new sort", function (done) {
+    xit("test new sort", function (done) {
         this.timeout(10000)
 
 
@@ -2578,7 +2578,7 @@ describe("EchoSpec", function () {
 
     });
 
-    xit("test transformation ", function (done) {
+    it("test transformation ", function (done) {
         this.timeout(10000);
 
         var s1 = {
@@ -2653,7 +2653,7 @@ describe("EchoSpec", function () {
 
     });
 
-    xit("test d3 test", function (done) {
+    it("test d3 test", function (done) {
         this.timeout(10000)
 
         var s1 = {
@@ -2704,7 +2704,7 @@ describe("EchoSpec", function () {
 
     });
 
-    xit("test simple query courses year", function (done) {
+    it("test simple query courses year", function (done) {
         this.timeout(10000)
 
 
@@ -2810,7 +2810,7 @@ describe("EchoSpec", function () {
 
         temp.performQuery(query).then(function (result) {
             console.log(result.code);
-            console.log(result.body);
+            //console.log(result.body);
             done();
         }).catch(function (err) {
             console.log(err.code);
@@ -2822,7 +2822,7 @@ describe("EchoSpec", function () {
 
     });
 
-    xit("test d3 test 4 valid", function (done) {
+    it("test d3 test 4 valid", function (done) {
         this.timeout(10000)
 
         var s1 = {
@@ -2884,7 +2884,7 @@ describe("EchoSpec", function () {
             .then((response:any) => {
                 console.log(response.code);
                 console.log(response.body);
-                //console.log(response.body["result"].length);
+                console.log(response.body["result"].length);
                 done();
             })
             .catch((err) => {
@@ -2913,7 +2913,9 @@ describe("EchoSpec", function () {
                     "courses_title",
                     "courses_instructor",
                     "courses_fail",
-                    "courses_audit"
+                    "courses_audit",
+                    "courses_pass",
+                    "courses_year"
                 ],
                 "ORDER": {
                     "dir": "UP",
@@ -2926,12 +2928,7 @@ describe("EchoSpec", function () {
                         "courses_fail",
                         "courses_audit",
                         "courses_pass",
-                        "courses_year",
-                        "maxAvg",
-                        "minAvg",
-                        "avgAvg",
-                        "sumAvg",
-                        "countAvg"
+                        "courses_year"
                     ]
                 },
                 "FORM": "TABLE"
@@ -2986,7 +2983,7 @@ describe("EchoSpec", function () {
             .then((response:any) => {
                 console.log(response.code);
                 console.log(response.body);
-                //console.log(response.body["result"].length);
+                console.log(response.body["result"].length);
                 done();
             })
             .catch((err) => {
@@ -2998,7 +2995,7 @@ describe("EchoSpec", function () {
     });
 
 
-    xit("test d3 test 6", function (done) {
+    it("test d3 test 6", function (done) {
         this.timeout(10000)
 
         var s1 = {
@@ -3054,7 +3051,7 @@ describe("EchoSpec", function () {
     });
 
 
-    xit("test d3 test 7", function (done) {
+    it("test d3 test 7", function (done) {
         this.timeout(10000)
 
         var s1 = {
@@ -3109,7 +3106,7 @@ describe("EchoSpec", function () {
 
     });
 
-    xit("test d3 test 8 department average", function (done) {
+    it("test d3 test 8 department average", function (done) {
         this.timeout(10000)
 
         var s1 = {
@@ -3117,14 +3114,12 @@ describe("EchoSpec", function () {
             },
             "OPTIONS": {
                 "COLUMNS": [
-                    "courses_dept",
-                    "avg",
-                    "count"
+                    "courses_dept"
 
                 ],
                 "ORDER": {
                     "dir": "UP",
-                    "keys": ["courses_dept","count","avg"]
+                    "keys": ["avg"]
                 },
                 "FORM": "TABLE"
             },
