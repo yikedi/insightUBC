@@ -2515,7 +2515,7 @@ describe("EchoSpec", function () {
      */
 
 
-    xit("test new sort", function (done) {
+    it("test new sort", function (done) {
         this.timeout(10000)
 
 
@@ -2578,7 +2578,7 @@ describe("EchoSpec", function () {
 
     });
 
-    it("test transformation ", function (done) {
+    xit("test transformation ", function (done) {
         this.timeout(10000);
 
         var s1 = {
@@ -2653,7 +2653,7 @@ describe("EchoSpec", function () {
 
     });
 
-    it("test d3 test", function (done) {
+    xit("test d3 test", function (done) {
         this.timeout(10000)
 
         var s1 = {
@@ -2704,7 +2704,7 @@ describe("EchoSpec", function () {
 
     });
 
-    it("test simple query courses year", function (done) {
+    xit("test simple query courses year", function (done) {
         this.timeout(10000)
 
 
@@ -2810,7 +2810,7 @@ describe("EchoSpec", function () {
 
         temp.performQuery(query).then(function (result) {
             console.log(result.code);
-            //console.log(result.body);
+            console.log(result.body);
             done();
         }).catch(function (err) {
             console.log(err.code);
@@ -2822,7 +2822,7 @@ describe("EchoSpec", function () {
 
     });
 
-    it("test d3 test 4 valid", function (done) {
+    xit("test d3 test 4 valid", function (done) {
         this.timeout(10000)
 
         var s1 = {
@@ -2884,7 +2884,7 @@ describe("EchoSpec", function () {
             .then((response:any) => {
                 console.log(response.code);
                 console.log(response.body);
-                console.log(response.body["result"].length);
+                //console.log(response.body["result"].length);
                 done();
             })
             .catch((err) => {
@@ -2915,7 +2915,12 @@ describe("EchoSpec", function () {
                     "courses_fail",
                     "courses_audit",
                     "courses_pass",
-                    "courses_year"
+                    "courses_year",
+                    "maxAvg",
+                    "minAvg",
+                    "avgAvg",
+                    "sumAvg",
+                    "countAvg"
                 ],
                 "ORDER": {
                     "dir": "UP",
@@ -2928,7 +2933,12 @@ describe("EchoSpec", function () {
                         "courses_fail",
                         "courses_audit",
                         "courses_pass",
-                        "courses_year"
+                        "courses_year",
+                        "maxAvg",
+                        "minAvg",
+                        "avgAvg",
+                        "sumAvg",
+                        "countAvg"
                     ]
                 },
                 "FORM": "TABLE"
@@ -2983,7 +2993,7 @@ describe("EchoSpec", function () {
             .then((response:any) => {
                 console.log(response.code);
                 console.log(response.body);
-                console.log(response.body["result"].length);
+                //console.log(response.body["result"].length);
                 done();
             })
             .catch((err) => {
@@ -2995,7 +3005,7 @@ describe("EchoSpec", function () {
     });
 
 
-    it("test d3 test 6", function (done) {
+    xit("test d3 test 6", function (done) {
         this.timeout(10000)
 
         var s1 = {
@@ -3051,7 +3061,7 @@ describe("EchoSpec", function () {
     });
 
 
-    it("test d3 test 7", function (done) {
+    xit("test d3 test 7", function (done) {
         this.timeout(10000)
 
         var s1 = {
@@ -3114,12 +3124,14 @@ describe("EchoSpec", function () {
             },
             "OPTIONS": {
                 "COLUMNS": [
-                    "courses_dept"
+                    "courses_dept",
+                    "avg",
+                    "count"
 
                 ],
                 "ORDER": {
-                    "dir": "UP",
-                    "keys": ["avg"]
+                    "dir": "DOWN",
+                    "keys": ["courses_dept","count","avg"]
                 },
                 "FORM": "TABLE"
             },

@@ -1443,11 +1443,13 @@ function perform_Query_transform(query: QueryRequest, this_obj: InsightFacade): 
                             let counter = 0;
 
                             for (let obj of group) {
-                                sum += obj[function_target];
+                                let temp = (obj[function_target] * 10);
+                                temp = Number(temp.toFixed(0));
+                                sum += temp;
                                 counter++;
                             }
 
-                            result = sum / counter;
+                            result = sum / counter / 10;
                             result = Number(result.toFixed(2));
 
                             break;
