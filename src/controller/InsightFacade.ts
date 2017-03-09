@@ -1678,23 +1678,7 @@ function check_order(order: any, columns: any, valid_list: any[]): boolean {
             if (order["keys"].length == 0) {
                 return false;
             }
-
-            valid_list = valid_list.concat(columns);
-            //console.log(valid_list);
-            for (let item of order["keys"]) {
-                let valid: boolean = false;
-                for (let column of valid_list) {
-                    if (item == column) {
-                        valid = true;
-                        break;
-                    }
-                }
-                if (!valid) {
-                    return false
-                }
-
-            }
-
+            
             for (let item of order["keys"]) {
                 let valid: boolean = false;
                 for (let column of columns) {
