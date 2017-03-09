@@ -2883,8 +2883,8 @@ describe("EchoSpec", function () {
         temp.performQuery(query)
             .then((response:any) => {
                 console.log(response.code);
-                console.log(response.body);
-                console.log(response.body["result"].length);
+                //console.log(response.body);
+                //console.log(response.body["result"].length);
                 done();
             })
             .catch((err) => {
@@ -2982,8 +2982,8 @@ describe("EchoSpec", function () {
         temp.performQuery(query)
             .then((response:any) => {
                 console.log(response.code);
-                console.log(response.body);
-                console.log(response.body["result"].length);
+                //console.log(response.body);
+                //console.log(response.body["result"].length);
                 done();
             })
             .catch((err) => {
