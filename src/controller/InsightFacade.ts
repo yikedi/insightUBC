@@ -692,7 +692,6 @@ export default class InsightFacade implements IInsightFacade {
 
                 // var exist: boolean = fs.existsSync("src/" + id + ".txt");
 
-
                 let valid = validate(query);
                 if (valid.code == 400) {
                     return reject({code: 400, body: {"error": "invalid json or query 698   " + valid.body}});
@@ -738,7 +737,7 @@ export default class InsightFacade implements IInsightFacade {
                             table = build_table(data);
                         }
                         else {
-                            table = build_table_rooms(data);
+                            table = build_table_rooms(data);   // can move those methods to class
                         }
 
                         var missing_col: string[] = [];
@@ -1520,8 +1519,7 @@ function perform_Query_transform(query: QueryRequest, this_obj: InsightFacade): 
 
             }
             //console.log(final_groups);
-
-            let valid_list: any[] = [];
+            let valid_list:any[]=[];
             valid_list = valid_list.concat(group);
 
             //console.log(valid_list);
@@ -1650,7 +1648,7 @@ function local_compare(a: any, b: any, keys: any[]): number {
     return 0;
 }
 
-function check_order(order: any, columns: any): boolean {
+function check_order(order: any, columns: any, valid_list: any[]): boolean {
 
     if (!isUndefined(order)) {
         if (typeof order == "string") {
@@ -1679,6 +1677,7 @@ function check_order(order: any, columns: any): boolean {
                 return false;
             }
 
+
             for (let item of order["keys"]) {
                 let valid: boolean = false;
                 for (let column of columns) {
@@ -1690,7 +1689,6 @@ function check_order(order: any, columns: any): boolean {
                 if (!valid) {
                     return false
                 }
-
 
             }
         }
@@ -1704,6 +1702,7 @@ function validate(query: QueryRequest): InsightResponse {
 
     let ret_obj: InsightResponse = {code: 200, body: "valid"};
 
+    let valid_list:any[]=[];
     try {
         var j_query = JSON.stringify(query);
         var j_obj = JSON.parse(j_query);
@@ -1724,6 +1723,7 @@ function validate(query: QueryRequest): InsightResponse {
 
         let apply = transformations["APPLY"];
         let group = transformations["GROUP"];
+
         if (isUndefined(group) || isUndefined(apply)) {
             ret_obj = {code: 400, body: "invalid transformations"};
             return ret_obj;
@@ -1735,6 +1735,7 @@ function validate(query: QueryRequest): InsightResponse {
 
         let temp = group[0].toString();
         let id = temp.substring(0, temp.indexOf("_"));
+
 
         for (let item of group) {
             let this_id;
@@ -1758,6 +1759,17 @@ function validate(query: QueryRequest): InsightResponse {
             apply_keys.push(item_key);
         }
 
+        apply_keys=apply_keys.sort();
+
+        for (let i=0;i<apply_keys.length;i++){
+            if (i+1==apply_keys.length)
+                break;
+            if (apply_keys[i]==apply_keys[i+1]){
+                return ret_obj = {code: 400, body: "duplicate apply keys"};
+            }
+        }
+
+        // check apply key no duplicate here
 
         valid_list = valid_list.concat(apply_keys);
 
@@ -1793,7 +1805,6 @@ function validate(query: QueryRequest): InsightResponse {
 
         for (let column of columns) {
             var value = dictionary[column];
-
             if (column.substring(0, column.indexOf("_")) != id || isUndefined(value)) {
                 return ret_obj = {code: 400, body: "invalid column item"};
             }
@@ -1804,9 +1815,12 @@ function validate(query: QueryRequest): InsightResponse {
         }
     }
 
-    if (!check_order(order, columns)) {
+    if (!check_order(order, columns,valid_list)) {
         return ret_obj = {code: 400, body: "invalid order"};
     }
+
+    // add check duplicate in apply
+
 
     return ret_obj;
 }

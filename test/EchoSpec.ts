@@ -3005,21 +3005,29 @@ describe("EchoSpec", function () {
                 "COLUMNS": [
                     "courses_dept",
                     "courses_id",
-                    "avg"
+                    "avg",
+                    "count"
                 ],
                 "ORDER": {
                     "dir": "UP",
-                    "keys": ["courses_dept"]
+                    "keys": ["avg","courses_dept","avg","courses_dept","courses_dept","courses_dept",]
                 },
                 "FORM": "TABLE"
             },
             "TRANSFORMATIONS": {
-                "GROUP": ["courses_dept","courses_id"],
-                "APPLY": [{
+                "GROUP": ["courses_dept","courses_id","courses_dept","courses_dept","courses_dept"],
+                "APPLY": [
+                    {
                     "avg": {
                         "AVG": "courses_avg"
                     }
-                }]
+                },
+                    {
+                        "count":{
+                            "COUNT":"courses_uuid"
+                        }
+                    }
+                ]
             }
         };
 
@@ -3043,5 +3051,59 @@ describe("EchoSpec", function () {
     });
 
 
+    it("test d3 test 7", function (done) {
+        this.timeout(10000)
+
+        var s1 = {
+            "WHERE": {
+            },
+            "OPTIONS": {
+                "COLUMNS": [
+                    "courses_dept",
+                    "count",
+                ],
+                "ORDER": {
+                    "dir": "UP",
+                    "keys": ["sum"]
+                },
+                "FORM": "TABLE"
+            },
+            "TRANSFORMATIONS": {
+                "GROUP": ["courses_dept"],
+                "APPLY": [
+                    {
+                        "sum": {
+                            "SUM": "courses_avg"
+                        }
+                    },{
+                        "count": {
+                            "COUNT": "courses_uuid"
+                        }
+                    },{
+                        "sum 1": {
+                            "AVG": "courses_avg"
+                        }
+                    }]
+            }
+        };
+
+        var query = s1;
+
+
+        var temp = new InsightFacade();
+
+        temp.performQuery(query)
+            .then((response) => {
+                console.log(response.code);
+                console.log(response.body);
+                done();
+            })
+            .catch((err) => {
+                console.log(err.code);
+                console.log(err.body)
+                done();
+            });
+
+    });
 });
 
