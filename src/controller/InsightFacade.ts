@@ -1678,9 +1678,10 @@ function check_order(order: any, columns: any, valid_list: any[]): boolean {
             }
 
 
+            console.log(valid_list);
             for (let item of order["keys"]) {
                 let valid: boolean = false;
-                for (let column of columns) {
+                for (let column of valid_list) {
                     if (item == column) {
                         valid = true;
                         break;
@@ -1750,7 +1751,6 @@ function validate(query: QueryRequest): InsightResponse {
 
         }
 
-        let valid_list: any[] = [];
         valid_list = valid_list.concat(group);
 
         let apply_keys = [];
@@ -1814,6 +1814,7 @@ function validate(query: QueryRequest): InsightResponse {
             return ret_obj = {code: 400, body: "invalid form"};
         }
     }
+
 
     if (!check_order(order, columns,valid_list)) {
         return ret_obj = {code: 400, body: "invalid order"};

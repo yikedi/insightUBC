@@ -3105,5 +3105,62 @@ describe("EchoSpec", function () {
             });
 
     });
+
+    it("test d3 test 8 department average", function (done) {
+        this.timeout(10000)
+
+        var s1 = {
+            "WHERE": {
+            },
+            "OPTIONS": {
+                "COLUMNS": [
+                    "courses_dept",
+
+                ],
+                "ORDER": {
+                    "dir": "UP",
+                    "keys": ["avg"]
+                },
+                "FORM": "TABLE"
+            },
+            "TRANSFORMATIONS": {
+                "GROUP": ["courses_dept"],
+                "APPLY": [
+                    {
+                        "sum": {
+                            "SUM": "courses_avg"
+                        }
+                    },{
+                        "count": {
+                            "COUNT": "courses_uuid"
+                        }
+                    },{
+                        "avg": {
+                            "AVG": "courses_avg"
+                        }
+                    }]
+            }
+        };
+
+        var query = s1;
+
+
+        var temp = new InsightFacade();
+
+        temp.performQuery(query)
+            .then((response) => {
+                console.log(response.code);
+                console.log(response.body);
+                done();
+            })
+            .catch((err) => {
+                console.log(err.code);
+                console.log(err.body)
+                done();
+            });
+
+    });
+
+
 });
 
