@@ -1677,7 +1677,7 @@ function check_order(order: any, columns: any, valid_list: any[]): boolean {
                 return false;
             }
 
-
+            valid_list = valid_list.concat(columns);
             //console.log(valid_list);
             for (let item of order["keys"]) {
                 let valid: boolean = false;
@@ -1692,6 +1692,21 @@ function check_order(order: any, columns: any, valid_list: any[]): boolean {
                 }
 
             }
+
+            for (let item of order["keys"]) {
+                let valid: boolean = false;
+                for (let column of columns) {
+                    if (item == column) {
+                        valid = true;
+                        break;
+                    }
+                }
+                if (!valid) {
+                    return false
+                }
+
+            }
+
         }
 
 
@@ -1825,4 +1840,3 @@ function validate(query: QueryRequest): InsightResponse {
 
     return ret_obj;
 }
-
