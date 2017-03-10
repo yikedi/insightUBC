@@ -1449,7 +1449,8 @@ function perform_Query_transform(query: QueryRequest, this_obj: InsightFacade): 
                                 counter++;
                             }
 
-                            result = sum / counter / 10;
+                            result = sum / counter;
+                            result = result / 10;
                             result = Number(result.toFixed(2));
 
                             break;
@@ -1493,9 +1494,9 @@ function perform_Query_transform(query: QueryRequest, this_obj: InsightFacade): 
                             }
 
                             for (let obj of group) {
-                                result += obj[function_target];
+                                result += obj[function_target]*10;
                             }
-
+                            result/=10;
                             break;
                         default:
                             throw Error("invalid function to use 1447");
