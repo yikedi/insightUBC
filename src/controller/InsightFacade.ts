@@ -1345,17 +1345,22 @@ function perform_Query_transform(query: QueryRequest, this_obj: InsightFacade): 
 
             }
 
-            table.sort((a: any, b: any) => {
-
-                if (a["group_id"] < b["group_id"]) {
-                    return -1;
-                }
-                else if (a["group_id"] > b["group_id"]) {
-                    return 1;
-                }
-                else
-                    return 0;
-            });
+            // table.sort((a: any, b: any) => {
+            //
+            //     if (a["group_id"] < b["group_id"]) {
+            //         return -1;
+            //     }
+            //     else if (a["group_id"] > b["group_id"]) {
+            //         return 1;
+            //     }
+            //     else
+            //         return 0;
+            // });
+            let group_id: String[]=[];
+            group_id.push("group_id");
+            table.sort((a: any, b: any)=> {
+                return local_compare(a, b, group_id);
+            })
 
 
             let prev_group_name = table[0]["group_id"];
@@ -1460,16 +1465,20 @@ function perform_Query_transform(query: QueryRequest, this_obj: InsightFacade): 
                             if (temp.length > 0) {
 
                                 temp.sort((a: any, b: any) => {
+                                    return local_compare(a, b, function_target);
+                                })
 
-                                    if (a[function_target] < b[function_target]) {
-                                        return -1;
-                                    }
-                                    else if (a[function_target] > b[function_target]) {
-                                        return 1;
-                                    }
-                                    else
-                                        return 0;
-                                });
+                                // temp.sort((a: any, b: any) => {
+                                //
+                                //     if (a[function_target] < b[function_target]) {
+                                //         return -1;
+                                //     }
+                                //     else if (a[function_target] > b[function_target]) {
+                                //         return 1;
+                                //     }
+                                //     else
+                                //         return 0;
+                                // });
 
                                 let prev_val = temp[0][function_target];
                                 result = 1;

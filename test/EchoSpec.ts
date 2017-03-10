@@ -3122,12 +3122,13 @@ describe("EchoSpec", function () {
             "OPTIONS": {
                 "COLUMNS": [
                     "courses_dept",
-                    "sum", "max", "min", "count", "avg"
+                    "courses_id",
+                    "avg"
                 ],
                 "ORDER": {
                     "dir": "DOWN",
-                    "keys": ["courses_dept",
-                        "sum", "max", "min", "count", "avg"]
+                    "keys": ["courses_dept","courses_id",
+                         "avg"]
                 },
                 "FORM": "TABLE"
             },
