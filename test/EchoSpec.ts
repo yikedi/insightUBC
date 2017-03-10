@@ -2583,8 +2583,8 @@ describe("EchoSpec", function () {
 
         var s1 = {
             "WHERE": {
-                "GT":{
-                    "rooms_seats":300
+                "GT": {
+                    "rooms_seats": 300
                 }
             },
             "OPTIONS": {
@@ -2658,8 +2658,8 @@ describe("EchoSpec", function () {
 
         var s1 = {
             "WHERE": {
-                "GT":{
-                    "rooms_seats":300
+                "GT": {
+                    "rooms_seats": 300
                 }
 
             },
@@ -2677,10 +2677,10 @@ describe("EchoSpec", function () {
                 "GROUP": ["rooms_furniture"],
                 "APPLY": [
                     {
-                    "maxSeats": {
-                        "MAX": "rooms_seats"
+                        "maxSeats": {
+                            "MAX": "rooms_seats"
+                        }
                     }
-                }
                 ]
             }
         };
@@ -2822,13 +2822,13 @@ describe("EchoSpec", function () {
 
     });
 
-    it("test d3 test 4 valid", function (done) {
+    xit("test d3 test 4 valid", function (done) {
         this.timeout(10000)
 
         var s1 = {
             "WHERE": {
-                "GT":{
-                    "rooms_seats":300
+                "GT": {
+                    "rooms_seats": 300
                 }
 
             },
@@ -2881,7 +2881,7 @@ describe("EchoSpec", function () {
         var temp = new InsightFacade();
 
         temp.performQuery(query)
-            .then((response:any) => {
+            .then((response: any) => {
                 console.log(response.code);
                 console.log(response.body);
                 //console.log(response.body["result"].length);
@@ -2895,13 +2895,13 @@ describe("EchoSpec", function () {
 
     });
 
-    it("test d3 test 5 courses", function (done) {
+    xit("test d3 test 5 courses", function (done) {
         this.timeout(10000)
 
         var s1 = {
             "WHERE": {
-                "GT":{
-                    "courses_avg":98
+                "GT": {
+                    "courses_avg": 98
                 }
 
             },
@@ -2990,7 +2990,7 @@ describe("EchoSpec", function () {
         var temp = new InsightFacade();
 
         temp.performQuery(query)
-            .then((response:any) => {
+            .then((response: any) => {
                 console.log(response.code);
                 console.log(response.body);
                 //console.log(response.body["result"].length);
@@ -3005,12 +3005,11 @@ describe("EchoSpec", function () {
     });
 
 
-    it("test d3 test 6", function (done) {
+    xit("test d3 test 6", function (done) {
         this.timeout(10000)
 
         var s1 = {
-            "WHERE": {
-            },
+            "WHERE": {},
             "OPTIONS": {
                 "COLUMNS": [
                     "courses_dept",
@@ -3020,21 +3019,21 @@ describe("EchoSpec", function () {
                 ],
                 "ORDER": {
                     "dir": "UP",
-                    "keys": ["avg","courses_dept","avg","courses_dept","courses_dept","courses_dept",]
+                    "keys": ["avg", "courses_dept", "avg", "courses_dept", "courses_dept", "courses_dept"]
                 },
                 "FORM": "TABLE"
             },
             "TRANSFORMATIONS": {
-                "GROUP": ["courses_dept","courses_id","courses_dept","courses_dept","courses_dept"],
+                "GROUP": ["courses_dept", "courses_id", "courses_dept", "courses_dept", "courses_dept"],
                 "APPLY": [
                     {
-                    "avg": {
-                        "AVG": "courses_avg"
-                    }
-                },
+                        "avg": {
+                            "AVG": "courses_avg"
+                        }
+                    },
                     {
-                        "count":{
-                            "COUNT":"courses_uuid"
+                        "count": {
+                            "COUNT": "courses_uuid"
                         }
                     }
                 ]
@@ -3061,12 +3060,11 @@ describe("EchoSpec", function () {
     });
 
 
-    it("test d3 test 7", function (done) {
+    xit("test d3 test 7", function (done) {
         this.timeout(10000)
 
         var s1 = {
-            "WHERE": {
-            },
+            "WHERE": {},
             "OPTIONS": {
                 "COLUMNS": [
                     "courses_dept",
@@ -3085,11 +3083,11 @@ describe("EchoSpec", function () {
                         "sum": {
                             "SUM": "courses_avg"
                         }
-                    },{
+                    }, {
                         "count": {
                             "COUNT": "courses_uuid"
                         }
-                    },{
+                    }, {
                         "sum 1": {
                             "AVG": "courses_avg"
                         }
@@ -3116,34 +3114,42 @@ describe("EchoSpec", function () {
 
     });
 
-    it("test d3 test 8 department average", function (done) {
+    it("test sort 1", function (done) {
         this.timeout(10000)
 
         var s1 = {
-            "WHERE": {
-            },
+            "WHERE": {},
             "OPTIONS": {
                 "COLUMNS": [
-                    "avg"
-
-
+                    "courses_dept",
+                    "courses_id",
+                    "sum", "max", "min", "count", "avg"
                 ],
-                "ORDER": "avg"
-                ,
+                "ORDER": "sum",
                 "FORM": "TABLE"
             },
             "TRANSFORMATIONS": {
-                "GROUP": ["courses_dept","courses_id"],
+                "GROUP": [
+                    "courses_dept",
+                    "courses_id"],
                 "APPLY": [
                     {
                         "sum": {
                             "SUM": "courses_avg"
                         }
-                    },{
-                        "count": {
-                            "COUNT": "courses_uuid"
+                    }, {
+                        "max": {
+                            "MAX": "courses_avg"
                         }
-                    },{
+                    }, {
+                        "min": {
+                            "MIN": "courses_avg"
+                        }
+                    }, {
+                        "count": {
+                            "COUNT": "courses_id"
+                        }
+                    }, {
                         "avg": {
                             "AVG": "courses_avg"
                         }
@@ -3160,16 +3166,183 @@ describe("EchoSpec", function () {
             .then((response) => {
                 console.log(response.code);
                 console.log(response.body);
+                expect(response.code).to.equal(200);
                 done();
             })
             .catch((err) => {
                 console.log(err.code);
-                console.log(err.body)
+                console.log(err.body);
                 done();
             });
 
     });
 
+    it("test sort 2", function (done) {
+        this.timeout(10000)
+
+        var s1 = {
+            "WHERE": {},
+            "OPTIONS": {
+                "COLUMNS": [
+                    "courses_dept",
+                    "courses_avg",
+                    "courses_uuid",
+                    "courses_title",
+                    "courses_instructor",
+                    "courses_fail",
+                    "courses_audit",
+                    "courses_pass",
+                    "courses_year"
+                ],
+                "ORDER": "courses_dept",
+                "FORM": "TABLE"
+            }
+        };
+
+        var query = s1;
+
+
+        var temp = new InsightFacade();
+
+        temp.performQuery(query)
+            .then((response) => {
+                console.log(response.code);
+                console.log(response.body);
+                expect(response.code).to.equal(200);
+                done();
+            })
+            .catch((err) => {
+                console.log(err.code);
+                console.log(err.body);
+                done();
+            });
+
+    });
+
+    it("test sort 3", function (done) {
+        this.timeout(10000)
+
+        var s1 = {
+            "WHERE": {},
+            "OPTIONS": {
+                "COLUMNS": [
+                    "courses_dept",
+                    "courses_avg",
+                    "courses_uuid",
+                    "courses_title",
+                    "courses_instructor",
+                    "courses_fail",
+                    "courses_audit",
+                    "courses_pass",
+                    "courses_year",
+                    "sum", "max", "min", "count", "avg"
+                ],
+                "ORDER": {
+                    "dir": "UP",
+                    "keys": ["avg", "courses_dept", "avg", "courses_dept", "courses_dept", "courses_dept"]
+                },
+                "FORM": "TABLE"
+            },
+            "TRANSFORMATIONS": {
+                "GROUP": [
+                    "courses_dept",
+                    "courses_avg",
+                    "courses_uuid",
+                    "courses_title",
+                    "courses_instructor",
+                    "courses_fail",
+                    "courses_audit",
+                    "courses_pass",
+                    "courses_year"],
+                "APPLY": [
+                    {
+                        "sum": {
+                            "SUM": "courses_avg"
+                        }
+                    }, {
+                        "max": {
+                            "MAX": "courses_avg"
+                        }
+                    }, {
+                        "min": {
+                            "MIN": "courses_avg"
+                        }
+                    }, {
+                        "count": {
+                            "COUNT": "courses_id"
+                        }
+                    }, {
+                        "avg": {
+                            "AVG": "courses_avg"
+                        }
+                    }]
+            }
+        };
+
+        var query = s1;
+
+
+        var temp = new InsightFacade();
+
+        temp.performQuery(query)
+            .then((response) => {
+                console.log(response.code);
+                console.log(response.body);
+                expect(response.code).to.equal(200);
+                done();
+            })
+            .catch((err) => {
+                console.log(err.code);
+                console.log(err.body);
+                done();
+            });
+
+    });
+
+    it("test sort 4", function (done) {
+        this.timeout(10000)
+
+        var s1 = {
+            "WHERE": {},
+            "OPTIONS": {
+                "COLUMNS": [
+                    "courses_dept",
+                    "courses_avg",
+                    "courses_uuid",
+                    "courses_title",
+                    "courses_instructor",
+                    "courses_fail",
+                    "courses_audit",
+                    "courses_pass",
+                    "courses_year"
+                ],
+                "ORDER": {
+                    "dir": "UP",
+                    "keys": ["courses_dept", "courses_dept", "courses_dept", "courses_dept"]
+                },
+                "FORM": "TABLE"
+            }
+        };
+
+        var query = s1;
+
+
+        var temp = new InsightFacade();
+
+        temp.performQuery(query)
+            .then((response) => {
+                console.log(response.code);
+                console.log(response.body);
+                expect(response.code).to.equal(200);
+                done();
+            })
+            .catch((err) => {
+                console.log(err.code);
+                console.log(err.body);
+                done();
+            });
+
+    });
 
 });
 
