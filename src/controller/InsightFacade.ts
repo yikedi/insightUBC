@@ -916,7 +916,6 @@ function filter(table: Array<Dataset_obj>, query: QueryRequest, missing_col: str
 
 
     if (!isUndefined(order)) {
-        let order_keys = Object.keys(order);
         if (typeof order == "object") {
             let dir = order["dir"];
             let keys = order["keys"];
@@ -933,7 +932,8 @@ function filter(table: Array<Dataset_obj>, query: QueryRequest, missing_col: str
                             }
                         }
                         return 0;
-                    });
+                    }
+                    );
                 }
             }
             else if (dir == "DOWN") {
@@ -958,10 +958,13 @@ function filter(table: Array<Dataset_obj>, query: QueryRequest, missing_col: str
         else {
 
             ret_table.sort((a: Dataset_obj, b: Dataset_obj) => {
-                if (typeof b.getValue(dictionary[order]) == "number")
-                    return a.getValue(dictionary[order]) - b.getValue(dictionary[order]);
-                else
-                    return a.getValue(dictionary[order]).localeCompare(b.getValue(dictionary[order]));
+                // if (typeof b.getValue(dictionary[order]) == "number")
+                //     return a.getValue(dictionary[order]) - b.getValue(dictionary[order]);
+                // else
+                //     return a.getValue(dictionary[order]).localeCompare(b.getValue(dictionary[order]));
+
+                return local_compare_single(a.getValue(dictionary[order]),b.getValue(dictionary[order]));
+
             });
 
         }
@@ -1340,27 +1343,13 @@ function perform_Query_transform(query: QueryRequest, this_obj: InsightFacade): 
                 for (let group_key of group) {
                     group_id_value += tuple[group_key] + "_";
                 }
-                // group_id_value=group_id_value.substring(0,group_id_value.length-1);
                 tuple["group_id"] = group_id_value;
-
             }
 
-            // table.sort((a: any, b: any) => {
-            //
-            //     if (a["group_id"] < b["group_id"]) {
-            //         return -1;
-            //     }
-            //     else if (a["group_id"] > b["group_id"]) {
-            //         return 1;
-            //     }
-            //     else
-            //         return 0;
-            // });
-            let group_id: string[]=[];
-            group_id.push("group_id");
-            table.sort((a: any, b: any)=> {
-                return local_compare(a, b, group_id);
-            })
+            table.sort((a: any, b: any) => {
+                return local_compare_single(a["group_id"], b["group_id"]);
+            });
+
 
 
             let prev_group_name = table[0]["group_id"];
@@ -1379,7 +1368,6 @@ function perform_Query_transform(query: QueryRequest, this_obj: InsightFacade): 
                 }
             }
 
-            //console.log(groups);
             let group_keys = Object.keys(groups);
 
             let final_groups = [];
@@ -1463,11 +1451,11 @@ function perform_Query_transform(query: QueryRequest, this_obj: InsightFacade): 
                             result = 0;
                             let temp = group;
                             if (temp.length > 0) {
-                                let f_target: string[] =[];
-                                f_target.push(function_target);
+                                // let f_target: string[] = [];
+                                // f_target.push(function_target);
                                 temp.sort((a: any, b: any) => {
-                                    return local_compare(a, b, f_target);
-                                })
+                                    return local_compare_single(a[function_target], b[function_target]);
+                                });
 
                                 // temp.sort((a: any, b: any) => {
                                 //
@@ -1531,38 +1519,17 @@ function perform_Query_transform(query: QueryRequest, this_obj: InsightFacade): 
 
             }
             //console.log(final_groups);
-            let valid_list:any[]=[];
-            valid_list = valid_list.concat(group);
-
-            //console.log(valid_list);
-
-            let apply_keys = [];
-            for (let item of apply) {
-                let item_key = Object.keys(item)[0];
-                apply_keys.push(item_key);
-            }
-
-
-            valid_list = valid_list.concat(apply_keys);
-
-            // console.log(apply_keys);
-            // console.log(valid_list);
-
-            // for (let item of columns) {
+            // let valid_list: any[] = [];
+            // valid_list = valid_list.concat(group);
             //
-            //     let valid: boolean = false;
-            //     for (let validator of valid_list) {
-            //         if (item == validator) {
-            //             valid = true;
-            //             break;
-            //         }
-            //     }
-            //     if (!valid) {
-            //         throw Error("invalid key in column 1581");
-            //     }
+            // //console.log(valid_list);
+            //
+            // let apply_keys = [];
+            // for (let item of apply) {
+            //     let item_key = Object.keys(item)[0];
+            //     apply_keys.push(item_key);
             // }
 
-            //console.log(order);
             if (!isUndefined(order)) {
 
                 if (typeof order == "object") {
@@ -1589,10 +1556,7 @@ function perform_Query_transform(query: QueryRequest, this_obj: InsightFacade): 
                 else {
 
                     final_groups.sort((a: any, b: any) => {
-                        if (typeof a[order] == "number")
-                            return a[order] - b[order];
-                        else
-                            return a[order].localeCompare(b[order]);
+                        return local_compare_single(a[order],b[order]);
                     });
 
 
@@ -1651,9 +1615,7 @@ function extract_info(target: string, key_start: string, key_end: string): strin
 
 function local_compare(a: any, b: any, keys: any[]): number {
     for (let i = 0; i < keys.length; i++) {
-        if (typeof a[keys[i]] == "number")
-            return a[keys[i]] - b[keys[i]];
-        else if (a[keys[i]] < b[keys[i]]) {
+        if (a[keys[i]] < b[keys[i]]) {
             return -1;
         }
         else if (a[keys[i]] > b[keys[i]]) {
@@ -1663,7 +1625,20 @@ function local_compare(a: any, b: any, keys: any[]): number {
     return 0;
 }
 
-function check_order(order: any, columns: any, valid_list: any[]): boolean {
+function local_compare_single(a: any, b: any): number {
+    if (a < b) {
+        return -1;
+    }
+    else if (a > b) {
+        return 1;
+    }
+    else {
+        return 0;
+    }
+
+}
+
+function check_order(order: any, columns: any): boolean {
 
     if (!isUndefined(order)) {
         if (typeof order == "string") {
@@ -1675,7 +1650,7 @@ function check_order(order: any, columns: any, valid_list: any[]): boolean {
                 }
 
             }
-            if (!valid ) {
+            if (!valid) {
                 return false;
             }
         }
@@ -1717,7 +1692,7 @@ function validate(query: QueryRequest): InsightResponse {
 
     let ret_obj: InsightResponse = {code: 200, body: "valid"};
 
-    let valid_list:any[]=[];
+    let valid_list: any[] = [];
     try {
         var j_query = JSON.stringify(query);
         var j_obj = JSON.parse(j_query);
@@ -1773,12 +1748,12 @@ function validate(query: QueryRequest): InsightResponse {
             apply_keys.push(item_key);
         }
 
-        apply_keys=apply_keys.sort();
+        apply_keys = apply_keys.sort();
 
-        for (let i=0;i<apply_keys.length;i++){
-            if (i+1==apply_keys.length)
+        for (let i = 0; i < apply_keys.length; i++) {
+            if (i + 1 == apply_keys.length)
                 break;
-            if (apply_keys[i]==apply_keys[i+1]){
+            if (apply_keys[i] == apply_keys[i + 1]) {
                 return ret_obj = {code: 400, body: "duplicate apply keys"};
             }
         }
@@ -1830,12 +1805,9 @@ function validate(query: QueryRequest): InsightResponse {
     }
 
 
-    if (!check_order(order, columns,valid_list)) {
+    if (!check_order(order, columns)) {
         return ret_obj = {code: 400, body: "invalid order"};
     }
-
-    // add check duplicate in apply
-
 
     return ret_obj;
 }
