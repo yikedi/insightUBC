@@ -1594,6 +1594,7 @@ function perform_Query_transform(query: QueryRequest, this_obj: InsightFacade): 
                             return a[order].localeCompare(b[order]);
                     });
 
+
                 }
             }
 
@@ -1649,7 +1650,9 @@ function extract_info(target: string, key_start: string, key_end: string): strin
 
 function local_compare(a: any, b: any, keys: any[]): number {
     for (let i = 0; i < keys.length; i++) {
-        if (a[keys[i]] < b[keys[i]]) {
+        if (typeof a[keys[i]] == "number")
+            return a[keys[i]] - b[keys[i]];
+        else if (a[keys[i]] < b[keys[i]]) {
             return -1;
         }
         else if (a[keys[i]] > b[keys[i]]) {
