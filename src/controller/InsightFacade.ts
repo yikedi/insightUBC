@@ -1356,7 +1356,7 @@ function perform_Query_transform(query: QueryRequest, this_obj: InsightFacade): 
             //     else
             //         return 0;
             // });
-            let group_id: String[]=[];
+            let group_id: string[]=[];
             group_id.push("group_id");
             table.sort((a: any, b: any)=> {
                 return local_compare(a, b, group_id);
@@ -1463,9 +1463,10 @@ function perform_Query_transform(query: QueryRequest, this_obj: InsightFacade): 
                             result = 0;
                             let temp = group;
                             if (temp.length > 0) {
-
+                                let f_target: string[] =[];
+                                f_target.push(function_target);
                                 temp.sort((a: any, b: any) => {
-                                    return local_compare(a, b, function_target);
+                                    return local_compare(a, b, f_target);
                                 })
 
                                 // temp.sort((a: any, b: any) => {
