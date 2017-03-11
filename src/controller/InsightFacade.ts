@@ -401,7 +401,6 @@ export default class InsightFacade implements IInsightFacade {
                                 if (err) {
 
                                     ret_obj = {code: 400, body: {"error": err.message + "      388"}};
-                                    //console.log("write file error if line 216");
                                     return reject(ret_obj);
                                 }
                                 else {
@@ -453,7 +452,6 @@ export default class InsightFacade implements IInsightFacade {
                                     parse5.parse(list[i]);
                                 }
                             } catch (error) {
-                                //  index_valid=false;
                                 console.log("line 413");
                             }
 
@@ -742,29 +740,6 @@ export default class InsightFacade implements IInsightFacade {
 
                         var missing_col: string[] = [];
                         var error_400: Object[] = [];
-
-                        // let order_valid = check_order(order, columns);
-                        //
-                        // for (let column of columns) {
-                        //     var value = dictionary[column];
-                        //
-                        //     if (column.substring(0, column.indexOf("_")) != id) {
-                        //         missing_col.push(column);
-                        //     }
-                        //
-                        // }
-                        // if (!isUndefined(order)) {
-                        //     if (!order_valid)
-                        //         missing_col.push(order);
-                        // }
-                        //
-                        // if (form != "TABLE") {
-                        //     missing_col.push(form);
-                        // }
-                        //
-                        // if (missing_col.length > 0) {
-                        //     return reject({code: 400, body: {"error": "invalid query 764"}});
-                        // }
 
                         missing_col = [];
                         var body = null;
@@ -1537,9 +1512,6 @@ function perform_Query_transform(query: QueryRequest, this_obj: InsightFacade): 
                 ret_list.push(ret_obj);
             }
 
-            // console.log(ret_list);
-            // console.log("----------------------");
-            // console.log(final_groups);
 
             let ret_obj = {render: form, result: ret_list}
             fulfill({code: 200, body: ret_obj});

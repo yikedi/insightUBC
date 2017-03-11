@@ -26,7 +26,7 @@ describe("EchoSpec", function () {
     }
 
     before(function () {
-        //server = new Server(4321);
+        server = new Server(4321);
         Log.test('Before: ' + (<any>this).test.parent.title);
     });
 
@@ -35,7 +35,7 @@ describe("EchoSpec", function () {
     });
 
     after(function () {
-        //server.stop().then();
+        server.stop().then();
         Log.test('After: ' + (<any>this).test.parent.title);
     });
 
@@ -80,7 +80,7 @@ describe("EchoSpec", function () {
 
     });
 
-    xit("test add courses.zip", function (done) {
+    it("test add courses.zip", function (done) {
         this.timeout(50000)
 
         var zip = new JSZip();
@@ -91,20 +91,20 @@ describe("EchoSpec", function () {
 
         temp.addDataset("courses", f)
             .then((response) => {
-                console.log(response.code);
-                //console.log(response.body);
+                //console.log(response.code);
+                ////console.log(response.body);
                 done();
             })
             .catch((err) => {
-                console.log(err.code);
-                console.log(err.body)
+                //console.log(err.code);
+                //console.log(err.body)
                 done();
             });
 
     });
 
 
-    /*
+    
      it("test simple query courses year", function (done) {
      this.timeout(10000)
 
@@ -145,13 +145,13 @@ describe("EchoSpec", function () {
 
      temp.performQuery(query)
      .then((response) => {
-     console.log(response.code);
-     console.log(response.body);
+     //console.log(response.code);
+     //console.log(response.body);
      done();
      })
      .catch((err) => {
-     console.log(err.code);
-     console.log(err.body)
+     //console.log(err.code);
+     //console.log(err.body)
      done();
      });
 
@@ -171,7 +171,7 @@ describe("EchoSpec", function () {
 
      temp.addDataset("courses", f)
      .then((response) => {
-     console.log(response.code);
+     //console.log(response.code);
      done();
      })
      .catch((err) => {
@@ -191,7 +191,7 @@ describe("EchoSpec", function () {
 
      temp.addDataset("courses", f)
      .then((response) => {
-     console.log(response.code);
+     //console.log(response.code);
      done();
      })
      .catch((err) => {
@@ -246,8 +246,8 @@ describe("EchoSpec", function () {
 
      done();
      }).catch(function (err) {
-     console.log(err.code);
-     //console.log(err.body);
+     //console.log(err.code);
+     ////console.log(err.body);
      done();
      })
 
@@ -298,8 +298,8 @@ describe("EchoSpec", function () {
 
      done();
      }).catch(function (err) {
-     console.log(err.code);
-     //console.log(err.body);
+     //console.log(err.code);
+     ////console.log(err.body);
      done();
      })
 
@@ -355,8 +355,8 @@ describe("EchoSpec", function () {
 
      var query = s1;
      temp.performQuery(query).then(function (body) {
-     console.log(body.code);
-     //console.log(body.body);
+     //console.log(body.code);
+     ////console.log(body.body);
      done();
      }).catch(function (err) {
 
@@ -431,12 +431,12 @@ describe("EchoSpec", function () {
 
      var query = s1;
      temp.performQuery(query).then(function (body) {
-     console.log(body.code);
-     //console.log(body.body);
+     //console.log(body.code);
+     ////console.log(body.body);
      done();
      }).catch(function (err) {
-     console.log(err.code);
-     //console.log(err.body);
+     //console.log(err.code);
+     ////console.log(err.body);
      done();
      })
 
@@ -484,8 +484,8 @@ describe("EchoSpec", function () {
 
      var query = s1;
      temp.performQuery(query).then(function (body) {
-     console.log(body.code);
-     //console.log(body.body);
+     //console.log(body.code);
+     ////console.log(body.body);
      done();
      }).catch(function (err) {
 
@@ -536,12 +536,12 @@ describe("EchoSpec", function () {
 
      var query = s1;
      temp.performQuery(query).then(function (body) {
-     console.log(body.code);
-     //console.log(body.body);
+     //console.log(body.code);
+     ////console.log(body.body);
      done();
      }).catch(function (err) {
-     console.log(err.code);
-     //console.log(err.body);
+     //console.log(err.code);
+     ////console.log(err.body);
      done();
      })
 
@@ -591,12 +591,12 @@ describe("EchoSpec", function () {
 
      var query = s1;
      temp.performQuery(query).then(function (body) {
-     console.log(body.code);
-     //console.log(body.body);
+     //console.log(body.code);
+     ////console.log(body.body);
      done();
      }).catch(function (err) {
-     console.log(err.code);
-     //console.log(err.body);
+     //console.log(err.code);
+     ////console.log(err.body);
      done();
      })
 
@@ -645,12 +645,12 @@ describe("EchoSpec", function () {
 
      var query = s1;
      temp.performQuery(query).then(function (body) {
-     console.log(body.code);
-     //console.log(body.body);
+     //console.log(body.code);
+     ////console.log(body.body);
      done();
      }).catch(function (err) {
-     console.log(err.code);
-     //console.log(err.body);
+     //console.log(err.code);
+     ////console.log(err.body);
      done();
      })
 
@@ -681,12 +681,12 @@ describe("EchoSpec", function () {
 
      var query = s1;
      temp.performQuery(query).then(function (body) {
-     console.log(body.code);
-     //console.log(body.body);
+     //console.log(body.code);
+     ////console.log(body.body);
      done();
      }).catch(function (err) {
-     console.log(err.code);
-     //console.log(err.body);
+     //console.log(err.code);
+     ////console.log(err.body);
      done();
      })
 
@@ -723,12 +723,12 @@ describe("EchoSpec", function () {
 
      var query = s1;
      temp.performQuery(query).then(function (body) {
-     console.log(body.code);
-     //console.log(body.body);
+     //console.log(body.code);
+     ////console.log(body.body);
      done();
      }).catch(function (err) {
-     console.log(err.code);
-     //console.log(err.body);
+     //console.log(err.code);
+     ////console.log(err.body);
      done();
      })
 
@@ -768,12 +768,12 @@ describe("EchoSpec", function () {
 
      var query = s1;
      temp.performQuery(query).then(function (body) {
-     console.log(body.code);
-     //console.log(body.body);
+     //console.log(body.code);
+     ////console.log(body.body);
      done();
      }).catch(function (err) {
-     console.log(err.code);
-     //console.log(err.body);
+     //console.log(err.code);
+     ////console.log(err.body);
      done();
      })
 
@@ -810,12 +810,12 @@ describe("EchoSpec", function () {
      var query = s1;
 
      temp.performQuery(query).then(function (body) {
-     console.log(body.code);
-     //console.log(body.body);
+     //console.log(body.code);
+     ////console.log(body.body);
      done();
      }).catch(function (err) {
-     console.log(err.code);
-     //console.log(err.body);
+     //console.log(err.code);
+     ////console.log(err.body);
      done();
      })
 
@@ -859,12 +859,12 @@ describe("EchoSpec", function () {
 
 
      temp.performQuery(query).then(function (result) {
-     console.log(result.code);
-     console.log(result.body);
+     //console.log(result.code);
+     //console.log(result.body);
      done();
      }).catch(function (result) {
-     console.log(result.code);
-     console.log(result.body);
+     //console.log(result.code);
+     //console.log(result.body);
      done();
      });
 
@@ -921,12 +921,12 @@ describe("EchoSpec", function () {
 
 
      temp.performQuery(query).then(function (result) {
-     console.log(result.code);
-     //console.log(result.body);
+     //console.log(result.code);
+     ////console.log(result.body);
      done();
      }).catch(function (result) {
-     console.log(result.code);
-     console.log(result.body);
+     //console.log(result.code);
+     //console.log(result.body);
      done();
      });
 
@@ -981,12 +981,12 @@ describe("EchoSpec", function () {
 
 
      temp.performQuery(query).then(function (result) {
-     console.log(result.code);
-     console.log(result.body);
+     //console.log(result.code);
+     //console.log(result.body);
      done();
      }).catch(function (result) {
-     console.log(result.code);
-     console.log(result.body);
+     //console.log(result.code);
+     //console.log(result.body);
      done();
      });
 
@@ -1027,12 +1027,12 @@ describe("EchoSpec", function () {
 
 
      temp.performQuery(query).then(function (result) {
-     console.log(result.code);
-     console.log(result.body);
+     //console.log(result.code);
+     //console.log(result.body);
      done();
      }).catch(function (result) {
-     console.log(result.code);
-     console.log(result.body);
+     //console.log(result.code);
+     //console.log(result.body);
      done();
      });
 
@@ -1093,12 +1093,12 @@ describe("EchoSpec", function () {
 
 
      temp.performQuery(query).then(function (result) {
-     console.log(result.code);
-     //console.log(result.body);
+     //console.log(result.code);
+     ////console.log(result.body);
      done();
      }).catch(function (err) {
-     console.log(err.code);
-     //console.log(err.body);
+     //console.log(err.code);
+     ////console.log(err.body);
 
      done();
      })
@@ -1145,12 +1145,12 @@ describe("EchoSpec", function () {
 
 
      temp.performQuery(query).then(function (result) {
-     console.log(result.code);
-     //console.log(result.body);
+     //console.log(result.code);
+     ////console.log(result.body);
      done();
      }).catch(function (err) {
-     console.log(err.code);
-     //console.log(err.body);
+     //console.log(err.code);
+     ////console.log(err.body);
 
      done();
      })
@@ -1196,12 +1196,12 @@ describe("EchoSpec", function () {
      //
      //
      //     temp.performQuery(query).then(function (result) {
-     //         console.log(result.code);
-     //         //console.log(result.body);
+     //         //console.log(result.code);
+     //         ////console.log(result.body);
      //         done();
      //     }).catch(function (err) {
-     //         console.log(err.code);
-     //         //console.log(err.body);
+     //         //console.log(err.code);
+     //         ////console.log(err.body);
      //
      //         done();
      //     })
@@ -1247,12 +1247,12 @@ describe("EchoSpec", function () {
 
 
      temp.performQuery(query).then(function (result) {
-     console.log(result.code);
-     //console.log(result.body);
+     //console.log(result.code);
+     ////console.log(result.body);
      done();
      }).catch(function (err) {
-     console.log(err.code);
-     //console.log(err.body);
+     //console.log(err.code);
+     ////console.log(err.body);
 
      done();
      })
@@ -1304,13 +1304,13 @@ describe("EchoSpec", function () {
 
 
      temp.performQuery(query).then(function (result) {
-     console.log(result.code);
-     //console.log(result.body);
+     //console.log(result.code);
+     ////console.log(result.body);
 
      done();
      }).catch(function (err) {
-     console.log(err.code);
-     //console.log(err.body);
+     //console.log(err.code);
+     ////console.log(err.body);
 
      done();
      })
@@ -1364,13 +1364,13 @@ describe("EchoSpec", function () {
 
 
      temp.performQuery(query).then(function (result) {
-     console.log(result.code);
-     //console.log(result.body);
-     //console.log(result.body["result"].length);
+     //console.log(result.code);
+     ////console.log(result.body);
+     ////console.log(result.body["result"].length);
      done();
      }).catch(function (err) {
-     console.log(err.code);
-     //console.log(err.body);
+     //console.log(err.code);
+     ////console.log(err.body);
 
      done();
      })
@@ -1424,13 +1424,13 @@ describe("EchoSpec", function () {
 
 
      temp.performQuery(query).then(function (result) {
-     console.log(result.code);
-     //console.log(result.body);
-     //console.log(result.body["result"].length);
+     //console.log(result.code);
+     ////console.log(result.body);
+     ////console.log(result.body["result"].length);
      done();
      }).catch(function (err) {
-     console.log(err.code);
-     //console.log(err.body);
+     //console.log(err.code);
+     ////console.log(err.body);
 
      done();
      })
@@ -1494,13 +1494,13 @@ describe("EchoSpec", function () {
 
 
      temp.performQuery(query).then(function (result) {
-     console.log(result.code);
-     //console.log(result.body);
-     //console.log(result.body["result"].length);
+     //console.log(result.code);
+     ////console.log(result.body);
+     ////console.log(result.body["result"].length);
      done();
      }).catch(function (err) {
-     console.log(err.code);
-     //console.log(err.body);
+     //console.log(err.code);
+     ////console.log(err.body);
 
      done();
      })
@@ -1542,13 +1542,13 @@ describe("EchoSpec", function () {
 
 
      temp.performQuery(query).then(function (result) {
-     console.log(result.code);
-     //console.log(result.body);
-     //  console.log(result.body["result"].length);
+     //console.log(result.code);
+     ////console.log(result.body);
+     //  //console.log(result.body["result"].length);
      done();
      }).catch(function (err) {
-     console.log(err.code);
-     //console.log(err.body);
+     //console.log(err.code);
+     ////console.log(err.body);
 
      done();
      })
@@ -1598,12 +1598,12 @@ describe("EchoSpec", function () {
 
      var query = s1;
      temp.performQuery(query).then(function (body) {
-     console.log(body.code);
-     //console.log(body.body);
+     //console.log(body.code);
+     ////console.log(body.body);
      done();
      }).catch(function (err) {
-     console.log(err.code);
-     //console.log(err.body);
+     //console.log(err.code);
+     ////console.log(err.body);
      done();
      })
 
@@ -1660,12 +1660,12 @@ describe("EchoSpec", function () {
 
      var query = s1;
      temp.performQuery(query).then(function (body) {
-     console.log(body.code);
-     //console.log(body.body);
+     //console.log(body.code);
+     ////console.log(body.body);
      done();
      }).catch(function (err) {
-     console.log(err.code);
-     //console.log(err.body);
+     //console.log(err.code);
+     ////console.log(err.body);
      done();
      })
 
@@ -1712,12 +1712,12 @@ describe("EchoSpec", function () {
 
      var query = s1;
      temp.performQuery(query).then(function (body) {
-     console.log(body.code);
-     //console.log(body.body);
+     //console.log(body.code);
+     ////console.log(body.body);
      done();
      }).catch(function (err) {
-     console.log(err.code);
-     //console.log(err.body);
+     //console.log(err.code);
+     ////console.log(err.body);
      done();
      })
 
@@ -1776,12 +1776,12 @@ describe("EchoSpec", function () {
 
 
      temp.performQuery(query).then(function (result) {
-     console.log(result.code);
-     console.log(result.body);
+     //console.log(result.code);
+     //console.log(result.body);
      done();
      }).catch(function (err) {
-     console.log(err.code);
-     //console.log(err.body);
+     //console.log(err.code);
+     ////console.log(err.body);
 
      done();
      })
@@ -1809,12 +1809,12 @@ describe("EchoSpec", function () {
      var query = s1;
      var temp = new InsightFacade();
      temp.performQuery(query).then(function (result) {
-     console.log(result.code);
-     console.log(result.body);
+     //console.log(result.code);
+     //console.log(result.body);
      done();
      }).catch(function (err) {
-     console.log(err.code);
-     //console.log(err.body);
+     //console.log(err.code);
+     ////console.log(err.body);
 
      done();
      })
@@ -1849,12 +1849,12 @@ describe("EchoSpec", function () {
      var query = s1;
      var temp = new InsightFacade();
      temp.performQuery(query).then(function (result) {
-     console.log(result.code);
-     console.log(result.body);
+     //console.log(result.code);
+     //console.log(result.body);
      done();
      }).catch(function (err) {
-     console.log(err.code);
-     //console.log(err.body);
+     //console.log(err.code);
+     ////console.log(err.body);
 
      done();
      })
@@ -1878,12 +1878,12 @@ describe("EchoSpec", function () {
      var query = JSON.parse(s1);
      var temp = new InsightFacade();
      temp.performQuery(query).then(function (result) {
-     console.log(result.code);
-     console.log(result.body);
+     //console.log(result.code);
+     //console.log(result.body);
      done();
      }).catch(function (err) {
-     console.log(err.code);
-     //console.log(err.body);
+     //console.log(err.code);
+     ////console.log(err.body);
 
      done();
      })
@@ -1907,12 +1907,12 @@ describe("EchoSpec", function () {
      var query = JSON.parse(s1);
      var temp = new InsightFacade();
      temp.performQuery(query).then(function (result) {
-     console.log(result.code);
-     console.log(result.body);
+     //console.log(result.code);
+     //console.log(result.body);
      done();
      }).catch(function (err) {
-     console.log(err.code);
-     //console.log(err.body);
+     //console.log(err.code);
+     ////console.log(err.body);
 
      done();
      })
@@ -1940,12 +1940,12 @@ describe("EchoSpec", function () {
      var query = s1;
      var temp = new InsightFacade();
      temp.performQuery(query).then(function (result) {
-     console.log(result.code);
-     console.log(result.body);
+     //console.log(result.code);
+     //console.log(result.body);
      done();
      }).catch(function (err) {
-     console.log(err.code);
-     //console.log(err.body);
+     //console.log(err.code);
+     ////console.log(err.body);
 
      done();
      })
@@ -1973,12 +1973,12 @@ describe("EchoSpec", function () {
      var query = s1;
      var temp = new InsightFacade();
      temp.performQuery(query).then(function (result) {
-     console.log(result.code);
-     console.log(result.body);
+     //console.log(result.code);
+     //console.log(result.body);
      done();
      }).catch(function (err) {
-     console.log(err.code);
-     //console.log(err.body);
+     //console.log(err.code);
+     ////console.log(err.body);
 
      done();
      })
@@ -2007,12 +2007,12 @@ describe("EchoSpec", function () {
      var query = s1;
      var temp = new InsightFacade();
      temp.performQuery(query).then(function (result) {
-     console.log(result.code);
-     console.log(result.body);
+     //console.log(result.code);
+     //console.log(result.body);
      done();
      }).catch(function (err) {
-     console.log(err.code);
-     //console.log(err.body);
+     //console.log(err.code);
+     ////console.log(err.body);
 
      done();
      })
@@ -2039,12 +2039,12 @@ describe("EchoSpec", function () {
      var query = s1;
      var temp = new InsightFacade();
      temp.performQuery(query).then(function (result) {
-     console.log(result.code);
-     console.log(result.body);
+     //console.log(result.code);
+     //console.log(result.body);
      done();
      }).catch(function (err) {
-     console.log(err.code);
-     //console.log(err.body);
+     //console.log(err.code);
+     ////console.log(err.body);
      Log.info(err.toString());
      Log.warn(err.toString());
      Log.error(err.toString());
@@ -2076,12 +2076,12 @@ describe("EchoSpec", function () {
      var query = s1;
      var temp = new InsightFacade();
      temp.performQuery(query).then(function (result) {
-     console.log(result.code);
-     console.log(result.body);
+     //console.log(result.code);
+     //console.log(result.body);
      done();
      }).catch(function (err) {
-     console.log(err.code);
-     //console.log(err.body);
+     //console.log(err.code);
+     ////console.log(err.body);
 
      done();
      })
@@ -2109,12 +2109,12 @@ describe("EchoSpec", function () {
      var query = s1;
      var temp = new InsightFacade();
      temp.performQuery(query).then(function (result) {
-     console.log(result.code);
-     console.log(result.body);
+     //console.log(result.code);
+     //console.log(result.body);
      done();
      }).catch(function (err) {
-     console.log(err.code);
-     //console.log(err.body);
+     //console.log(err.code);
+     ////console.log(err.body);
 
      done();
      })
@@ -2143,12 +2143,12 @@ describe("EchoSpec", function () {
      var query = s1;
      var temp = new InsightFacade();
      temp.performQuery(query).then(function (result) {
-     console.log(result.code);
-     console.log(result.body);
+     //console.log(result.code);
+     //console.log(result.body);
      done();
      }).catch(function (err) {
-     console.log(err.code);
-     //console.log(err.body);
+     //console.log(err.code);
+     ////console.log(err.body);
 
      done();
      })
@@ -2177,12 +2177,12 @@ describe("EchoSpec", function () {
      var query = s1;
      var temp = new InsightFacade();
      temp.performQuery(query).then(function (result) {
-     console.log(result.code);
-     console.log(result.body);
+     //console.log(result.code);
+     //console.log(result.body);
      done();
      }).catch(function (err) {
-     console.log(err.code);
-     //console.log(err.body);
+     //console.log(err.code);
+     ////console.log(err.body);
 
      done();
      })
@@ -2207,12 +2207,12 @@ describe("EchoSpec", function () {
      var query = s1;
      var temp = new InsightFacade();
      temp.performQuery(query).then(function (result) {
-     console.log(result.code);
-     console.log(result.body);
+     //console.log(result.code);
+     //console.log(result.body);
      done();
      }).catch(function (err) {
-     console.log(err.code);
-     //console.log(err.body);
+     //console.log(err.code);
+     ////console.log(err.body);
 
      done();
      })
@@ -2240,12 +2240,12 @@ describe("EchoSpec", function () {
      var query = s1;
      var temp = new InsightFacade();
      temp.performQuery(query).then(function (result) {
-     console.log(result.code);
-     console.log(result.body);
+     //console.log(result.code);
+     //console.log(result.body);
      done();
      }).catch(function (err) {
-     console.log(err.code);
-     //console.log(err.body);
+     //console.log(err.code);
+     ////console.log(err.body);
 
      done();
      })
@@ -2273,12 +2273,12 @@ describe("EchoSpec", function () {
      var query = s1;
      var temp = new InsightFacade();
      temp.performQuery(query).then(function (result) {
-     console.log(result.code);
-     console.log(result.body);
+     //console.log(result.code);
+     //console.log(result.body);
      done();
      }).catch(function (err) {
-     console.log(err.code);
-     //console.log(err.body);
+     //console.log(err.code);
+     ////console.log(err.body);
 
      done();
      })
@@ -2306,12 +2306,12 @@ describe("EchoSpec", function () {
      var query = s1;
      var temp = new InsightFacade();
      temp.performQuery(query).then(function (result) {
-     console.log(result.code);
-     console.log(result.body);
+     //console.log(result.code);
+     //console.log(result.body);
      done();
      }).catch(function (err) {
-     console.log(err.code);
-     //console.log(err.body);
+     //console.log(err.code);
+     ////console.log(err.body);
 
      done();
      })
@@ -2339,12 +2339,12 @@ describe("EchoSpec", function () {
      var query = s1;
      var temp = new InsightFacade();
      temp.performQuery(query).then(function (result) {
-     console.log(result.code);
-     console.log(result.body);
+     //console.log(result.code);
+     //console.log(result.body);
      done();
      }).catch(function (err) {
-     console.log(err.code);
-     //console.log(err.body);
+     //console.log(err.code);
+     ////console.log(err.body);
 
      done();
      })
@@ -2373,12 +2373,12 @@ describe("EchoSpec", function () {
      var query = s1;
      var temp = new InsightFacade();
      temp.performQuery(query).then(function (result) {
-     console.log(result.code);
-     console.log(result.body);
+     //console.log(result.code);
+     //console.log(result.body);
      done();
      }).catch(function (err) {
-     console.log(err.code);
-     //console.log(err.body);
+     //console.log(err.code);
+     ////console.log(err.body);
 
      done();
      })
@@ -2398,13 +2398,13 @@ describe("EchoSpec", function () {
 
      temp.addDataset("rooms", f)
      .then((response) => {
-     console.log(response.code);
-     console.log(response.body);
+     //console.log(response.code);
+     //console.log(response.body);
      done();
      })
      .catch((err) => {
-     //console.log(err.code);
-     //console.log(err.body)
+     ////console.log(err.code);
+     ////console.log(err.body)
      done();
      });
 
@@ -2448,13 +2448,13 @@ describe("EchoSpec", function () {
 
      temp.performQuery(query)
      .then((response) => {
-     console.log(response.code);
-     console.log(response.body);
+     //console.log(response.code);
+     //console.log(response.body);
      done();
      })
      .catch((err) => {
-     console.log(err.code);
-     console.log(err.body)
+     //console.log(err.code);
+     //console.log(err.body)
      done();
      });
 
@@ -2500,19 +2500,18 @@ describe("EchoSpec", function () {
 
      temp.performQuery(query)
      .then((response) => {
-     console.log(response.code);
-     console.log(response.body);
+     //console.log(response.code);
+     //console.log(response.body);
      done();
      })
      .catch((err) => {
-     console.log(err.code);
-     console.log(err.body)
+     //console.log(err.code);
+     //console.log(err.body)
      done();
      });
 
      });
 
-     */
 
 
     it("test new sort", function (done) {
@@ -2571,17 +2570,17 @@ describe("EchoSpec", function () {
 
         temp.performQuery(query)
             .then((response:any) => {
-                console.log(response.code);
-                console.log(response.body);
+                //console.log(response.code);
+                //console.log(response.body);
 
                 var list=response.body["result"];
-                console.log("Is sorted:  "+check_order(list,keys,dir));
+                //console.log("Is sorted:  "+check_order(list,keys,dir));
 
                 done();
             })
             .catch((err) => {
-                console.log(err.code);
-                console.log(err.body)
+                //console.log(err.code);
+                //console.log(err.body)
                 done();
             });
 
@@ -2649,20 +2648,20 @@ describe("EchoSpec", function () {
 
         temp.performQuery(query)
             .then((response: any) => {
-                console.log(response.code);
-                console.log(response.body);
-                console.log(response.body["result"].length);
+                //console.log(response.code);
+                //console.log(response.body);
+                //console.log(response.body["result"].length);
                 done();
             })
             .catch((err) => {
-                console.log(err.code);
-                console.log(err.body)
+                //console.log(err.code);
+                //console.log(err.body)
                 done();
             });
 
     });
 
-    xit("test d3 test", function (done) {
+    it("test d3 test", function (done) {
         this.timeout(10000)
 
         var s1 = {
@@ -2701,19 +2700,19 @@ describe("EchoSpec", function () {
 
         temp.performQuery(query)
             .then((response) => {
-                console.log(response.code);
-                console.log(response.body);
+                //console.log(response.code);
+                //console.log(response.body);
                 done();
             })
             .catch((err) => {
-                console.log(err.code);
-                console.log(err.body)
+                //console.log(err.code);
+                //console.log(err.body)
                 done();
             });
 
     });
 
-    xit("test simple query courses year", function (done) {
+    it("test simple query courses year", function (done) {
         this.timeout(10000)
 
 
@@ -2752,19 +2751,19 @@ describe("EchoSpec", function () {
 
         temp.performQuery(query)
             .then((response) => {
-                console.log(response.code);
-                console.log(response.body);
+                //console.log(response.code);
+                //console.log(response.body);
                 done();
             })
             .catch((err) => {
-                console.log(err.code);
-                console.log(err.body)
+                //console.log(err.code);
+                //console.log(err.body)
                 done();
             });
 
     });
 
-    xit("test 424 abcd ", function (done) {
+    it("test 424 abcd ", function (done) {
         this.timeout(50000)
 
 
@@ -2818,12 +2817,12 @@ describe("EchoSpec", function () {
 
 
         temp.performQuery(query).then(function (result) {
-            console.log(result.code);
-            console.log(result.body);
+            //console.log(result.code);
+            //console.log(result.body);
             done();
         }).catch(function (err) {
-            console.log(err.code);
-            console.log(err.body);
+            //console.log(err.code);
+            //console.log(err.body);
 
             done();
         })
@@ -2831,7 +2830,7 @@ describe("EchoSpec", function () {
 
     });
 
-    xit("test d3 test 4 valid", function (done) {
+    it("test d3 test 4 valid", function (done) {
         this.timeout(10000)
 
         var s1 = {
@@ -2891,20 +2890,20 @@ describe("EchoSpec", function () {
 
         temp.performQuery(query)
             .then((response: any) => {
-                console.log(response.code);
-                console.log(response.body);
-                //console.log(response.body["result"].length);
+                //console.log(response.code);
+                //console.log(response.body);
+                ////console.log(response.body["result"].length);
                 done();
             })
             .catch((err) => {
-                console.log(err.code);
-                console.log(err.body)
+                //console.log(err.code);
+                //console.log(err.body)
                 done();
             });
 
     });
 
-    xit("test d3 test 5 courses", function (done) {
+    it("test d3 test 5 courses", function (done) {
         this.timeout(10000)
 
         var s1 = {
@@ -3000,21 +2999,21 @@ describe("EchoSpec", function () {
 
         temp.performQuery(query)
             .then((response: any) => {
-                console.log(response.code);
-                console.log(response.body);
-                //console.log(response.body["result"].length);
+                //console.log(response.code);
+                //console.log(response.body);
+                ////console.log(response.body["result"].length);
                 done();
             })
             .catch((err) => {
-                console.log(err.code);
-                console.log(err.body)
+                //console.log(err.code);
+                //console.log(err.body)
                 done();
             });
 
     });
 
 
-    xit("test d3 test 6", function (done) {
+    it("test d3 test 6", function (done) {
         this.timeout(10000)
 
         var s1 = {
@@ -3056,20 +3055,20 @@ describe("EchoSpec", function () {
 
         temp.performQuery(query)
             .then((response) => {
-                console.log(response.code);
-                console.log(response.body);
+                //console.log(response.code);
+                //console.log(response.body);
                 done();
             })
             .catch((err) => {
-                console.log(err.code);
-                console.log(err.body)
+                //console.log(err.code);
+                //console.log(err.body)
                 done();
             });
 
     });
 
 
-    xit("test d3 test 7", function (done) {
+    it("test d3 test 7", function (done) {
         this.timeout(10000)
 
         var s1 = {
@@ -3111,19 +3110,19 @@ describe("EchoSpec", function () {
 
         temp.performQuery(query)
             .then((response) => {
-                console.log(response.code);
-                console.log(response.body);
+                //console.log(response.code);
+                //console.log(response.body);
                 done();
             })
             .catch((err) => {
-                console.log(err.code);
-                console.log(err.body)
+                //console.log(err.code);
+                //console.log(err.body)
                 done();
             });
 
     });
 
-    xit("test sort 1", function (done) {
+    it("test sort 1", function (done) {
         this.timeout(10000)
 
         var s1 = {
@@ -3177,19 +3176,19 @@ describe("EchoSpec", function () {
 
         temp.performQuery(query)
             .then((response) => {
-                console.log(response.code);
-                console.log(response.body);
+                //console.log(response.code);
+                //console.log(response.body);
                 done();
             })
             .catch((err) => {
-                console.log(err.code);
-                console.log(err.body);
+                //console.log(err.code);
+                //console.log(err.body);
                 done();
             });
 
     });
 
-    xit("test sort 2", function (done) {
+    it("test sort 2", function (done) {
         this.timeout(10000)
 
         var s1 = {
@@ -3218,14 +3217,14 @@ describe("EchoSpec", function () {
 
         temp.performQuery(query)
             .then((response) => {
-                console.log(response.code);
-                console.log(response.body);
+                //console.log(response.code);
+                //console.log(response.body);
                 expect(response.code).to.equal(200);
                 done();
             })
             .catch((err) => {
-                console.log(err.code);
-                console.log(err.body);
+                //console.log(err.code);
+                //console.log(err.body);
                 done();
             });
 
@@ -3303,25 +3302,25 @@ describe("EchoSpec", function () {
 
         temp.performQuery(query)
             .then((response:any) => {
-                console.log(response.code);
-                console.log(response.body);
+                //console.log(response.code);
+                //console.log(response.body);
 
                 var list=response.body["result"];
-                console.log("Is sorted:  "+check_order(list,keys,dir));
+                //console.log("Is sorted:  "+check_order(list,keys,dir));
 
 
                 expect(response.code).to.equal(200);
                 done();
             })
             .catch((err) => {
-                console.log(err.code);
-                console.log(err.body);
+                //console.log(err.code);
+                //console.log(err.body);
                 done();
             });
 
     });
 
-    xit("test sort 4", function (done) {
+    it("test sort 4", function (done) {
         this.timeout(10000)
 
         var s1 = {
@@ -3353,14 +3352,14 @@ describe("EchoSpec", function () {
 
         temp.performQuery(query)
             .then((response) => {
-                console.log(response.code);
-                console.log(response.body);
+                //console.log(response.code);
+                //console.log(response.body);
                 expect(response.code).to.equal(200);
                 done();
             })
             .catch((err) => {
-                console.log(err.code);
-                console.log(err.body);
+                //console.log(err.code);
+                //console.log(err.body);
                 done();
             });
 
@@ -3442,20 +3441,20 @@ it("test sort 5", function (done) {
 
     temp.performQuery(query)
         .then((response:any) => {
-            console.log(response.code);
-            console.log(response.body);
+            //console.log(response.code);
+            //console.log(response.body);
 
             var list=response.body["result"];
 
-            console.log("Is sorted:  "+check_order(list,keys,dir));
+            //console.log("Is sorted:  "+check_order(list,keys,dir));
 
 
             expect(response.code).to.equal(200);
             done();
         })
         .catch((err) => {
-            console.log(err.code);
-            console.log(err.body);
+            //console.log(err.code);
+            //console.log(err.body);
             done();
         });
 
@@ -3472,15 +3471,15 @@ it("test sort 5", function (done) {
                 "COLUMNS": [
                     "courses_dept",
                     "courses_id",
-                    "temp0",
-                    "temp1",
-                    "temp2",
-                    "temp3",
-                    "temp4"
+                    "sum",
+                    "avg",
+                    "count",
+                    "min",
+                    "max"
                 ],
                 "ORDER": {
                     "dir": "UP",
-                    "keys": ["courses_dept","courses_id"]
+                    "keys": ["max","courses_dept","courses_id"]
                 },
                 "FORM": "TABLE"
             },
@@ -3490,24 +3489,24 @@ it("test sort 5", function (done) {
                     "courses_dept"],
                 "APPLY": [
                     {
-                        "temp0": {
-                            "SUM": "courses_audit"
+                        "sum": {
+                            "SUM": "courses_fail"
                         }
                     }, {
-                        "temp1": {
-                            "MAX": "courses_audit"
+                        "max": {
+                            "MAX": "courses_fail"
                         }
                     }, {
-                        "temp3": {
-                            "MIN": "courses_audit"
+                        "min": {
+                            "MIN": "courses_fail"
                         }
                     }, {
-                        "temp2": {
-                            "COUNT": "courses_audit"
+                        "count": {
+                            "COUNT": "courses_fail"
                         }
                     }, {
-                        "temp4": {
-                            "AVG": "courses_audit"
+                        "avg": {
+                            "AVG": "courses_fail"
                         }
                     }]
             }
@@ -3525,20 +3524,20 @@ it("test sort 5", function (done) {
 
         temp.performQuery(query)
             .then((response:any) => {
-                console.log(response.code);
-                console.log(response.body);
+                //console.log(response.code);
+                //console.log(response.body);
 
                 var list=response.body["result"];
 
-                console.log("Is sorted:  "+check_order(list,keys,dir));
+                //console.log("Is sorted:  "+check_order(list,keys,dir));
 
 
                 expect(response.code).to.equal(200);
                 done();
             })
             .catch((err) => {
-                console.log(err.code);
-                console.log(err.body);
+                //console.log(err.code);
+                //console.log(err.body);
                 done();
             });
 
