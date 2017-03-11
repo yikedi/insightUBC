@@ -1583,11 +1583,6 @@ function local_compare(a: any, b: any, keys: any[]): number {
         else if (a[keys[i]] > b[keys[i]]) {
             return 1;
         }
-        else {
-            if (i==keys.length-1){
-                return 0;
-            }
-        }
     }
     return 0;
 }
