@@ -18,7 +18,7 @@ export default class Server {
     private rest: restify.Server;
 
     constructor(port: number) {
-        Log.info("Server::<init>( " + port + " )");
+        //Log.info("Server::<init>( " + port + " )");
         this.port = port;
     }
 
@@ -29,7 +29,7 @@ export default class Server {
      * @returns {Promise<boolean>}
      */
     public stop(): Promise<boolean> {
-        Log.info('Server::close()');
+        //Log.info('Server::close()');
         let that = this;
         return new Promise(function (fulfill) {
             that.rest.close(function () {
@@ -49,7 +49,7 @@ export default class Server {
         let that = this;
         return new Promise(function (fulfill, reject) {
             try {
-                Log.info('Server::start() - start');
+                //Log.info('Server::start() - start');
 
                 that.rest = restify.createServer({
                     name: 'insightUBC'
@@ -75,13 +75,13 @@ export default class Server {
                 // Other endpoints will go here
 
                 that.rest.listen(that.port, function () {
-                    Log.info('Server::start() - restify listening: ' + that.rest.url);
+                    //Log.info('Server::start() - restify listening: ' + that.rest.url);
                     fulfill(true);
                 });
 
                 that.rest.on('error', function (err: string) {
                     // catches errors in restify start; unusual syntax due to internal node not using normal exceptions here
-                    Log.info('Server::start() - restify ERROR: ' + err);
+                    //Log.info('Server::start() - restify ERROR: ' + err);
                     reject(err);
                 });
             } catch (err) {
@@ -99,7 +99,7 @@ export default class Server {
         Log.trace('Server::echo(..) - params: ' + JSON.stringify(req.params));
         try {
             let result = Server.performEcho(req.params.msg);
-            Log.info('Server::echo(..) - responding ' + result.code);
+            //Log.info('Server::echo(..) - responding ' + result.code);
             res.json(result.code, result.body);
         } catch (err) {
             Log.error('Server::echo(..) - responding 400');
@@ -121,10 +121,10 @@ export default class Server {
         try {
             let content =  new Buffer(req.params.body).toString('base64');
             Server.performPut(req.params.id.toString(), content).then(function (result) {
-                Log.info('Server::put(..) - responding ' + result.code);
+                //Log.info('Server::put(..) - responding ' + result.code);
                 res.json(result.code, result.body);
             }).catch(function (result) {
-                Log.info('Server::put(..) - responding ' + result.code);
+                //Log.info('Server::put(..) - responding ' + result.code);
                 res.json(result.code, result.body);
             });
         } catch (err) {
@@ -144,10 +144,10 @@ export default class Server {
         Log.trace('Server::del(..) - params: ' + JSON.stringify(req.params.id));
         try {
             Server.performDel(req.params.id.toString()).then(function (result) {
-                Log.info('Server::del(..) - responding ' + result.code);
+                //Log.info('Server::del(..) - responding ' + result.code);
                 res.json(result.code, result.body);
             }).catch(function (result) {
-                Log.info('Server::del(..) - responding ' + result.code);
+                //Log.info('Server::del(..) - responding ' + result.code);
                 res.json(result.code, result.body);
             });
         } catch (err) {
@@ -166,10 +166,10 @@ export default class Server {
         Log.trace('Server::post(..) - params: ' + JSON.stringify(req.body));
         try {
             Server.performPost(req.body).then(function (result) {
-                Log.info('Server::post(..) - responding ' + result.code);
+                //Log.info('Server::post(..) - responding ' + result.code);
                 res.json(result.code, result.body);
             }).catch(function (result) {
-                Log.info('Server::post(..) - responding ' + result.code);
+                //Log.info('Server::post(..) - responding ' + result.code);
                 res.json(result.code, result.body);
             });
         } catch (err) {
