@@ -893,9 +893,6 @@ function filter(table: Array<Dataset_obj>, query: QueryRequest, missing_col: str
     var where = j_obj["WHERE"];
 
     let where_keys = Object.keys(where);
-    // console.log(where_keys);
-    // console.log(where_keys.length);
-
 
     var query: QueryRequest = where;
     var ret_table = [];
@@ -932,8 +929,7 @@ function filter(table: Array<Dataset_obj>, query: QueryRequest, missing_col: str
                             }
                         }
                         return 0;
-                    }
-                    );
+                    });
                 }
             }
             else if (dir == "DOWN") {
@@ -958,10 +954,6 @@ function filter(table: Array<Dataset_obj>, query: QueryRequest, missing_col: str
         else {
 
             ret_table.sort((a: Dataset_obj, b: Dataset_obj) => {
-                // if (typeof b.getValue(dictionary[order]) == "number")
-                //     return a.getValue(dictionary[order]) - b.getValue(dictionary[order]);
-                // else
-                //     return a.getValue(dictionary[order]).localeCompare(b.getValue(dictionary[order]));
 
                 return local_compare_single(a.getValue(dictionary[order]),b.getValue(dictionary[order]));
 
@@ -1355,7 +1347,7 @@ function perform_Query_transform(query: QueryRequest, this_obj: InsightFacade): 
             let prev_group_name = table[0]["group_id"];
             let groups: {[index: string]: any} = {};
             groups[prev_group_name] = [];
-            let j = 0;
+
             for (let i = 0; i < table.length; i++) {
                 let group_name = table[i]["group_id"];
                 if (prev_group_name == group_name) {
@@ -1402,7 +1394,6 @@ function perform_Query_transform(query: QueryRequest, this_obj: InsightFacade): 
 
                             let max = group[0][function_target];
 
-                            // console.log(max);
                             for (let obj of group) {
                                 if (obj[function_target] > max) {
                                     max = obj[function_target];
@@ -1451,23 +1442,11 @@ function perform_Query_transform(query: QueryRequest, this_obj: InsightFacade): 
                             result = 0;
                             let temp = group;
                             if (temp.length > 0) {
-                                // let f_target: string[] = [];
-                                // f_target.push(function_target);
+
                                 temp.sort((a: any, b: any) => {
                                     return local_compare_single(a[function_target], b[function_target]);
                                 });
 
-                                // temp.sort((a: any, b: any) => {
-                                //
-                                //     if (a[function_target] < b[function_target]) {
-                                //         return -1;
-                                //     }
-                                //     else if (a[function_target] > b[function_target]) {
-                                //         return 1;
-                                //     }
-                                //     else
-                                //         return 0;
-                                // });
 
                                 let prev_val = temp[0][function_target];
                                 result = 1;
@@ -1502,10 +1481,6 @@ function perform_Query_transform(query: QueryRequest, this_obj: InsightFacade): 
                     result_list.push(result);
                     final_group_obj[item_key] = result;
 
-
-                    // group item also need a column
-
-
                 }
 
 
@@ -1515,20 +1490,9 @@ function perform_Query_transform(query: QueryRequest, this_obj: InsightFacade): 
                     final_group_obj[item] = group[0][item];
                 }
                 final_groups.push(final_group_obj);
-                //console.log(result_list);
 
             }
-            //console.log(final_groups);
-            // let valid_list: any[] = [];
-            // valid_list = valid_list.concat(group);
-            //
-            // //console.log(valid_list);
-            //
-            // let apply_keys = [];
-            // for (let item of apply) {
-            //     let item_key = Object.keys(item)[0];
-            //     apply_keys.push(item_key);
-            // }
+
 
             if (!isUndefined(order)) {
 
@@ -1568,9 +1532,7 @@ function perform_Query_transform(query: QueryRequest, this_obj: InsightFacade): 
                 let ret_obj: {[index: string]: any} = {};
 
                 for (let column of columns) {
-                    let temp = column.indexOf("_");
                     ret_obj[column] = group[column];
-
                 }
                 ret_list.push(ret_obj);
             }
@@ -1620,6 +1582,11 @@ function local_compare(a: any, b: any, keys: any[]): number {
         }
         else if (a[keys[i]] > b[keys[i]]) {
             return 1;
+        }
+        else {
+            if (i==keys.length-1){
+                return 0;
+            }
         }
     }
     return 0;

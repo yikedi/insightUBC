@@ -80,7 +80,7 @@ describe("EchoSpec", function () {
 
     });
 
-    it("test add courses.zip", function (done) {
+    xit("test add courses.zip", function (done) {
         this.timeout(50000)
 
         var zip = new JSZip();
@@ -2561,13 +2561,22 @@ describe("EchoSpec", function () {
         };
         var query = s1;
 
+        var query = s1;
+        var option=s1["OPTIONS"];
+        var order=option["ORDER"];
+        var dir=order["dir"];
+        var keys=order["keys"];
 
         var temp = new InsightFacade();
 
         temp.performQuery(query)
-            .then((response) => {
+            .then((response:any) => {
                 console.log(response.code);
                 console.log(response.body);
+
+                var list=response.body["result"];
+                console.log("Is sorted:  "+check_order(list,keys,dir));
+
                 done();
             })
             .catch((err) => {
@@ -2653,7 +2662,7 @@ describe("EchoSpec", function () {
 
     });
 
-    it("test d3 test", function (done) {
+    xit("test d3 test", function (done) {
         this.timeout(10000)
 
         var s1 = {
@@ -2704,7 +2713,7 @@ describe("EchoSpec", function () {
 
     });
 
-    it("test simple query courses year", function (done) {
+    xit("test simple query courses year", function (done) {
         this.timeout(10000)
 
 
@@ -2755,7 +2764,7 @@ describe("EchoSpec", function () {
 
     });
 
-    it("test 424 abcd ", function (done) {
+    xit("test 424 abcd ", function (done) {
         this.timeout(50000)
 
 
@@ -2822,7 +2831,7 @@ describe("EchoSpec", function () {
 
     });
 
-    it("test d3 test 4 valid", function (done) {
+    xit("test d3 test 4 valid", function (done) {
         this.timeout(10000)
 
         var s1 = {
@@ -2895,7 +2904,7 @@ describe("EchoSpec", function () {
 
     });
 
-    it("test d3 test 5 courses", function (done) {
+    xit("test d3 test 5 courses", function (done) {
         this.timeout(10000)
 
         var s1 = {
@@ -3005,7 +3014,7 @@ describe("EchoSpec", function () {
     });
 
 
-    it("test d3 test 6", function (done) {
+    xit("test d3 test 6", function (done) {
         this.timeout(10000)
 
         var s1 = {
@@ -3060,7 +3069,7 @@ describe("EchoSpec", function () {
     });
 
 
-    it("test d3 test 7", function (done) {
+    xit("test d3 test 7", function (done) {
         this.timeout(10000)
 
         var s1 = {
@@ -3114,7 +3123,7 @@ describe("EchoSpec", function () {
 
     });
 
-    it("test sort 1", function (done) {
+    xit("test sort 1", function (done) {
         this.timeout(10000)
 
         var s1 = {
@@ -3180,7 +3189,7 @@ describe("EchoSpec", function () {
 
     });
 
-    it("test sort 2", function (done) {
+    xit("test sort 2", function (done) {
         this.timeout(10000)
 
         var s1 = {
@@ -3225,7 +3234,7 @@ describe("EchoSpec", function () {
     it("test sort 3", function (done) {
         this.timeout(10000)
 
-        var s1 = {
+        var s1 :any= {
             "WHERE": {},
             "OPTIONS": {
                 "COLUMNS": [
@@ -3241,7 +3250,7 @@ describe("EchoSpec", function () {
                     "sum", "max", "min", "count", "avg"
                 ],
                 "ORDER": {
-                    "dir": "UP",
+                    "dir": "DOWN",
                     "keys": ["avg", "courses_dept",  "courses_dept", "courses_dept", "courses_dept"]
                 },
                 "FORM": "TABLE"
@@ -3283,14 +3292,24 @@ describe("EchoSpec", function () {
         };
 
         var query = s1;
+        var option=s1["OPTIONS"];
+        var order=option["ORDER"];
+        var dir=order["dir"];
+        var keys=order["keys"];
+
 
 
         var temp = new InsightFacade();
 
         temp.performQuery(query)
-            .then((response) => {
+            .then((response:any) => {
                 console.log(response.code);
                 console.log(response.body);
+
+                var list=response.body["result"];
+                console.log("Is sorted:  "+check_order(list,keys,dir));
+
+
                 expect(response.code).to.equal(200);
                 done();
             })
@@ -3302,7 +3321,7 @@ describe("EchoSpec", function () {
 
     });
 
-    it("test sort 4", function (done) {
+    xit("test sort 4", function (done) {
         this.timeout(10000)
 
         var s1 = {
@@ -3310,15 +3329,16 @@ describe("EchoSpec", function () {
             "OPTIONS": {
                 "COLUMNS": [
                     "courses_uuid",
-                    "minGrade"
+                    "courses_dept",
+                    "courses_uuid"
                 ],
                 "ORDER": "courses_uuid",
                 "FORM": "TABLE"
             },
             "TRANSFORMATIONS": {
-                "GROUP": ["courses_uuid"],
+                "GROUP": ["courses_dept","courses_uuid","courses_uuid"],
                 "APPLY": [{
-                    "minGrade": {
+                    "courses_uuid": {
                         "MIN": "courses_avg"
                     }
                 }]
@@ -3328,6 +3348,7 @@ describe("EchoSpec", function () {
         var query = s1;
 
 
+
         var temp = new InsightFacade();
 
         temp.performQuery(query)
@@ -3345,5 +3366,220 @@ describe("EchoSpec", function () {
 
     });
 
+
+
+it("test sort 5", function (done) {
+    this.timeout(10000)
+
+    var s1 :any= {
+        "WHERE": {},
+        "OPTIONS": {
+            "COLUMNS": [
+                "courses_dept",
+                "courses_audit",
+                "courses_pass",
+                "temp0",
+                "temp1",
+                "temp2",
+                "temp3",
+                "temp4",
+            ],
+            "ORDER": {
+                "dir": "UP",
+                "keys": [
+                    "courses_dept",
+                    "courses_audit",
+                    "courses_pass",
+                    "temp0",
+                    "temp1",
+                    "temp2",
+                    "temp3",
+                    "temp4"
+                ]
+            },
+            "FORM": "TABLE"
+        },
+        "TRANSFORMATIONS": {
+            "GROUP": [
+                "courses_dept",
+                "courses_audit",
+                "courses_pass"
+                ],
+            "APPLY": [
+                {
+                    "temp0": {
+                        "SUM": "courses_pass"
+                    }
+                }, {
+                    "temp1": {
+                        "MAX": "courses_pass"
+                    }
+                }, {
+                    "temp2": {
+                        "MIN": "courses_pass"
+                    }
+                }, {
+                    "temp3": {
+                        "COUNT": "courses_id"
+                    }
+                }, {
+                    "temp4": {
+                        "AVG": "courses_pass"
+                    }
+                }]
+        }
+    };
+
+    var query = s1;
+    var option=s1["OPTIONS"];
+    var order=option["ORDER"];
+    var dir=order["dir"];
+    var keys=order["keys"];
+
+
+
+    var temp = new InsightFacade();
+
+    temp.performQuery(query)
+        .then((response:any) => {
+            console.log(response.code);
+            console.log(response.body);
+
+            var list=response.body["result"];
+
+            console.log("Is sorted:  "+check_order(list,keys,dir));
+
+
+            expect(response.code).to.equal(200);
+            done();
+        })
+        .catch((err) => {
+            console.log(err.code);
+            console.log(err.body);
+            done();
+        });
+
+    
 });
 
+
+    it("test sort 6", function (done) {
+        this.timeout(10000)
+
+        var s1 :any= {
+            "WHERE": {},
+            "OPTIONS": {
+                "COLUMNS": [
+                    "courses_dept",
+                    "courses_id",
+                    "temp0",
+                    "temp1",
+                    "temp2",
+                    "temp3",
+                    "temp4"
+                ],
+                "ORDER": {
+                    "dir": "UP",
+                    "keys": ["courses_dept","courses_id"]
+                },
+                "FORM": "TABLE"
+            },
+            "TRANSFORMATIONS": {
+                "GROUP": [
+                    "courses_id",
+                    "courses_dept"],
+                "APPLY": [
+                    {
+                        "temp0": {
+                            "SUM": "courses_audit"
+                        }
+                    }, {
+                        "temp1": {
+                            "MAX": "courses_audit"
+                        }
+                    }, {
+                        "temp3": {
+                            "MIN": "courses_audit"
+                        }
+                    }, {
+                        "temp2": {
+                            "COUNT": "courses_audit"
+                        }
+                    }, {
+                        "temp4": {
+                            "AVG": "courses_audit"
+                        }
+                    }]
+            }
+        };
+
+        var query = s1;
+        var option=s1["OPTIONS"];
+        var order=option["ORDER"];
+        var dir=order["dir"];
+        var keys=order["keys"];
+
+
+
+        var temp = new InsightFacade();
+
+        temp.performQuery(query)
+            .then((response:any) => {
+                console.log(response.code);
+                console.log(response.body);
+
+                var list=response.body["result"];
+
+                console.log("Is sorted:  "+check_order(list,keys,dir));
+
+
+                expect(response.code).to.equal(200);
+                done();
+            })
+            .catch((err) => {
+                console.log(err.code);
+                console.log(err.body);
+                done();
+            });
+
+
+
+
+
+    });
+
+
+
+
+function check_order(list:any[],order:string[],dir:string):boolean{
+
+
+    if (dir=="UP"){
+        for (var i=0;i<list.length-1;i++){
+            for (let key of order){
+                if (list[i][key]>list[i+1][key]){
+                    return false;
+                }
+                else if (list[i][key]<list[i+1][key]){
+                    break;
+                }
+            }
+        }
+    }
+    else if (dir=="DOWN"){
+        for (var i=0;i<list.length-1;i++){
+            for (let key of order){
+                if (list[i][key]<list[i+1][key]){
+                    return false;
+                }
+                else if (list[i][key]>list[i+1][key]){
+                    break;
+                }
+            }
+        }
+        }
+
+    return true;
+}
+
+});
