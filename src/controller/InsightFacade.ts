@@ -26,6 +26,7 @@ dictionary = {
     "courses_audit": "Audit",
     "courses_uuid": "id",
     "courses_year": "Year",
+    "courses_size":"Size",
     "rooms_fullname": "rooms_fullname",
     "rooms_shortname": "rooms_shortname",
     "rooms_number": "rooms_number",
@@ -68,6 +69,7 @@ class Course_obj extends Dataset_obj {
     Audit: number;
     id: string;
     Year: number;
+    Size:number;
 
     constructor() {
         super();
@@ -116,6 +118,9 @@ class Course_obj extends Dataset_obj {
             case "Year": {
                 return this.Year;
             }
+            case "Size":{
+                return Number(this.Size);
+            }
             default :
                 throw new Error(target);
         }
@@ -163,6 +168,10 @@ class Course_obj extends Dataset_obj {
             }
             case "Year": {
                 this.Year = Number(value);
+                break;
+            }
+            case "Size":{
+                this.Size=Number(value);
                 break;
             }
             default :
@@ -827,8 +836,10 @@ function build_table(data: string): Array<Course_obj> {
                         }
                     }
                 }
+
+                let size=each_course.getValue("Pass")+each_course.getValue("Fail");
+                each_course.setValue("Size",size);
             } catch (err) {
-                //console.log(err.toString());
             }
 
             course_list.push(each_course);
@@ -1263,7 +1274,8 @@ function perform_Query_transform(query: QueryRequest, this_obj: InsightFacade): 
             "courses_audit",
             "courses_pass",
             "courses_year",
-            "courses_id"
+            "courses_id",
+            "courses_size"
         ];
     }
     else if (id == "rooms") {
@@ -1513,7 +1525,7 @@ function perform_Query_transform(query: QueryRequest, this_obj: InsightFacade): 
             }
 
 
-            let ret_obj = {render: form, result: ret_list}
+            let ret_obj = {render: form, result: ret_list};
             fulfill({code: 200, body: ret_obj});
         }).catch(function (err) {
             reject({code: 400, body: {"error": "error in perform_query_transform 1647"}});
@@ -1744,4 +1756,23 @@ function validate(query: QueryRequest): InsightResponse {
     }
 
     return ret_obj;
+}
+
+// this code is taken from stack overflow
+function getDistanceFromLatLonInM(lat1: number, lon1: number, lat2: number, lon2: number) {
+    var R = 6371; // Radius of the earth in km
+    var dLat = deg2rad(lat2 - lat1);  // deg2rad below
+    var dLon = deg2rad(lon2 - lon1);
+    var a =
+            Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+            Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) *
+            Math.sin(dLon / 2) * Math.sin(dLon / 2)
+        ;
+    var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    var d = R * c *1000; // Distance in m
+    return d;
+}
+// this code is taken from stack overflow
+function deg2rad(deg: number) {
+    return deg * (Math.PI / 180)
 }
