@@ -20,14 +20,14 @@ class Event {
 var interested_course_info: {[index: string]: any};
 
 /*{adhe_327: { course_name: 'adhe_327', num_section: 3, size: 34 },
-adhe_328: { course_name: 'adhe_328', num_section: 1, size: 32 },}
-*/
+ adhe_328: { course_name: 'adhe_328', num_section: 1, size: 32 },}
+ */
 
 var dept_num: {[index: string]: any};
 
 /* baac: [ 'baac_500', 'baac_501', 'baac_510', 'baac_511', 'baac_550' ],
-*  babs: [ 'babs_502', 'babs_540', 'babs_550' ],
-* */
+ *  babs: [ 'babs_502', 'babs_540', 'babs_550' ],
+ * */
 
 var num_dept: {[index: string]: any};
 
@@ -42,11 +42,18 @@ var buildings: {[index: string]: any};
  { building: 'ALRD',
  lat: 49.2699,
  lon: -123.25318,
- rooms: [ [Object], [Object], [Object], [Object], [Object] ] },*/
-var distance_matrix : {[index: string]: any};
+ rooms: [ [Object], [Object], [Object], [Object], [Object] ] },
+
+ a room looks like
+ { room_name: 'AERL_120',
+ seats: 144,
+ room_type: 'Tiered Large Group',
+ room_furniture: 'Classroom-Fixed Tablets' }
+ */
+var distance_matrix: {[index: string]: any};
 
 /*
-* DMP:
+ * DMP:
  [ { building: 'DMP', distance: 0 },
  { building: 'FSC', distance: 106.76503763192835 },
  { building: 'MCLD', distance: 108.8284898137126 },
@@ -56,6 +63,9 @@ var distance_matrix : {[index: string]: any};
 
 export default class ScheduleManager {
 
+    courses: any[];
+    rooms: any[];
+
     constructor() {
 
     }
@@ -63,86 +73,77 @@ export default class ScheduleManager {
     // assume every course has the expected form here, dept, id, num_section, size
 
 
-    schedule(rooms: any[], courses: any[]): Event[] {
+    schedule(rooms: any[], courses: any[]): Promise<InsightResponse> {
 
 
-        let events = [];
+        return new Promise((fulfill,reject)=>{
 
-        courses.sort((a:any,b:any)=>{
-            if (a["size"]<b["size"]){
-                return -1;
-            }
-            else if (a["size"]>b["size"]){
-                return 1;
-            }
-            else
-                return 0;
-        });
+            try{
+                let events :Event[]= [];
+                courses=sortby_id(courses,"size");
+                courses=this.get_union(courses,"course_name");
+                rooms=sortby_id(rooms,"seats");
+                rooms=this.get_union(rooms,"room_name");
 
-        rooms.sort((a:any,b:any)=>{
-            if (a["seats"]<b["seats"]){
-                return -1;
-            }
-            else if (a["seats"]>b["seats"]){
-                return 1;
-            }
-            else
-                return 0;
-        });
-
-        // course on MWF
-        for (let i = 0; i < 17 - 8; i++) {
-            let event = new Event();
-            for (let room of rooms) {
-                let prev_name = "";
-                for (let course of courses) {
-                    let course_name = course["dept"] + "_" + course["id"];
-                    if (course["num_section"] > 0) {
-                        if (Number(course["size"]) <= Number(room["seats"])) {
-                            event.start_time = i + 8 + ": 00";
-                            event.hour = 1;
-                            event.course = course_name;
-                            event.room = room["name"];
-                            course["num_section"] = course["num_section"] - 1;
-                            events.push(event);
-                            break;
+                // course on MWF
+                for (let i = 0; i < 17 - 8; i++) {
+                    let event = new Event();
+                    for (let room of rooms) {
+                        let prev_name = "";
+                        for (let course of courses) {
+                            let course_name = course["dept"] + "_" + course["id"];
+                            if (course["num_section"] > 0) {
+                                if (Number(course["size"]) <= Number(room["seats"])) {
+                                    event.start_time = i + 8 + ": 00";
+                                    event.hour = 1;
+                                    event.course = course_name;
+                                    event.room = room["name"];
+                                    course["num_section"] = course["num_section"] - 1;
+                                    events.push(event);
+                                    break;
+                                }
+                            }
                         }
                     }
                 }
-            }
-        }
 
-        // course on T TH
-        for (let i = 0; i < 17 - 8; i += 1.5) {
-            let event = new Event();
-            for (let room of rooms) {
-                let prev_name = "";
-                for (let course of courses) {
-                    let course_name = course["dept"] + "_" + course["id"];
-                    if (course["num_section"] > 0) {
-                        if (Number(course["size"]) <= Number(room["seats"])) {
+                // course on T TH
+                for (let i = 0; i < 17 - 8; i += 1.5) {
+                    let event = new Event();
+                    for (let room of rooms) {
+                        let prev_name = "";
+                        for (let course of courses) {
+                            let course_name = course["dept"] + "_" + course["id"];
+                            if (course["num_section"] > 0) {
+                                if (Number(course["size"]) <= Number(room["seats"])) {
 
-                            let time: string;
-                            if ((i / 1.5) % 2 == 0) {
-                                time = i + 8 + ": 00";
+                                    let time: string;
+                                    if ((i / 1.5) % 2 == 0) {
+                                        time = i + 8 + ": 00";
+                                    }
+                                    else {
+                                        time = i - 0.5 + 8 + ": 30";
+                                    }
+                                    event.start_time = time;
+                                    event.hour = 1.5;
+                                    event.course = course_name;
+                                    event.room = room["name"];
+                                    course["num_section"] = course["num_section"] - 1;
+                                    events.push(event);
+                                }
                             }
-                            else {
-                                time = i - 0.5 + 8 + ": 30";
-                            }
-                            event.start_time = time;
-                            event.hour = 1.5;
-                            event.course = course_name;
-                            event.room = room["name"];
-                            course["num_section"] = course["num_section"] - 1;
-                            events.push(event);
                         }
                     }
                 }
+                fulfill({code:200,body:events});
             }
-        }
+            catch (err){
+                reject({code:400,body:"error in schedule 142 "+err.message});
+            }
+
+        });
 
 
-        return events;
     }
 
 
@@ -195,7 +196,7 @@ export default class ScheduleManager {
 
         return new Promise((fulfill, reject) => {
 
-            insightFacade.performQuery(query).then( (response: any)=> {
+            insightFacade.performQuery(query).then((response: any) => {
 
                 let result = response.body["result"];
                 let ret_obj: {[index: string]: any} = {};
@@ -221,13 +222,13 @@ export default class ScheduleManager {
 
                     if (dept == prev_dept) {
                         let id = item["courses_id"];
-                        ret_obj[prev_dept].push(dept+"_"+id);
+                        ret_obj[prev_dept].push(dept + "_" + id);
                     }
                     else {
                         prev_dept = dept;
                         let id = item["courses_id"];
                         ret_obj[prev_dept] = [];
-                        ret_obj[prev_dept].push(dept+"_"+id);
+                        ret_obj[prev_dept].push(dept + "_" + id);
                     }
                 }
                 dept_num = ret_obj;
@@ -296,11 +297,13 @@ export default class ScheduleManager {
                     "rooms_name",
                     "rooms_seats",
                     "rooms_lat",
-                    "rooms_lon"
+                    "rooms_lon",
+                    "rooms_type",
+                    "rooms_furniture"
                 ],
                 "ORDER": {
                     "dir": "UP",
-                    "keys": ["rooms_shortname", "rooms_name", "rooms_seats", "rooms_lat", "rooms_lon"]
+                    "keys": ["rooms_shortname", "rooms_name", "rooms_seats", "rooms_lat", "rooms_lon", "rooms_type", "rooms_furniture"]
                 },
                 "FORM": "TABLE"
             },
@@ -310,15 +313,17 @@ export default class ScheduleManager {
                     "rooms_name",
                     "rooms_seats",
                     "rooms_lat",
-                    "rooms_lon"
+                    "rooms_lon",
+                    "rooms_type",
+                    "rooms_furniture"
                 ],
                 "APPLY": []
             }
         };
 
 
-        return new Promise( (fulfill, reject)=> {
-            insightFacade.performQuery(query).then( (response: any) =>{
+        return new Promise((fulfill, reject) => {
+            insightFacade.performQuery(query).then((response: any) => {
                 let result = response.body["result"];
 
                 // set up buildings as the form {"building":buildingname,"lat":lat,"lon":lon,"rooms":[{},{}]}
@@ -338,10 +343,17 @@ export default class ScheduleManager {
                     let building_name = item["rooms_shortname"];
                     let rooms_name = item["rooms_name"];
                     let rooms_seats = item["rooms_seats"];
+                    let rooms_type = item["rooms_type"];
+                    let rooms_furniture = item["rooms_furniture"];
 
                     if (prev_buildingname == building_name) {
-                        let room =  {"room_name": rooms_name, "seats": rooms_seats};
-                        ret_obj[prev_buildingname]["rooms"][rooms_name]=room;
+                        let room = {
+                            "room_name": rooms_name,
+                            "seats": rooms_seats,
+                            "room_type": rooms_type,
+                            "room_furniture": rooms_furniture
+                        };
+                        ret_obj[prev_buildingname]["rooms"][rooms_name] = room;
                     }
                     else {
                         prev_buildingname = building_name;
@@ -353,8 +365,13 @@ export default class ScheduleManager {
                             "lon": prev_lon,
                             "rooms": {}
                         };
-                        let room =  {"room_name": rooms_name, "seats": rooms_seats};
-                        ret_obj[prev_buildingname]["rooms"][rooms_name]=room;
+                        let room = {
+                            "room_name": rooms_name,
+                            "seats": rooms_seats,
+                            "room_type": rooms_type,
+                            "room_furniture": rooms_furniture
+                        };
+                        ret_obj[prev_buildingname]["rooms"][rooms_name] = room;
                     }
 
                 }
@@ -409,7 +426,7 @@ export default class ScheduleManager {
 
                 distance_matrix = ret_obj;
                 //console.log(distance_matrix);
-                let a=this.get_all_rooms();
+                let a = this.get_all_rooms();
                 console.log(a);
 
                 fulfill({code: 200, body: "set up rooms done"});
@@ -421,7 +438,7 @@ export default class ScheduleManager {
 
     }
 
-     get_result(query: any): Promise<any[]> {
+    get_result(query: any): Promise<any[]> {
 
         return new Promise((fulfill, reject) => {
             insightFacade.performQuery(query).then(function (response: any) {
@@ -434,7 +451,7 @@ export default class ScheduleManager {
 
     }
 
-     get_courses_byname(course_name_list: any[]): any[] {
+    get_courses_byname(course_name_list: any[]): any[] {
         let courses_list = [];
         for (let item of course_name_list) {
             courses_list.push(interested_course_info[item]);
@@ -442,69 +459,141 @@ export default class ScheduleManager {
         return courses_list;
     }
 
-     get_courses_bydept(dept:string):any[]{
-        let courses_list=[];
-        let course_in_dept=dept_num[dept];
-        courses_list=this.get_courses_byname(course_in_dept);
+    get_courses_bydept(dept: string): any[] {
+        let courses_list = [];
+        let course_in_dept = dept_num[dept];
+        courses_list = this.get_courses_byname(course_in_dept);
         return courses_list;
     }
 
-     get_all_courses():any[]{
-        let courses_list=[];
-        let keys=Object.keys(interested_course_info);
-        for (let key of keys){
+    get_all_courses(): any[] {
+        let courses_list = [];
+        let keys = Object.keys(interested_course_info);
+        for (let key of keys) {
             courses_list.push(interested_course_info[key]);
         }
         return courses_list;
     }
 
-     get_rooms_byname(room_name_list: any[]): any[] {
+    get_rooms_byname(room_name_list: any[]): any[] {
 
-        let rooms_list=[];
-        for (let item of room_name_list){
-            let dept=item.substring(0,item.indexOf("_"));
-            let building=buildings[dept];
-            let rooms=building["rooms"];
-            let room=rooms[item];
+        let rooms_list = [];
+        for (let item of room_name_list) {
+            let dept = item.substring(0, item.indexOf("_"));
+            let building = buildings[dept];
+            let rooms = building["rooms"];
+            let room = rooms[item];
             rooms_list.push(room);
         }
         return rooms_list;
     }
 
-     get_rooms_bybuilding(dept:string):any[]{
-        let rooms_list=[];
-        let building=buildings[dept];
-        let rooms=building["rooms"];
+    get_rooms_bybuilding(dept: string): any[] {
+        let rooms_list = [];
+        let building = buildings[dept];
+        let rooms = building["rooms"];
 
-        let keys=Object.keys(rooms);
-        for (let key of keys){
+        let keys = Object.keys(rooms);
+        for (let key of keys) {
             rooms_list.push(rooms[key]);
         }
         return rooms_list;
     }
 
-     get_all_rooms():any[]{
-        let rooms_list:any[]=[];
-        let building_names=Object.keys(buildings);
-        for (let building_name of building_names){
-            rooms_list=rooms_list.concat(this.get_rooms_bybuilding(building_name));
+    get_rooms_bytype(type_list: any[]): any[] {
+
+        let rooms = this.get_all_rooms();
+        let ret_list = [];
+        for (let type of type_list) {
+            for (let room of rooms) {
+                if (room["room_type"] == type) {
+                    ret_list.push(room);
+                }
+            }
+        }
+
+        return ret_list;
+    }
+
+    get_rooms_byfur(furlist: any[]): any[] {
+        let rooms = this.get_all_rooms();
+        let ret_list = [];
+        for (let fur of furlist) {
+            for (let room of rooms) {
+                if (room["room_furiture"] == fur) {
+                    ret_list.push(room);
+                }
+            }
+        }
+        return ret_list;
+    }
+
+    get_all_rooms(): any[] {
+        let rooms_list: any[] = [];
+        let building_names = Object.keys(buildings);
+        for (let building_name of building_names) {
+            rooms_list = rooms_list.concat(this.get_rooms_bybuilding(building_name));
         }
         return rooms_list;
     }
 
-     get_rooms_bydistance(building:string,distance:number):any[]{
-        let rooms_list:any[]=[];
-        let target=distance_matrix[building];
-        for (let item of target){
+    get_rooms_bydistance(building: string, distance: number): any[] {
+        let rooms_list: any[] = [];
+        let target = distance_matrix[building];
+        for (let item of target) {
             // an item looks like { building: 'FNH', distance: 111.80900099393709 }
 
-            if (item["distance"]<distance){
-                let rooms_in_building=this.get_courses_bydept(item["building"]);
-                rooms_list=rooms_list.concat(rooms_in_building);
+            if (item["distance"] < distance) {
+                let rooms_in_building = this.get_courses_bydept(item["building"]);
+                rooms_list = rooms_list.concat(rooms_in_building);
             }
         }
         return rooms_list;
     }
+
+    add_course_tolist(courses: any[]) {
+        this.courses = this.courses.concat(courses);
+    }
+
+    add_room_tolist(rooms: any[]) {
+        this.rooms = this.rooms.concat(rooms);
+    }
+
+    get_union(list: any[], id: string):any[] {
+        let ret_list: any[] = []
+        ret_list.push(list[0]);
+        for (var i = 1; i < list.length; i++) {
+            if (list[i][id] != list[list.length - 1][id]) {
+                ret_list.push(list[i]);
+            }
+        }
+        return ret_list;
+    }
+
+    get_intersection(list: any[], id: string, length: number):any[] {
+        let ret_list: any[] = []
+
+        for (var i = 0; i < list.length; i++) {
+            var in_intersection = false;
+
+            var index = i + length - 1;
+            if (index < list.length) {
+
+                if (list[i].id == list[index].id) {
+                    in_intersection = true;
+                }
+            }
+            else {
+                in_intersection = false;
+            }
+
+            if (in_intersection) {
+                ret_list.push(list[i]);
+            }
+        }
+        return ret_list;
+    }
+
 
 }
 
@@ -527,6 +616,21 @@ function getDistanceFromLatLonInM(lat1: number, lon1: number, lat2: number, lon2
 // this code is taken from stack overflow
 function deg2rad(deg: number) {
     return deg * (Math.PI / 180)
+}
+
+function sortby_id(list:any[],id:string):any[]{
+
+    list.sort((a: any, b: any) => {
+        if (a[id] < b[id]) {
+            return -1;
+        }
+        else if (a[id] > b[id]) {
+            return 1;
+        }
+        else
+            return 0;
+    });
+    return list;
 }
 
 
