@@ -839,11 +839,7 @@ function build_table(data: string): Array<Course_obj> {
 
 
                 let size = each_course.getValue("Pass") + each_course.getValue("Fail");
-
-                if (size=="1198"){
-                    let a=5;
-                }
-
+                
                 if (item["Section"] == "overall" || item["Section"]=="000") {
                     each_course.setValue("Size", "0");
                 }
