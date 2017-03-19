@@ -26,7 +26,7 @@ dictionary = {
     "courses_audit": "Audit",
     "courses_uuid": "id",
     "courses_year": "Year",
-    "courses_size":"Size",
+    "courses_size": "Size",
     "rooms_fullname": "rooms_fullname",
     "rooms_shortname": "rooms_shortname",
     "rooms_number": "rooms_number",
@@ -69,7 +69,7 @@ class Course_obj extends Dataset_obj {
     Audit: number;
     id: string;
     Year: number;
-    Size:number;
+    Size: number;
 
     constructor() {
         super();
@@ -118,7 +118,7 @@ class Course_obj extends Dataset_obj {
             case "Year": {
                 return this.Year;
             }
-            case "Size":{
+            case "Size": {
                 return Number(this.Size);
             }
             default :
@@ -170,8 +170,8 @@ class Course_obj extends Dataset_obj {
                 this.Year = Number(value);
                 break;
             }
-            case "Size":{
-                this.Size=Number(value);
+            case "Size": {
+                this.Size = Number(value);
                 break;
             }
             default :
@@ -837,8 +837,19 @@ function build_table(data: string): Array<Course_obj> {
                     }
                 }
 
-                let size=each_course.getValue("Pass")+each_course.getValue("Fail");
-                each_course.setValue("Size",size);
+
+                let size = each_course.getValue("Pass") + each_course.getValue("Fail");
+
+                if (size=="1198"){
+                    let a=5;
+                }
+
+                if (item["Section"] == "overall" || item["Section"]=="000") {
+                    each_course.setValue("Size", "0");
+                }
+                else {
+                    each_course.setValue("Size", size);
+                }
             } catch (err) {
             }
 
@@ -941,7 +952,7 @@ function filter(table: Array<Dataset_obj>, query: QueryRequest, missing_col: str
 
             ret_table.sort((a: Dataset_obj, b: Dataset_obj) => {
 
-                return local_compare_single(a.getValue(dictionary[order]),b.getValue(dictionary[order]));
+                return local_compare_single(a.getValue(dictionary[order]), b.getValue(dictionary[order]));
 
             });
 
@@ -1330,7 +1341,6 @@ function perform_Query_transform(query: QueryRequest, this_obj: InsightFacade): 
             });
 
 
-
             let prev_group_name = table[0]["group_id"];
             let groups: {[index: string]: any} = {};
             groups[prev_group_name] = [];
@@ -1507,7 +1517,7 @@ function perform_Query_transform(query: QueryRequest, this_obj: InsightFacade): 
                 else {
 
                     final_groups.sort((a: any, b: any) => {
-                        return local_compare_single(a[order],b[order]);
+                        return local_compare_single(a[order], b[order]);
                     });
 
 
@@ -1769,7 +1779,7 @@ function getDistanceFromLatLonInM(lat1: number, lon1: number, lat2: number, lon2
             Math.sin(dLon / 2) * Math.sin(dLon / 2)
         ;
     var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-    var d = R * c *1000; // Distance in m
+    var d = R * c * 1000; // Distance in m
     return d;
 }
 // this code is taken from stack overflow

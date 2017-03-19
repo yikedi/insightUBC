@@ -14,6 +14,11 @@ class Event {
     hour: number;
     course: string;
     room: string;
+    day:string;
+
+    constructor(){
+
+    }
 
 }
 
@@ -67,7 +72,8 @@ export default class ScheduleManager {
     rooms: any[];
 
     constructor() {
-
+    this.courses=[];
+    this.rooms=[];
     }
 
     // assume every course has the expected form here, dept, id, num_section, size
@@ -80,40 +86,57 @@ export default class ScheduleManager {
 
             try{
                 let events :Event[]= [];
-                courses=sortby_id(courses,"size");
                 courses=this.get_union(courses,"course_name");
-                rooms=sortby_id(rooms,"seats");
+                courses=sortby_id(courses,"size");
                 rooms=this.get_union(rooms,"room_name");
+                rooms=sortby_id(rooms,"seats");
+
+                console.log(courses);
+                console.log(rooms);
 
                 // course on MWF
                 for (let i = 0; i < 17 - 8; i++) {
-                    let event = new Event();
-                    for (let room of rooms) {
-                        let prev_name = "";
-                        for (let course of courses) {
-                            let course_name = course["dept"] + "_" + course["id"];
+
+                    for (let j=0; j<rooms.length;j++) {
+                        let event = new Event();
+                        let room=rooms[j];
+                        for (let k=j;k<courses.length;k++) {
+                            let course=courses[k];
+                            let course_name = course["course_name"];
+                           
                             if (course["num_section"] > 0) {
                                 if (Number(course["size"]) <= Number(room["seats"])) {
+                                    event.day="M/W/F";
                                     event.start_time = i + 8 + ": 00";
                                     event.hour = 1;
                                     event.course = course_name;
-                                    event.room = room["name"];
+                                    event.room = room["room_name"];
+                                    //console.log(course["num_section"]);
                                     course["num_section"] = course["num_section"] - 1;
+                                    //console.log(course["num_section"]);
                                     events.push(event);
+
                                     break;
+                                }
+                                else {
+                                    //console.log("room "+ room["room_name"]+" is not big enough");
                                 }
                             }
                         }
+                        //console.log(event);
+
                     }
                 }
 
                 // course on T TH
                 for (let i = 0; i < 17 - 8; i += 1.5) {
-                    let event = new Event();
-                    for (let room of rooms) {
-                        let prev_name = "";
-                        for (let course of courses) {
-                            let course_name = course["dept"] + "_" + course["id"];
+
+                    for (let j=0; j<rooms.length;j++) {
+                        let event = new Event();
+                        let room=rooms[j];
+                        for (let k=j;k<courses.length;k++) {
+                            let course=courses[k];
+                            let course_name = course["course_name"];
                             if (course["num_section"] > 0) {
                                 if (Number(course["size"]) <= Number(room["seats"])) {
 
@@ -124,10 +147,11 @@ export default class ScheduleManager {
                                     else {
                                         time = i - 0.5 + 8 + ": 30";
                                     }
+                                    event.day="T/TH";
                                     event.start_time = time;
                                     event.hour = 1.5;
                                     event.course = course_name;
-                                    event.room = room["name"];
+                                    event.room = room["room_name"];
                                     course["num_section"] = course["num_section"] - 1;
                                     events.push(event);
                                 }
@@ -211,7 +235,7 @@ export default class ScheduleManager {
                     ret_obj[key] = course;
                 }
                 interested_course_info = ret_obj;
-                console.log(interested_course_info);
+                //console.log(interested_course_info);
 
                 // set up dept_num
                 ret_obj = {};
@@ -232,7 +256,7 @@ export default class ScheduleManager {
                     }
                 }
                 dept_num = ret_obj;
-                console.log(dept_num);
+                //console.log(dept_num);
                 // set up num_dept
                 ret_obj = {};
                 result.sort((a: any, b: any) => {
@@ -275,8 +299,8 @@ export default class ScheduleManager {
                 num_dept = ret_obj;
 
 
-                console.log(dept_num);
-                console.log(num_dept);
+                // console.log(dept_num);
+                // console.log(num_dept);
 
                 fulfill({code: 200, body: "set up done"});
             }).catch(function (err) {
@@ -426,8 +450,7 @@ export default class ScheduleManager {
 
                 distance_matrix = ret_obj;
                 //console.log(distance_matrix);
-                let a = this.get_all_rooms();
-                console.log(a);
+
 
                 fulfill({code: 200, body: "set up rooms done"});
             }).catch(function (err) {
@@ -520,7 +543,7 @@ export default class ScheduleManager {
         let ret_list = [];
         for (let fur of furlist) {
             for (let room of rooms) {
-                if (room["room_furiture"] == fur) {
+                if (room["room_furniture"] == fur) {
                     ret_list.push(room);
                 }
             }
@@ -544,7 +567,7 @@ export default class ScheduleManager {
             // an item looks like { building: 'FNH', distance: 111.80900099393709 }
 
             if (item["distance"] < distance) {
-                let rooms_in_building = this.get_courses_bydept(item["building"]);
+                let rooms_in_building = this.get_rooms_bybuilding(item["building"]);
                 rooms_list = rooms_list.concat(rooms_in_building);
             }
         }
@@ -561,6 +584,7 @@ export default class ScheduleManager {
 
     get_union(list: any[], id: string):any[] {
         let ret_list: any[] = []
+        list=sortby_id(list,id);
         ret_list.push(list[0]);
         for (var i = 1; i < list.length; i++) {
             if (list[i][id] != list[list.length - 1][id]) {
@@ -572,7 +596,7 @@ export default class ScheduleManager {
 
     get_intersection(list: any[], id: string, length: number):any[] {
         let ret_list: any[] = []
-
+        list=sortby_id(list,id);
         for (var i = 0; i < list.length; i++) {
             var in_intersection = false;
 
@@ -593,6 +617,8 @@ export default class ScheduleManager {
         }
         return ret_list;
     }
+
+
 
 
 }
@@ -620,12 +646,12 @@ function deg2rad(deg: number) {
 
 function sortby_id(list:any[],id:string):any[]{
 
-    list.sort((a: any, b: any) => {
+    list=list.sort((a: any, b: any) => {
         if (a[id] < b[id]) {
-            return -1;
+            return 1;
         }
         else if (a[id] > b[id]) {
-            return 1;
+            return -1;
         }
         else
             return 0;

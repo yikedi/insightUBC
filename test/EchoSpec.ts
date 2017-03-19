@@ -3365,7 +3365,7 @@ describe("EchoSpec", function () {
     });
 
 
-    it("test sort 6", function (done) {
+    xit("test sort 6", function (done) {
         this.timeout(10000)
 
         var s1: any = {
@@ -3445,7 +3445,7 @@ describe("EchoSpec", function () {
     });
 
 
-    it("test schedule 1", function (done) {
+    it("test schedule 1 all courses", function (done) {
         this.timeout(10000);
 
 
@@ -3453,6 +3453,7 @@ describe("EchoSpec", function () {
 
         s.setup_course().then(function (response) {
            console.log(response.code);
+           console.log(s.get_all_courses());
            done();
         }).catch(function (err) {
             console.log(err.message);
@@ -3462,7 +3463,7 @@ describe("EchoSpec", function () {
 
     });
 
-    it("test schedule 2", function (done) {
+    it("test schedule 2 all room", function (done) {
         this.timeout(10000);
 
 
@@ -3470,7 +3471,152 @@ describe("EchoSpec", function () {
 
         s.setup_room().then(function (response) {
             console.log(response.code);
+            let a1=s.get_all_rooms();
+            console.log(a1);
             done();
+        }).catch(function (err) {
+            console.log(err.message);
+            done();
+        });
+
+    });
+
+    it("test schedule 3 some room", function (done) {
+        this.timeout(10000);
+
+
+        var s=new ScheduleManager();
+
+        s.setup_room().then(function (response) {
+
+            console.log(response.code);
+            let a1=s.get_courses_bydept("cpsc");
+            let a2=s.get_courses_byname(["math_200"]);
+            console.log(a1);
+            console.log(a2);
+            done();
+        }).catch(function (err) {
+            console.log(err.message);
+            done();
+        });
+
+    });
+
+    it("test schedule 4", function (done) {
+        this.timeout(10000);
+
+
+        var s=new ScheduleManager();
+
+        s.setup_room().then(function (response) {
+
+            console.log(response.code);
+            let a1=s.get_rooms_bybuilding("DMP");
+            console.log();
+            let a2=s.get_rooms_byname(["AERL_120","ALRD_105"]);
+            console.log();
+            let a3=s.get_rooms_bydistance("DMP",500);
+            console.log()
+            console.log(a1);
+            console.log(a2);
+            console.log(a3);
+            done();
+        }).catch(function (err) {
+            console.log(err.message);
+            done();
+        });
+
+    });
+
+    it("test schedule 5", function (done) {
+        this.timeout(10000);
+
+
+        var s=new ScheduleManager();
+
+        s.setup_room().then(function (response) {
+
+            console.log(response.code);
+            let a1=s.get_rooms_bybuilding("DMP");
+            console.log();
+
+            let a2=s.get_rooms_bybuilding("PHRM");
+            s.add_room_tolist(a1);
+            s.add_room_tolist(a2);
+
+            let c1=s.get_courses_bydept("cpsc");
+            s.add_course_tolist(c1);
+
+
+            console.log(s.courses);
+            console.log();
+            console.log(s.rooms);
+            done();
+        }).catch(function (err) {
+            console.log(err.message);
+            done();
+        });
+
+    });
+
+    it("test schedule 6", function (done) {
+        this.timeout(10000);
+
+
+        var s=new ScheduleManager();
+
+        s.setup_room().then(function (response) {
+
+            console.log(response.code);
+            let b1=s.get_rooms_bybuilding("DMP");
+            let b2=s.get_rooms_bybuilding("PHRM");
+            let c1=s.get_courses_bydept("cpsc");
+
+            s.add_course_tolist(c1);
+            s.add_room_tolist(b1);
+            s.add_room_tolist(b2);
+
+            s.schedule(s.rooms,s.courses).then(function (response) {
+                console.log(response.code);
+                console.log(response.body);
+                done();
+            });
+
+
+        }).catch(function (err) {
+            console.log(err.message);
+            done();
+        });
+
+    });
+
+
+    it("test schedule 7", function (done) {
+        this.timeout(10000);
+
+
+        var s=new ScheduleManager();
+
+        s.setup_room().then(function (response) {
+
+            console.log(response.code);
+            let b1=s.get_all_rooms();
+
+            let c1=s.get_all_courses();
+            s.add_course_tolist(c1);
+            s.add_room_tolist(b1);
+
+            s.schedule(s.rooms,s.courses).then(function (response) {
+                console.log(response.code);
+                console.log(response.body);
+
+                done();
+            }).catch(function (err) {
+                console.log(err.message);
+                done();
+            });
+
+
         }).catch(function (err) {
             console.log(err.message);
             done();
@@ -3508,6 +3654,7 @@ describe("EchoSpec", function () {
 
         return true;
     }
+
 
 });
 
