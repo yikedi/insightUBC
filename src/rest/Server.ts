@@ -234,10 +234,10 @@ export default class Server {
                     let rooms2 = scheduleManager.get_rooms_bydistance(target, distance);
                     rooms = rooms.concat(rooms2);
                     if (and_or == "AND") {
-                        rooms = scheduleManager.get_intersection(rooms, "room_name");
+                        rooms = scheduleManager.get_intersection(rooms, "rooms_name");
                     }
                     else {
-                        rooms = scheduleManager.get_union(rooms, "room_name");
+                        rooms = scheduleManager.get_union(rooms, "rooms_name");
                     }
                 }
 

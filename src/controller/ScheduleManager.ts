@@ -78,7 +78,6 @@ export default class ScheduleManager {
 
     // assume every course has the expected form here, dept, id, num_section, size
 
-
     schedule(rooms: any[], courses: any[]): Promise<InsightResponse> {
 
 
@@ -110,7 +109,7 @@ export default class ScheduleManager {
                                     event.start_time = i + 8 + ": 00";
                                     event.hour = 1;
                                     event.course = course_name;
-                                    event.room = room["room_name"];
+                                    event.room = room["rooms_shortname"];
                                     course["num_section"] = course["num_section"] - 1;
                                     events.push(event);
 
@@ -148,7 +147,7 @@ export default class ScheduleManager {
                                     event.start_time = time;
                                     event.hour = 1.5;
                                     event.course = course_name;
-                                    event.room = room["room_name"];
+                                    event.room = room["rooms_shortname"];
                                     course["num_section"] = course["num_section"] - 1;
                                     courses[k]["num_section"] = courses[k]["num_section"] - 1;
                                     events.push(event);
@@ -321,29 +320,48 @@ export default class ScheduleManager {
             "WHERE": {},
             "OPTIONS": {
                 "COLUMNS": [
+                    "rooms_fullname",
                     "rooms_shortname",
                     "rooms_name",
-                    "rooms_seats",
+                    "rooms_number",
+                    "rooms_address",
                     "rooms_lat",
                     "rooms_lon",
-                    "rooms_type",
-                    "rooms_furniture"
+                    "rooms_seats",
+                    "rooms_furniture",
+                    "rooms_href",
+                    "rooms_type"
                 ],
                 "ORDER": {
                     "dir": "UP",
-                    "keys": ["rooms_shortname", "rooms_name", "rooms_seats", "rooms_lat", "rooms_lon", "rooms_type", "rooms_furniture"]
+                    "keys": [
+                        "rooms_shortname",
+                        "rooms_fullname",
+                        "rooms_name",
+                        "rooms_number",
+                        "rooms_address",
+                        "rooms_lat",
+                        "rooms_lon",
+                        "rooms_seats",
+                        "rooms_furniture",
+                        "rooms_href",
+                        "rooms_type"]
                 },
                 "FORM": "TABLE"
             },
             "TRANSFORMATIONS": {
                 "GROUP": [
+                    "rooms_fullname",
                     "rooms_shortname",
                     "rooms_name",
-                    "rooms_seats",
+                    "rooms_number",
+                    "rooms_address",
                     "rooms_lat",
                     "rooms_lon",
-                    "rooms_type",
-                    "rooms_furniture"
+                    "rooms_seats",
+                    "rooms_furniture",
+                    "rooms_href",
+                    "rooms_type"
                 ],
                 "APPLY": []
             }
@@ -370,17 +388,19 @@ export default class ScheduleManager {
 
                     let building_name = item["rooms_shortname"];
                     let rooms_name = item["rooms_name"];
-                    let rooms_seats = item["rooms_seats"];
-                    let rooms_type = item["rooms_type"];
-                    let rooms_furniture = item["rooms_furniture"];
+                    // let rooms_seats = item["rooms_seats"];
+                    // let rooms_type = item["rooms_type"];
+                    // let rooms_furniture = item["rooms_furniture"];
 
                     if (prev_buildingname == building_name) {
-                        let room = {
-                            "room_name": rooms_name,
-                            "seats": rooms_seats,
-                            "room_type": rooms_type,
-                            "room_furniture": rooms_furniture
-                        };
+                        let room = item;
+
+                        //     {
+                        //     "room_name": rooms_name,
+                        //     "seats": rooms_seats,
+                        //     "room_type": rooms_type,
+                        //     "room_furniture": rooms_furniture
+                        // };
                         ret_obj[prev_buildingname]["rooms"][rooms_name] = room;
                     }
                     else {
@@ -393,12 +413,14 @@ export default class ScheduleManager {
                             "lon": prev_lon,
                             "rooms": {}
                         };
-                        let room = {
-                            "room_name": rooms_name,
-                            "seats": rooms_seats,
-                            "room_type": rooms_type,
-                            "room_furniture": rooms_furniture
-                        };
+                        let room = item;
+
+                        //     {
+                        //     "room_name": rooms_name,
+                        //     "seats": rooms_seats,
+                        //     "room_type": rooms_type,
+                        //     "room_furniture": rooms_furniture
+                        // };
                         ret_obj[prev_buildingname]["rooms"][rooms_name] = room;
                     }
 
@@ -603,7 +625,7 @@ export default class ScheduleManager {
 
     add_room_tolist(rooms: any[]) {
         this.rooms = this.rooms.concat(rooms);
-        this.rooms = this.get_union(this.rooms, "room_name");
+        this.rooms = this.get_union(this.rooms, "rooms_name");
     }
 
     get_union(list: any[], id: string): any[] {

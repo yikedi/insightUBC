@@ -3516,7 +3516,7 @@ describe("EchoSpec", function () {
             let a2=s.get_rooms_byname(["AERL_120","ALRD_105"]);
             console.log();
             let a3=s.get_rooms_bydistance("DMP",500);
-            console.log()
+            console.log();
             console.log(a1);
             console.log(a2);
             console.log(a3);
@@ -3749,11 +3749,11 @@ describe("EchoSpec", function () {
             let b2=s.get_rooms_bydistance("DMP",100);
 
             let b12=b1.concat(b2);
-            let u1=s.get_union(b12,"room_name");
+            let u1=s.get_union(b12,"rooms_name");
 
-            let i1=s.get_intersection(b12,"room_name");
+            let i1=s.get_intersection(b12,"rooms_name");
             let i12=i1.concat(u1);
-            let i2=s.get_intersection(i12,"room_name");
+            let i2=s.get_intersection(i12,"rooms_name");
 
             console.log(u1.length);
             console.log(i1.length);
