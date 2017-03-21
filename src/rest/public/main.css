@@ -1,0 +1,21 @@
+div{
+    padding-top: 6px;
+}
+
+
+table, th, td {
+    border: 1px solid black;
+    border-collapse: collapse;
+}
+
+table{
+    width: 100%;
+}
+
+th, td {
+    padding: 2px;
+}
+
+#course_explorer {padding-top:50px;height:500px;overflow:auto;}
+#room_explorer {padding-top:50px;height:500px; overflow:auto;}
+#room_scheduling {padding-top:50px;height:500px;color: #fff; overflow:auto; background-color: #ff9800;}

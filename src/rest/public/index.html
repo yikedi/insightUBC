@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>UBC Database</title>
+        <!-- jQuery library -->
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+
+        <!-- Latest compiled and minified CSS -->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+        <!-- Optional theme -->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+
+        <!-- Latest compiled and minified JavaScript -->
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+        <link rel="stylesheet" href="main.css">
+        <script src="submit.js"></script>
+        <script src="form.js"></script>
+
+
+
+    </head>
+    <body data-spy="scroll" data-target=".navbar">
+        <nav class="navbar navbar-inverse navbar-fixed-top">
+            <div class="container-fluid">
+                <div class="navbar-header">
+                    <p class="navbar-brand">UBC Database</p>
+                </div>
+                <div>
+                    <div class="collapse navbar-collapse" id="myNavbar">
+                        <ul class="nav navbar-nav">
+                            <li><a href="#course_explorer">course explorer</a></li>
+                            <li><a href="#room_explorer">room explorer</a></li>
+                            <li><a href="#room_scheduling">room scheduling</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </nav> 
+        <div id="course_explorer" class="container-fluid" style="width : 1400px; margin:0px auto">
+            <h1>Courses Explorer</h1>
+            <form class = "courses_form">
+                <div class="col-sm-2"> Select result field:<br>(hold ctrl for multiple select)<br>
+                    <select  multiple="multiple" id="res_column" size = "10">
+                        <option value="courses_dept">Course Department</option>
+                        <option value="courses_id">Course ID</option>
+                        <option value="courses_avg">Course Average</option>
+                        <option value="courses_instructor">Course Instructor</option>
+                        <option value="courses_title">Courses Title</option>
+                        <option value="courses_fail">Courses Fail</option>
+                        <option value="courses_audit">Courses Audit</option>
+                        <option value="courses_year">Courses Year</option>
+                        <option value="courses_size">Courses Size</option>
+                        <option value="courses_pass">Courses Pass</option>
+
+                    </select>
+                </div>
+
+                <div class="col-sm-10">
+                    <div class="col-sm-4">
+                        <input type="text" class="form-control" id ="dept"placeholder="Enter courses department shortname, eg. CPSC">
+                    </div>
+                    <div class="col-sm-4">
+                        <input type="text" class="form-control" id = "cid" placeholder="Enter courses number, such as 121">
+                    </div>
+                </div>
+
+                <div class="col-sm-10" >
+                    <div class="col-sm-2">
+                        <label>Section Size</label>
+                    </div>
+                    <div class="col-sm-1">
+                        <select id = "comparator_1">
+                            <option value ="GT">></option>
+                            <option value ="LT"><</option>
+                            <option value="EQ">=</option>
+                        </select>
+                    </div>
+
+                    <div class="col-sm-5">
+                        <input type="text" class="form-control" id = "size" placeholder="Enter courses size">
+                    </div>
+                </div>
+
+                <div class = "col-sm-10">
+                    <div class="col-sm-4">
+                        <input type="text" class="form-control" id = "instructor"placeholder="Enter instructor name">
+                    </div>
+                    <div class="col-sm-4">
+                        <input type="text" class="form-control" id = "title" placeholder="Enter course title">
+                    </div>    
+                </div>
+
+                <div class = "col-sm-10">
+                    <label class="col-sm-2">Order by</label>
+                    <div class="col-sm-2">
+                        <select  id = "courses_order_dir">
+                            <option value ="UP">Ascending</option>
+                            <option value ="DOWN">Descending</option>
+                        </select>
+                    </div>
+                    <div class="col-sm-4">
+                        <select multiple id = "courses_order_by" size = "3">
+                            <option value ="courses_fail">Number of fails</option>
+                            <option value="courses_pass">Number of passes</option>
+                            <option value="courses_avg">Courses average</option>
+                        </select>
+                    </div>
+                </div>
+            </form>
+            <div class = "row"></div>
+            <div class = "row">
+                <div class="col-sm-4"></div>
+                <div class="col-sm-1">
+                    <button class="btn btn-primary active" onclick=submit("AND","courses")>Apply All</button>
+                </div>
+                <div class="col-sm-1">
+                    <button class="btn btn-primary active" onclick=submit("OR","courses")>Apply Any</button>
+                </div>
+            </div>
+
+            <div id = "result">
+                <div class="panel-heading" id = "result_head"></div>
+                <div class="panel-body" id = "result_body"></div>
+            </div>
+        </div>
+
+
+
+
+        <div id="room_explorer" class="container-fluid" style="width : 1400px; margin:0px auto">
+            <h1>Room Explorer</h1>
+            <form class = "courses_form">
+                <div class="col-sm-2"> Select result field:<br>(hold ctrl for multiple select)<br>
+                    <select  multiple="multiple" id="res_column_rooms" size = "11">
+                        <option value="rooms_fullname">Rooms Fullname</option>
+                        <option value="rooms_shortname">Rooms Shortname</option>
+                        <option value="rooms_number">Rooms Number</option>
+                        <option value="rooms_name">Rooms Name</option>
+                        <option value="rooms_address">Rooms Address</option>
+                        <option value="rooms_lat">Rooms Lat</option>
+                        <option value="rooms_lon">Rooms Lon</option>
+                        <option value="rooms_seats">Rooms Seats</option>
+                        <option value="rooms_type">Rooms Type</option>
+                        <option value="rooms_furniture">Rooms Furniture</option>
+                        <option value="rooms_href">Rooms Href</option>
+                    </select>
+                </div>
+                <div class="col-sm-10">
+                    <div class="col-sm-4">
+                        <input type="text" class="form-control" id ="building_name"placeholder="Enter building name">
+                    </div>
+                    <div class="col-sm-4">
+                        <input type="text" class="form-control" id = "room_number" placeholder="Enter room number">
+                    </div>
+                </div>
+                <div class="col-sm-10" >
+                    <div class="col-sm-2">
+                        <label>Room Size</label>
+                    </div>
+                    <div class="col-sm-1">
+                        <select id = "comparator_2">
+                            <option value ="GT">></option>
+                            <option value ="LT"><</option>
+                            <option value="EQ">=</option>
+                        </select>
+                    </div>
+
+                    <div class="col-sm-5">
+                        <input type="text" class="form-control" id = "room_size" placeholder="Enter room size">
+                    </div>
+                </div>
+
+                <div class = "col-sm-10">
+                    <div class="col-sm-4">
+                        <select id = "furniture_type">
+                            <option value ="">---------------Choose furniture type-------------</option>
+                            <option value ="Classroom-Movable Tables & Chairs">Classroom-Movable Tables & Chairs</option>
+                            <option value="Classroom-Fixed Tables/Movable Chairs">Classroom-Fixed Tables/Movable Chairs</option>
+                            <option value="Classroom-Movable Tablets">Classroom-Movable Tablets</option>
+                            <option value="Classroom-Fixed Tablets">Classroom-Fixed Tablets</option>
+                            <option value="Classroom-Moveable Tables & Chairs">Classroom-Moveable Tables & Chairs</option>
+                            <option value="Classroom-Learn Lab">Classroom-Learn Lab</option>
+                            <option value="Classroom-Hybrid Furniture">Classroom-Hybrid Furniture</option>
+                            <option value="Classroom-Fixed Tables/Fixed Chairs">Classroom-Fixed Tables/Fixed Chairs</option>
+                            <option value="Classroom-Fixed Tables/Moveable Chairs">Classroom-Fixed Tables/Moveable Chairs</option>
+                            <option value="Classroom-Moveable Tablets">Classroom-Moveable Tablets</option>
+                        </select>
+                    </div>
+                    <div class="col-sm-4">
+                        <select id = "room_type">
+                            <option value ="">---------------Choose room type-------------</option>
+                            <option value ="Small Group">Small Group</option>
+                            <option value ="Tiered Large Group">Tiered Large Group</option>
+                            <option value ="Open Design General Purpose">Open Design General Purpose</option>
+                            <option value ="Studio Lab">Studio Lab</option>
+                            <option value ="TBD">TBD</option>
+                            <option value ="Active Learning">Active Learning</option>
+                            <option value ="Case Style">Case Style</option>
+
+                        </select>
+                    </div>    
+                </div>
+
+                <div class="col-sm-10" >
+                    <div class="col-sm-2">
+                        <input type="text" class="form-control" id = "distance" placeholder="Distance">
+                    </div>
+                    <div class="col-sm-1">
+                        <label>from</label>
+                    </div>
+                    <div class="col-sm-4">
+                        <input type="text" class="form-control" id = "building_distance" placeholder="Enter building name">
+                    </div>
+                </div>
+
+            </form>
+            <div class = "row"></div>
+            <div class = "row">
+                <div class="col-sm-4"></div>
+                <div class="col-sm-1">
+                    <button class="btn btn-primary active" onclick=submit("AND","rooms")>Apply All</button>
+                </div>
+                <div class="col-sm-1">
+                    <button class="btn btn-primary active" onclick=submit("OR","rooms")>Apply Any</button>
+                </div>
+            </div>
+            <div id = "result_rooms">
+                <div class="panel-heading" id = "result_head_rooms"></div>
+                <div class="panel-body" id = "result_body_rooms"></div>
+            </div>
+        </div>
+
+
+
+
+
+        <div id="room_scheduling" class="container-fluid">
+            <h1>room scheduling</h1>
+        </div>
+    </body>
+</html>
