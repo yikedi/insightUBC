@@ -279,4 +279,15 @@ export default class Server {
         return next();
     }
 
+    public static get_courses_byname_helper(courses_name:any[]): Promise<InsightResponse>{
+        return new Promise((fulfill,reject)=>{
+           let courses=scheduleManager.get_courses_byname(courses_name);
+           fulfill({code:200,body:courses});
+        });
+    }
+
+    public static get_courses_byname(){
+
+    }
+
 }
