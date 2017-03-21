@@ -14,9 +14,9 @@ class Event {
     hour: number;
     course: string;
     room: string;
-    day:string;
+    day: string;
 
-    constructor(){
+    constructor() {
 
     }
 
@@ -72,8 +72,8 @@ export default class ScheduleManager {
     rooms: any[];
 
     constructor() {
-    this.courses=[];
-    this.rooms=[];
+        this.courses = [];
+        this.rooms = [];
     }
 
     // assume every course has the expected form here, dept, id, num_section, size
@@ -82,38 +82,36 @@ export default class ScheduleManager {
     schedule(rooms: any[], courses: any[]): Promise<InsightResponse> {
 
 
-        return new Promise((fulfill,reject)=>{
+        return new Promise((fulfill, reject) => {
 
-            try{
-                let events :Event[]= [];
-                courses=this.get_union(courses,"course_name");
-                courses=sortby_id(courses,"size");
-                rooms=this.get_union(rooms,"room_name");
-                rooms=sortby_id(rooms,"seats");
+            try {
+                let events: Event[] = [];
+                //courses=this.get_union(courses,"course_name");
+                courses = sortby_id(courses, "size");
+                //rooms=this.get_union(rooms,"room_name");
+                rooms = sortby_id(rooms, "seats");
 
-                console.log(courses);
-                console.log(rooms);
+                // console.log(courses);
+                // console.log(rooms);
 
                 // course on MWF
                 for (let i = 0; i < 17 - 8; i++) {
 
-                    for (let j=0; j<rooms.length;j++) {
+                    for (let j = 0; j < rooms.length; j++) {
                         let event = new Event();
-                        let room=rooms[j];
-                        for (let k=j;k<courses.length;k++) {
-                            let course=courses[k];
+                        let room = rooms[j];
+                        for (let k = j; k < courses.length; k++) {
+                            let course = courses[k];
                             let course_name = course["course_name"];
-                           
+
                             if (course["num_section"] > 0) {
                                 if (Number(course["size"]) <= Number(room["seats"])) {
-                                    event.day="M/W/F";
+                                    event.day = "M/W/F";
                                     event.start_time = i + 8 + ": 00";
                                     event.hour = 1;
                                     event.course = course_name;
                                     event.room = room["room_name"];
-                                    //console.log(course["num_section"]);
                                     course["num_section"] = course["num_section"] - 1;
-                                    //console.log(course["num_section"]);
                                     events.push(event);
 
                                     break;
@@ -123,7 +121,6 @@ export default class ScheduleManager {
                                 }
                             }
                         }
-                        //console.log(event);
 
                     }
                 }
@@ -131,11 +128,11 @@ export default class ScheduleManager {
                 // course on T TH
                 for (let i = 0; i < 17 - 8; i += 1.5) {
 
-                    for (let j=0; j<rooms.length;j++) {
+                    for (let j = 0; j < rooms.length; j++) {
                         let event = new Event();
-                        let room=rooms[j];
-                        for (let k=j;k<courses.length;k++) {
-                            let course=courses[k];
+                        let room = rooms[j];
+                        for (let k = j; k < courses.length; k++) {
+                            let course = courses[k];
                             let course_name = course["course_name"];
                             if (course["num_section"] > 0) {
                                 if (Number(course["size"]) <= Number(room["seats"])) {
@@ -147,22 +144,31 @@ export default class ScheduleManager {
                                     else {
                                         time = i - 0.5 + 8 + ": 30";
                                     }
-                                    event.day="T/TH";
+                                    event.day = "T/TH";
                                     event.start_time = time;
                                     event.hour = 1.5;
                                     event.course = course_name;
                                     event.room = room["room_name"];
                                     course["num_section"] = course["num_section"] - 1;
+                                    courses[k]["num_section"] = courses[k]["num_section"] - 1;
                                     events.push(event);
+                                    break;
                                 }
                             }
                         }
                     }
                 }
-                fulfill({code:200,body:events});
+
+                let unscheduled_courses: any[] = [];
+                for (let item of courses) {
+                    if (item["num_section"] > 0) {
+                        unscheduled_courses.push(item);
+                    }
+                }
+                fulfill({code: 200, body: {"Events": events, "Unscheduled": unscheduled_courses}});
             }
-            catch (err){
-                reject({code:400,body:"error in schedule 142 "+err.message});
+            catch (err) {
+                reject({code: 400, body: "error in schedule 142 " + err.message});
             }
 
         });
@@ -235,7 +241,6 @@ export default class ScheduleManager {
                     ret_obj[key] = course;
                 }
                 interested_course_info = ret_obj;
-                //console.log(interested_course_info);
 
                 // set up dept_num
                 ret_obj = {};
@@ -256,7 +261,6 @@ export default class ScheduleManager {
                     }
                 }
                 dept_num = ret_obj;
-                //console.log(dept_num);
                 // set up num_dept
                 ret_obj = {};
                 result.sort((a: any, b: any) => {
@@ -401,7 +405,6 @@ export default class ScheduleManager {
                 }
 
                 buildings = ret_obj;
-                //console.log(buildings);
 
                 /*
                  set up the distance matrix as a nested JSON with the form as
@@ -449,7 +452,6 @@ export default class ScheduleManager {
                 }
 
                 distance_matrix = ret_obj;
-                //console.log(distance_matrix);
 
 
                 fulfill({code: 200, body: "set up rooms done"});
@@ -477,13 +479,20 @@ export default class ScheduleManager {
     get_courses_byname(course_name_list: any[]): any[] {
         let courses_list = [];
         for (let item of course_name_list) {
-            courses_list.push(interested_course_info[item]);
+            if (!isUndefined(interested_course_info[item]))
+                courses_list.push(interested_course_info[item]);
+            else {
+                throw new Error("Invalid course name: " + item);
+            }
         }
         return courses_list;
     }
 
     get_courses_bydept(dept: string): any[] {
         let courses_list = [];
+        if (isUndefined(dept_num[dept])) {
+            throw Error("Invalid department " + dept);
+        }
         let course_in_dept = dept_num[dept];
         courses_list = this.get_courses_byname(course_in_dept);
         return courses_list;
@@ -503,17 +512,26 @@ export default class ScheduleManager {
         let rooms_list = [];
         for (let item of room_name_list) {
             let dept = item.substring(0, item.indexOf("_"));
+            if (isUndefined(buildings[dept])) {
+                throw new Error("invalid department " + dept);
+            }
             let building = buildings[dept];
             let rooms = building["rooms"];
+            if (isUndefined(rooms[item])) {
+                throw new Error("Invalid room " + item);
+            }
             let room = rooms[item];
             rooms_list.push(room);
         }
         return rooms_list;
     }
 
-    get_rooms_bybuilding(dept: string): any[] {
+    get_rooms_bybuilding(building_name: string): any[] {
         let rooms_list = [];
-        let building = buildings[dept];
+        let building = buildings[building_name];
+        if (isUndefined(building)) {
+            throw new Error("Invalid building name " + building_name);
+        }
         let rooms = building["rooms"];
 
         let keys = Object.keys(rooms);
@@ -563,6 +581,10 @@ export default class ScheduleManager {
     get_rooms_bydistance(building: string, distance: number): any[] {
         let rooms_list: any[] = [];
         let target = distance_matrix[building];
+        if (isUndefined(target)) {
+            throw new Error("Invalid building name" + building);
+        }
+
         for (let item of target) {
             // an item looks like { building: 'FNH', distance: 111.80900099393709 }
 
@@ -576,34 +598,38 @@ export default class ScheduleManager {
 
     add_course_tolist(courses: any[]) {
         this.courses = this.courses.concat(courses);
+        this.courses = this.get_union(this.courses, "course_name");
     }
 
     add_room_tolist(rooms: any[]) {
         this.rooms = this.rooms.concat(rooms);
+        this.rooms = this.get_union(this.rooms, "room_name");
     }
 
-    get_union(list: any[], id: string):any[] {
+    get_union(list: any[], id: string): any[] {
         let ret_list: any[] = []
-        list=sortby_id(list,id);
+        list = sortby_id(list, id);
         ret_list.push(list[0]);
         for (var i = 1; i < list.length; i++) {
-            if (list[i][id] != list[list.length - 1][id]) {
+            if (list[i][id] != list[i - 1][id]) {
+
                 ret_list.push(list[i]);
             }
         }
         return ret_list;
     }
 
-    get_intersection(list: any[], id: string, length: number):any[] {
-        let ret_list: any[] = []
-        list=sortby_id(list,id);
+    get_intersection(list: any[], id: string): any[] {
+        let ret_list: any[] = [];
+        list = sortby_id(list, id);
+
         for (var i = 0; i < list.length; i++) {
             var in_intersection = false;
 
-            var index = i + length - 1;
+            var index = i + 1;
             if (index < list.length) {
 
-                if (list[i].id == list[index].id) {
+                if (list[i][id] == list[index][id]) {
                     in_intersection = true;
                 }
             }
@@ -617,8 +643,6 @@ export default class ScheduleManager {
         }
         return ret_list;
     }
-
-
 
 
 }
@@ -644,9 +668,9 @@ function deg2rad(deg: number) {
     return deg * (Math.PI / 180)
 }
 
-function sortby_id(list:any[],id:string):any[]{
+function sortby_id(list: any[], id: string): any[] {
 
-    list=list.sort((a: any, b: any) => {
+    list = list.sort((a: any, b: any) => {
         if (a[id] < b[id]) {
             return 1;
         }

@@ -3453,7 +3453,7 @@ describe("EchoSpec", function () {
 
         s.setup_course().then(function (response) {
            console.log(response.code);
-           console.log(s.get_all_courses());
+           //console.log(s.get_all_courses());
            done();
         }).catch(function (err) {
             console.log(err.message);
@@ -3569,16 +3569,17 @@ describe("EchoSpec", function () {
 
             console.log(response.code);
             let b1=s.get_rooms_bybuilding("DMP");
-            let b2=s.get_rooms_bybuilding("PHRM");
-            let c1=s.get_courses_bydept("cpsc");
+            //let b2=s.get_rooms_bybuilding("PHRM");
+            let c1=s.get_courses_byname(["cpsc_666"]);
 
             s.add_course_tolist(c1);
             s.add_room_tolist(b1);
-            s.add_room_tolist(b2);
+            //s.add_room_tolist(b2);
 
-            s.schedule(s.rooms,s.courses).then(function (response) {
+            s.schedule(s.rooms,s.courses).then(function (response:any) {
                 console.log(response.code);
-                console.log(response.body);
+                console.log(response.body["Events"]);
+                console.log(response.body["Unscheduled"]);
                 done();
             });
 
@@ -3591,7 +3592,7 @@ describe("EchoSpec", function () {
     });
 
 
-    it("test schedule 7", function (done) {
+    xit("test schedule 7", function (done) {
         this.timeout(10000);
 
 
@@ -3624,6 +3625,159 @@ describe("EchoSpec", function () {
 
     });
 
+
+    it("test schedule 8 by distance", function (done) {
+        this.timeout(10000);
+
+
+        var s=new ScheduleManager();
+
+        s.setup_room().then(function (response) {
+
+            let b1=s.get_rooms_bydistance("DMP",200);
+
+            let c1=s.get_all_courses();
+            s.add_course_tolist(c1);
+            s.add_room_tolist(b1);
+
+            c1=sortby_id(c1,"size");
+            b1=sortby_id(b1,"seats");
+            console.log(c1);
+            console.log(b1.length);
+
+            s.schedule(s.rooms,s.courses).then(function (response:any) {
+                console.log(response.code);
+                console.log(response.body["Events"]);
+                console.log(response.body["Unscheduled"]);
+
+                done();
+            }).catch(function (err) {
+                console.log(err.message);
+                done();
+            });
+
+
+        }).catch(function (err) {
+            console.log(err.message);
+            done();
+        });
+
+    });
+
+    it("test schedule 9 test general", function (done) {
+        this.timeout(10000);
+
+
+        var s=new ScheduleManager();
+
+        s.setup_room().then(function (response) {
+
+            var s1: any = {
+                "WHERE": {
+                    "AND": [
+                        {
+
+                            "EQ": {
+                                "courses_year": 2014
+                            }
+                        }
+                    ]
+                },
+                "OPTIONS": {
+                    "COLUMNS": [
+                        "courses_dept",
+                        "courses_id",
+                        "count",
+                        "size"
+                    ],
+                    "ORDER": {
+                        "dir": "UP",
+                        "keys": ["courses_dept", "courses_id", "count","size"]
+                    },
+                    "FORM": "TABLE"
+                },
+                "TRANSFORMATIONS": {
+                    "GROUP": [
+                        "courses_dept",
+                        "courses_id"
+                    ],
+                    "APPLY": [
+                        {
+                            "count": {
+                                "COUNT": "courses_uuid"
+                            }
+                        },
+                        {
+                            "size":{
+                                "MAX":"courses_size"
+                            }
+                        }
+
+                    ]
+                }
+            };
+
+
+
+                s.get_result(s1).then( (result)=> {
+                   console.log(result);
+                    done();
+                }).catch(function (err) {
+                    console.log(err.message);
+                });
+
+
+            }).catch(function (err) {
+                console.log(err.message);
+                done();
+            });
+
+
+
+    });
+
+
+    it("test schedule 10 ", function (done) {
+        this.timeout(10000);
+
+
+        var s=new ScheduleManager();
+
+        s.setup_room().then(function (response) {
+
+            let b1=s.get_rooms_bybuilding("DMP");
+            let b2=s.get_rooms_bydistance("DMP",100);
+
+            let b12=b1.concat(b2);
+            let u1=s.get_union(b12,"room_name");
+
+            let i1=s.get_intersection(b12,"room_name");
+            let i12=i1.concat(u1);
+            let i2=s.get_intersection(i12,"room_name");
+
+            console.log(u1.length);
+            console.log(i1.length);
+
+
+            console.log(u1);
+            console.log("---------------------------");
+            console.log();
+            console.log(i1);
+            console.log();
+            console.log(i2);
+            done();
+
+
+        }).catch(function (err) {
+            console.log(err.message);
+            done();
+        });
+
+
+
+    });
+
+
     function check_order(list: any[], order: string[], dir: string): boolean {
 
 
@@ -3653,6 +3807,21 @@ describe("EchoSpec", function () {
         }
 
         return true;
+    }
+
+    function sortby_id(list:any[],id:string):any[]{
+
+        list=list.sort((a: any, b: any) => {
+            if (a[id] < b[id]) {
+                return 1;
+            }
+            else if (a[id] > b[id]) {
+                return -1;
+            }
+            else
+                return 0;
+        });
+        return list;
     }
 
 

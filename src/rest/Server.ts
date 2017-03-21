@@ -8,6 +8,8 @@ import restify = require('restify');
 import Log from "../Util";
 import {InsightResponse, QueryRequest} from "../controller/IInsightFacade";
 import InsightFacade from "../controller/InsightFacade";
+import ScheduleManager from "../controller/ScheduleManager";
+var scheduleManager:ScheduleManager=new ScheduleManager();
 
 /**
  * This configures the REST endpoints for the server.
@@ -63,7 +65,7 @@ export default class Server {
                 });
 
                 // provides the echo service
-                // curl -is  http://localhost:4321/echo/myMessage
+                // curl -is  http://localhost:4321/query
                 that.rest.get('/echo/:msg', Server.echo);
 
                 that.rest.put('/dataset/:id', Server.put);
@@ -72,7 +74,11 @@ export default class Server {
 
                 that.rest.post('/query', Server.post);
 
+                //that.rest.post('/sch', Server.);
+
                 // Other endpoints will go here
+                var scheduleManager: ScheduleManager = new ScheduleManager();
+
 
                 that.rest.listen(that.port, function () {
                     //Log.info('Server::start() - restify listening: ' + that.rest.url);
@@ -119,7 +125,7 @@ export default class Server {
     public static put(req: restify.Request, res: restify.Response, next: restify.Next) {
         //Log.trace('Server::put(..) - params: ' + req.body);
         try {
-            let content =  new Buffer(req.params.body).toString('base64');
+            let content = new Buffer(req.params.body).toString('base64');
             Server.performPut(req.params.id.toString(), content).then(function (result) {
                 //Log.info('Server::put(..) - responding ' + result.code);
                 res.json(result.code, result.body);
@@ -134,7 +140,7 @@ export default class Server {
         return next();
     }
 
-    public static performPut(id:string, content: string): Promise<InsightResponse> {
+    public static performPut(id: string, content: string): Promise<InsightResponse> {
         let temp = new InsightFacade();
 
         return temp.addDataset(id, content);
@@ -157,7 +163,7 @@ export default class Server {
         return next();
     }
 
-    public static performDel(id:string): Promise<InsightResponse> {
+    public static performDel(id: string): Promise<InsightResponse> {
         let temp = new InsightFacade();
         return temp.removeDataset(id);
     }
@@ -179,9 +185,13 @@ export default class Server {
         return next();
     }
 
-    public static performPost(query:QueryRequest): Promise<InsightResponse> {
+    public static performPost(query: QueryRequest): Promise<InsightResponse> {
         let temp = new InsightFacade();
         return temp.performQuery(query);
+    }
+
+    public static perform_setup() {
+
     }
 
 }
