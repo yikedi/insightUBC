@@ -1,13 +1,18 @@
-function initial(form) {
-
+function initial(form,and_or) {
+    offset = "";
     if(form == "rooms"){
         do_it = false;
         order_by = {"value":""}
         res_colunm = document.getElementById("res_column_rooms");
         is_list = [];
         com_list = [];
-        distance_f = {"building_name":document.getElementById("building_distance").value.toUpperCase(),
-                      "distance":Number(document.getElementById("distance").value)};
+        distance_f ="";
+        if(document.getElementById("building_distance").value!="" &&document.getElementById("distance").value!="" ){
+           distance_f = {"building_name":document.getElementById("building_distance").value.toUpperCase(),
+                      "distance":Number(document.getElementById("distance").value),
+                     "and_or":and_or};
+            offset = "_rooms_distance";
+        }
         if(document.getElementById("building_name").value!= ""){
             do_it = true;
             is_list.push({"key":"rooms_shortname","value":"*"+document.getElementById("building_name").value.toUpperCase()+"*"});
@@ -64,7 +69,7 @@ function initial(form) {
 
 
 function submit(AndOr, form) {  
-    initial(form);
+    initial(form,AndOr);
     var query={};
     query["WHERE"]={};
     query["OPTIONS"]={};
@@ -78,7 +83,7 @@ function submit(AndOr, form) {
     };
 
     console.log(JSON.stringify(query));
-    updateText(JSON.stringify(query),form);
+    updateText(JSON.stringify(query),form,offset);
 }
 
 function setupORDER(query){

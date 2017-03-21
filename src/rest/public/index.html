@@ -32,16 +32,17 @@
                 <div>
                     <div class="collapse navbar-collapse" id="myNavbar">
                         <ul class="nav navbar-nav">
-                            <li><a href="#course_explorer">course explorer</a></li>
-                            <li><a href="#room_explorer">room explorer</a></li>
-                            <li><a href="#room_scheduling">room scheduling</a></li>
+                            <li><a href="#top1">course explorer</a></li>
+                            <li><a href="#top2">room explorer</a></li>
+                            <li><a href="#top3">room scheduling</a></li>
                         </ul>
                     </div>
                 </div>
             </div>
         </nav> 
         <div id="course_explorer" class="container-fluid" style="width : 1400px; margin:0px auto">
-            <h1>Courses Explorer</h1>
+            <div style="height :50px" id = "top1"></div>
+            <h1 >Courses Explorer</h1>
             <form class = "courses_form">
                 <div class="col-sm-2"> Select result field:<br>(hold ctrl for multiple select)<br>
                     <select  multiple="multiple" id="res_column" size = "10">
@@ -132,6 +133,7 @@
 
 
         <div id="room_explorer" class="container-fluid" style="width : 1400px; margin:0px auto">
+            <div style="height :50px" id = "top2"></div>
             <h1>Room Explorer</h1>
             <form class = "courses_form">
                 <div class="col-sm-2"> Select result field:<br>(hold ctrl for multiple select)<br>
@@ -239,6 +241,7 @@
 
 
         <div id="room_scheduling" class="container-fluid">
+            <div style="height :50px" id = "top3"></div>
             <h1>room scheduling</h1>
         </div>
     </body>

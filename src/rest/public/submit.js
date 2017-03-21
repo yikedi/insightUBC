@@ -1,4 +1,4 @@
-function updateText(query,form) {
+function updateText(query,form,offset) {
     var count = 0;
     var http = new XMLHttpRequest();    
     var target_result = document.getElementById("result");  
@@ -57,7 +57,7 @@ function updateText(query,form) {
             result_body.innerHTML = http.statusText + ":  "+http.responseText;
         }
     };
-    http.open("POST","http://localhost:4321/query",true);
+    http.open("POST","http://localhost:4321/query"+offset,true);
     http.setRequestHeader("Content-Type", "application/json");
     http.send(query);
 };
