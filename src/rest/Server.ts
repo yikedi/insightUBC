@@ -9,7 +9,7 @@ import Log from "../Util";
 import {InsightResponse, QueryRequest} from "../controller/IInsightFacade";
 import InsightFacade from "../controller/InsightFacade";
 import ScheduleManager from "../controller/ScheduleManager";
-var scheduleManager:ScheduleManager=new ScheduleManager();
+var scheduleManager: ScheduleManager = new ScheduleManager();
 
 /**
  * This configures the REST endpoints for the server.
@@ -77,7 +77,6 @@ export default class Server {
                 //that.rest.post('/sch', Server.);
 
                 // Other endpoints will go here
-                var scheduleManager: ScheduleManager = new ScheduleManager();
 
 
                 that.rest.listen(that.port, function () {
@@ -191,6 +190,47 @@ export default class Server {
     }
 
     public static perform_setup() {
+        scheduleManager.setup_room().then(function (response) {
+            scheduleManager.setup_course();
+        });
+
+    }
+
+    public static performPostd4room(query: any): Promise<InsightResponse> {
+
+        return new Promise((fulfill, reject) => {
+
+            scheduleManager.get_result(query).then((response: any) => {
+                let rooms = response;
+                let distance_filter = query["EXTRA"];
+                let and_or = query["and_or"];
+                /*
+                 {
+                 "WHERE":{  },
+                 "OPTIONS":{  },
+                 "EXTRA":{
+                 "building_name":"123123123123123123",
+                 "distance":11111
+                 }
+                 }
+                 */
+                let target = distance_filter["building_name"];
+                let distance = Number(distance_filter["distance"]);
+                let rooms2 = scheduleManager.get_rooms_bydistance(target, distance);
+                rooms = rooms.concat(rooms2);
+                if (and_or == "AND") {
+                    rooms = scheduleManager.get_intersection(rooms, "room_name");
+                }
+                else {
+                    rooms = scheduleManager.get_union(rooms, "room_name");
+                }
+
+                fulfill({code:200,body:{"result":rooms}});
+
+            }).catch(function (err) {
+                reject({code:400,body:{"Error":err.message}});
+            });
+        });
 
     }
 
