@@ -9,6 +9,7 @@ import Log from "../Util";
 import {InsightResponse, QueryRequest} from "../controller/IInsightFacade";
 import InsightFacade from "../controller/InsightFacade";
 import ScheduleManager from "../controller/ScheduleManager";
+import {fullResponse} from "restify";
 var scheduleManager: ScheduleManager = new ScheduleManager();
 
 /**
@@ -74,7 +75,9 @@ export default class Server {
 
                 that.rest.post('/query', Server.post);
 
-                //that.rest.post('/sch', Server.);
+                that.rest
+
+                that.rest.post('/query_rooms_distance', Server.post);
 
                 // Other endpoints will go here
 
@@ -189,10 +192,19 @@ export default class Server {
         return temp.performQuery(query);
     }
 
-    public static perform_setup() {
-        scheduleManager.setup_room().then(function (response) {
-            scheduleManager.setup_course();
-        });
+    public static perform_setup():Promise<InsightResponse> {
+        return new Promise((fulfill,reject)=>{
+            scheduleManager.setup_room().then(function (response) {
+                scheduleManager.setup_course().then(function () {
+                    fulfill({code:200,body:"setup done"});
+                }).catch(function (err) {
+                    reject({code:400,body:"setup fail"});
+                });
+            }).catch(function (err) {
+                reject({code:400,body:"setup fail"});
+            });
+        })
+
 
     }
 
