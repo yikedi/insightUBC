@@ -217,7 +217,8 @@ export default class Server {
             scheduleManager.get_result(query).then((response: any) => {
                 let rooms = response;
                 let distance_filter = query["EXTRA"];
-                let and_or = query["and_or"];
+                let and_or = distance_filter["and_or"];
+                let columns=Object.keys(rooms[0]);
                 /*
                  {
                  "WHERE":{  },
@@ -241,7 +242,18 @@ export default class Server {
                     }
                 }
 
-                fulfill({code:200,body:{"result":rooms}});
+                let ret_list:any[]=[];
+                for (let room of rooms){
+                    let ret_room:any={};
+                    for (let key of columns){
+                        ret_room[key]=room[key];
+                    }
+                    ret_list.push(ret_room);
+                }
+
+
+
+                fulfill({code:200,body:{"result":ret_list}});
 
             }).catch(function (err) {
                 reject({code:400,body:{"Error":err.message}});

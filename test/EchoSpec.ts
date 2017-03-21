@@ -3778,6 +3778,26 @@ describe("EchoSpec", function () {
     });
 
 
+    it("test post", function (done) {
+        this.timeout(20000);
+        let query = {"WHERE":{},"OPTIONS":{"COLUMNS":["rooms_name"],"FORM":"TABLE"},"EXTRA":{"building_name":"DMP","distance":100,"and_or":"AND"}};
+        server.start().then(function () {
+            chai.request("http://localhost:4321")
+                .post('/query_rooms_distance')
+                .send(query)
+                .end(function (err: any, res: any) {
+                    console.log(res.body);
+                    server.stop().then();
+                    done();
+                })
+        }).catch(function (err) {
+            console.log(err.message);
+        });
+    });
+
+
+
+
     function check_order(list: any[], order: string[], dir: string): boolean {
 
 
