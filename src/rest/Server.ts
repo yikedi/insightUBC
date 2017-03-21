@@ -10,6 +10,7 @@ import {InsightResponse, QueryRequest} from "../controller/IInsightFacade";
 import InsightFacade from "../controller/InsightFacade";
 import ScheduleManager from "../controller/ScheduleManager";
 import {fullResponse} from "restify";
+import {isUndefined} from "util";
 var scheduleManager: ScheduleManager = new ScheduleManager();
 
 /**
@@ -227,15 +228,17 @@ export default class Server {
                  }
                  }
                  */
-                let target = distance_filter["building_name"];
-                let distance = Number(distance_filter["distance"]);
-                let rooms2 = scheduleManager.get_rooms_bydistance(target, distance);
-                rooms = rooms.concat(rooms2);
-                if (and_or == "AND") {
-                    rooms = scheduleManager.get_intersection(rooms, "room_name");
-                }
-                else {
-                    rooms = scheduleManager.get_union(rooms, "room_name");
+                if (!isUndefined(distance_filter)){
+                    let target = distance_filter["building_name"];
+                    let distance = Number(distance_filter["distance"]);
+                    let rooms2 = scheduleManager.get_rooms_bydistance(target, distance);
+                    rooms = rooms.concat(rooms2);
+                    if (and_or == "AND") {
+                        rooms = scheduleManager.get_intersection(rooms, "room_name");
+                    }
+                    else {
+                        rooms = scheduleManager.get_union(rooms, "room_name");
+                    }
                 }
 
                 fulfill({code:200,body:{"result":rooms}});
