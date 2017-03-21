@@ -75,17 +75,18 @@ export default class Server {
 
                 that.rest.post('/query', Server.post);
 
-                that.rest
+                that.rest.post('/query_rooms_distance', Server.performPostd4room);
 
-                that.rest.post('/query_rooms_distance', Server.post);
 
                 // Other endpoints will go here
 
-
-                that.rest.listen(that.port, function () {
-                    //Log.info('Server::start() - restify listening: ' + that.rest.url);
-                    fulfill(true);
+                Server.perform_setup().then( ()=> {
+                    that.rest.listen(that.port, function () {
+                        //Log.info('Server::start() - restify listening: ' + that.rest.url);
+                        fulfill(true);
+                    });
                 });
+
 
                 that.rest.on('error', function (err: string) {
                     // catches errors in restify start; unusual syntax due to internal node not using normal exceptions here
