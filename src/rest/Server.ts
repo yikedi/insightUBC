@@ -209,7 +209,7 @@ export default class Server {
 
     }
 
-    public static performPostd4room(query: any): Promise<InsightResponse> {
+    public static performPostd4room_helper(query: any): Promise<InsightResponse> {
 
         return new Promise((fulfill, reject) => {
 
@@ -245,6 +245,23 @@ export default class Server {
             });
         });
 
+    }
+
+    public static performPostd4room(req: restify.Request, res: restify.Response, next: restify.Next){
+        Log.trace('Server::post(..) - params: ' + JSON.stringify(req.body));
+        try {
+            Server.performPostd4room_helper(req.body).then(function (result) {
+                //Log.info('Server::post(..) - responding ' + result.code);
+                res.json(result.code, result.body);
+            }).catch(function (result) {
+                //Log.info('Server::post(..) - responding ' + result.code);
+                res.json(result.code, result.body);
+            });
+        } catch (err) {
+            Log.error('Server::post(..) - responding 400');
+            res.json(400, {error: err.message});
+        }
+        return next();
     }
 
 }
