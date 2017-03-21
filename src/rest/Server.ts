@@ -283,6 +283,7 @@ export default class Server {
         return new Promise((fulfill,reject)=>{
            let courses=scheduleManager.get_courses_byname(courses_name);
            fulfill({code:200,body:courses});
+           
         });
     }
 
