@@ -11,6 +11,7 @@ import InsightFacade from "../controller/InsightFacade";
 import ScheduleManager from "../controller/ScheduleManager";
 import {fullResponse} from "restify";
 import {isUndefined} from "util";
+
 var scheduleManager: ScheduleManager = new ScheduleManager();
 
 /**
@@ -70,6 +71,11 @@ export default class Server {
                 // curl -is  http://localhost:4321/query
                 that.rest.get('/echo/:msg', Server.echo);
 
+                that.rest.get(/index/, restify.serveStatic({
+                    'directory':__dirname+'/public/',
+                    'default': 'index.html'
+                }));
+
                 that.rest.put('/dataset/:id', Server.put);
 
                 that.rest.del('/dataset/:id', Server.del);
@@ -83,7 +89,7 @@ export default class Server {
 
                 Server.perform_setup().then( ()=> {
                     that.rest.listen(that.port, function () {
-                        //Log.info('Server::start() - restify listening: ' + that.rest.url);
+                        //Log.info('Server::start() - restify listening: ' + that.rest.url);s
                         fulfill(true);
                     });
                 });
@@ -283,7 +289,7 @@ export default class Server {
         return new Promise((fulfill,reject)=>{
            let courses=scheduleManager.get_courses_byname(courses_name);
            fulfill({code:200,body:courses});
-           
+
         });
     }
 
