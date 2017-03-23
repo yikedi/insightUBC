@@ -21,6 +21,7 @@
         <link rel="stylesheet" href="main.css">
         <script src="submit.js"></script>
         <script src="form.js"></script>
+        <script src="add_to_list.js"></script>
 
 
 
@@ -131,9 +132,6 @@
             </div>
         </div>
 
-
-
-
         <div id="room_explorer" class="container-fluid" style="width : 1400px; margin:0px auto">
             <div style="height :50px" id = "top2"></div>
             <h1>Room Explorer</h1>
@@ -242,7 +240,7 @@
 
 
 
-        <div id="room_scheduling" class="container-fluid">
+        <div id="room_scheduling" class="container-fluid" style="width : 1400px; margin:0px auto">
             <div style="height :50px" id = "top3"></div>
             <h1>room scheduling</h1>
 
@@ -258,7 +256,7 @@
                         <input type="text" class="form-control" id = "building_distance_s" placeholder="Enter building name">
                     </div>
                     <div class="col-sm-2">
-                        <button class="btn btn-primary active" onclick=add_to_list("AND","courses")>Select all</button>
+                        <button class="btn btn-primary active" onclick=add_to_list({},"get_courses_allcourse","_get_allcourses")>Select all</button>
                     </div>
                     <div class="col-sm-1">
                         <button class="btn btn-primary active" onclick=add_to_list("AND","courses")>></button>
@@ -274,7 +272,7 @@
                         <input type="text" class="form-control" id = "cid_s" placeholder="Enter courses number, such as 121">
                     </div>
                     <div class="col-sm-2">
-                        <button class="btn btn-primary active" onclick=add_to_list("AND","courses")>Select all</button>
+                        <button class="btn btn-primary active" onclick=add_to_list({},"query_get_allrooms","_get_allrooms")>Select all</button>
                     </div>
                     <div class="col-sm-1">
                         <button class="btn btn-primary active" onclick=add_to_list("AND","courses")>></button>
@@ -288,11 +286,15 @@
                 </div>
             </div>
             <div class="col-sm-4" >
-                <div id = "course_in_list"class="col-sm-6" >
-                    1111111111
+                <div class="col-sm-6" >
+                    <table id = "course_in_list">
+                        <th>course name</th>
+                    </table>
                 </div>
-                <div id = "course_in_list" class="col-sm-6" >
-                    22222
+                <div class="col-sm-6" >
+                    <table id = "room_in_list">
+                        <th>course name</th>
+                    </table>
                 </div>
             </div>
         </div>

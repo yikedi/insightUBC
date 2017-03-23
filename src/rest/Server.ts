@@ -72,8 +72,8 @@ export default class Server {
                 that.rest.get('/echo/:msg', Server.echo);
 
                 that.rest.get(/.*/, restify.serveStatic({
-                    "directory":__dirname + "/public",
-                    "default": "index.html"
+                    'directory':__dirname+'/public/',
+                    'default': 'index.html'
                 }));
 
                 that.rest.put('/dataset/:id', Server.put);
@@ -253,8 +253,8 @@ export default class Server {
                 let columns=Object.keys(rooms[0]);
                 /*
                  {
-                 "WHERE":{  },
-                 "OPTIONS":{  },
+                 "WHERE":{  },
+                 "OPTIONS":{  },
                  "EXTRA":{
                  "building_name":"123123123123123123",
                  "distance":11111
@@ -295,7 +295,7 @@ export default class Server {
     }
 
     public static performPostd4room(req: restify.Request, res: restify.Response, next: restify.Next){
-       // Log.trace('Server::post(..) - params: ' + JSON.stringify(req.body));
+        // Log.trace('Server::post(..) - params: ' + JSON.stringify(req.body));
         try {
             Server.performPostd4room_helper(req.body).then(function (result) {
                 //Log.info('Server::post(..) - responding ' + result.code);
@@ -313,8 +313,8 @@ export default class Server {
 
     public static get_courses_byname_helper(courses_name:any[]): Promise<InsightResponse>{
         return new Promise((fulfill,reject)=>{
-           let courses=scheduleManager.get_courses_byname(courses_name);
-           fulfill({code:200,body:courses});
+            let courses=scheduleManager.get_courses_byname(courses_name);
+            fulfill({code:200,body:courses});
 
         });
     }
@@ -503,14 +503,14 @@ export default class Server {
     }
 
     public static get_rooms_bydistance_helper(building: string, distance: number):Promise<any>{
-            return new Promise((fulfill,reject)=>{
-                try {
-                    let rooms = scheduleManager.get_rooms_bydistance(building, distance);
-                    fulfill({code: 200, body: rooms});
-                }catch (err){
-                    reject({code:400,body:err.message});
-                }
-            });
+        return new Promise((fulfill,reject)=>{
+            try {
+                let rooms = scheduleManager.get_rooms_bydistance(building, distance);
+                fulfill({code: 200, body: rooms});
+            }catch (err){
+                reject({code:400,body:err.message});
+            }
+        });
     }
 
     public static get_rooms_bydistance(req: restify.Request, res: restify.Response, next: restify.Next){
