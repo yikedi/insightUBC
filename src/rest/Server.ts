@@ -84,6 +84,27 @@ export default class Server {
 
                 that.rest.post('/query_rooms_distance', Server.performPostd4room);
 
+                that.rest.post('/query_get_courses_byname',Server.get_courses_byname);
+
+                that.rest.post('/query_get_courses_bydept',Server.get_courses_bydept);
+
+                that.rest.post('/query_get_allcourses',Server.get_courses_allcourse);
+
+                that.rest.post('/query_get_rooms_byname',Server.get_rooms_byname);
+
+                that.rest.post('/query_get_rooms_bybuilding',Server.get_rooms_bybuilding);
+
+                that.rest.post('/query_get_allrooms',Server.get_courses_allrooms);
+
+                that.rest.post('/query_get_rooms_bydistance',Server.get_rooms_bydistance);
+
+                that.rest.post('/query_schedule',Server.schedule);
+
+
+
+
+
+
 
                 // Other endpoints will go here
 
@@ -111,6 +132,11 @@ export default class Server {
     // These are almost certainly not the best place to put these, but are here for your reference.
     // By updating the Server.echo function pointer above, these methods can be easily moved.
     //
+
+
+
+
+
     public static echo(req: restify.Request, res: restify.Response, next: restify.Next) {
         Log.trace('Server::echo(..) - params: ' + JSON.stringify(req.params));
         try {
@@ -269,7 +295,7 @@ export default class Server {
     }
 
     public static performPostd4room(req: restify.Request, res: restify.Response, next: restify.Next){
-        Log.trace('Server::post(..) - params: ' + JSON.stringify(req.body));
+       // Log.trace('Server::post(..) - params: ' + JSON.stringify(req.body));
         try {
             Server.performPostd4room_helper(req.body).then(function (result) {
                 //Log.info('Server::post(..) - responding ' + result.code);
@@ -294,12 +320,14 @@ export default class Server {
     }
 
     public static get_courses_byname(req: restify.Request, res: restify.Response, next: restify.Next){
-        Log.trace('Server::post(..) - params: ' + JSON.stringify(req.body));
+//        Log.trace('Server::post(..) - params: ' + JSON.stringify(req.body));
         try {
             Server.get_courses_byname_helper(req.body).then(function (result:any) {
                 //Log.info('Server::post(..) - responding ' + result.code);
                 scheduleManager.add_course_tolist(result);
-                res.json(result.code, result.body);
+                scheduleManager.courses=scheduleManager.get_union(scheduleManager.courses,"course_name");
+
+                res.json(result.code, scheduleManager.courses);
             }).catch(function (result) {
                 //Log.info('Server::post(..) - responding ' + result.code);
                 res.json(result.code, result.body);
@@ -321,12 +349,14 @@ export default class Server {
     }
 
     public static get_courses_bydept(req: restify.Request, res: restify.Response, next: restify.Next){
-        Log.trace('Server::post(..) - params: ' + JSON.stringify(req.body));
+//        Log.trace('Server::post(..) - params: ' + JSON.stringify(req.body));
         try {
             Server.get_courses_bydept_helper(req.body).then(function (result:any) {
                 //Log.info('Server::post(..) - responding ' + result.code);
                 scheduleManager.add_course_tolist(result);
-                res.json(result.code, result.body);
+                scheduleManager.courses=scheduleManager.get_union(scheduleManager.courses,"course_name");
+
+                res.json(result.code, scheduleManager.courses);
             }).catch(function (result) {
                 //Log.info('Server::post(..) - responding ' + result.code);
                 res.json(result.code, result.body);
@@ -348,12 +378,14 @@ export default class Server {
     }
 
     public static get_courses_allcourse(req: restify.Request, res: restify.Response, next: restify.Next){
-        Log.trace('Server::post(..) - params: ' + JSON.stringify(req.body));
+//        Log.trace('Server::post(..) - params: ' + JSON.stringify(req.body));
         try {
             Server.get_courses_allcourse_helper().then(function (result:any) {
                 //Log.info('Server::post(..) - responding ' + result.code);
                 scheduleManager.add_course_tolist(result);
-                res.json(result.code, result.body);
+                scheduleManager.courses=scheduleManager.get_union(scheduleManager.courses,"course_name");
+
+                res.json(result.code, scheduleManager.courses);
             }).catch(function (result) {
                 //Log.info('Server::post(..) - responding ' + result.code);
                 res.json(result.code, result.body);
@@ -374,12 +406,14 @@ export default class Server {
     }
 
     public static get_rooms_byname(req: restify.Request, res: restify.Response, next: restify.Next){
-        Log.trace('Server::post(..) - params: ' + JSON.stringify(req.body));
+//        Log.trace('Server::post(..) - params: ' + JSON.stringify(req.body));
         try {
             Server.get_rooms_byname_helper(req.body).then(function (result:any) {
                 //Log.info('Server::post(..) - responding ' + result.code);
                 scheduleManager.add_room_tolist(result);
-                res.json(result.code, result.body);
+                scheduleManager.rooms=scheduleManager.get_union(scheduleManager.rooms,"rooms_name");
+
+                res.json(result.code, scheduleManager.rooms);
             }).catch(function (result) {
                 //Log.info('Server::post(..) - responding ' + result.code);
                 res.json(result.code, result.body);
@@ -400,12 +434,14 @@ export default class Server {
     }
 
     public static get_rooms_bybuilding(req: restify.Request, res: restify.Response, next: restify.Next){
-        Log.trace('Server::post(..) - params: ' + JSON.stringify(req.body));
+//        Log.trace('Server::post(..) - params: ' + JSON.stringify(req.body));
         try {
             Server.get_rooms_bybuilding_helper(req.body).then(function (result:any) {
                 //Log.info('Server::post(..) - responding ' + result.code);
                 scheduleManager.add_room_tolist(result);
-                res.json(result.code, result.body);
+                scheduleManager.rooms=scheduleManager.get_union(scheduleManager.rooms,"rooms_name");
+
+                res.json(result.code, scheduleManager.rooms);
             }).catch(function (result) {
                 //Log.info('Server::post(..) - responding ' + result.code);
                 res.json(result.code, result.body);
@@ -428,12 +464,14 @@ export default class Server {
     }
 
     public static get_courses_allrooms(req: restify.Request, res: restify.Response, next: restify.Next){
-        Log.trace('Server::post(..) - params: ' + JSON.stringify(req.body));
+//        Log.trace('Server::post(..) - params: ' + JSON.stringify(req.body));
         try {
             Server.get_courses_allrooms_helper().then(function (result:any) {
                 //Log.info('Server::post(..) - responding ' + result.code);
                 scheduleManager.add_room_tolist(result);
-                res.json(result.code, result.body);
+                scheduleManager.rooms=scheduleManager.get_union(scheduleManager.rooms,"rooms_name");
+
+                res.json(result.code, scheduleManager.rooms);
             }).catch(function (result) {
                 //Log.info('Server::post(..) - responding ' + result.code);
                 res.json(result.code, result.body);
@@ -447,7 +485,7 @@ export default class Server {
 
 
     public static schedule(req: restify.Request, res: restify.Response, next: restify.Next)  {
-        Log.trace('Server::post(..) - params: ' + JSON.stringify(req.body));
+        //Log.trace('Server::post(..) - params: ' + JSON.stringify(req.body));
         try {
             scheduleManager.schedule(scheduleManager.rooms,scheduleManager.courses).then(function (result:any) {
                 //Log.info('Server::post(..) - responding ' + result.code);
@@ -462,5 +500,34 @@ export default class Server {
             res.json(400, {error: err.message});
         }
         return next();
+    }
+
+    public static get_rooms_bydistance_helper(building: string, distance: number):Promise<any>{
+            return new Promise((fulfill,reject)=>{
+                try {
+                    let rooms = scheduleManager.get_rooms_bydistance(building, distance);
+                    fulfill({code: 200, body: rooms});
+                }catch (err){
+                    reject({code:400,body:err.message});
+                }
+            });
+    }
+
+    public static get_rooms_bydistance(req: restify.Request, res: restify.Response, next: restify.Next){
+        try {
+            Server.get_rooms_bydistance_helper(req.body["building"],req.body["distance"]).then(function (result:any) {
+                //Log.info('Server::post(..) - responding ' + result.code);
+                scheduleManager.add_room_tolist(result);
+                scheduleManager.rooms=scheduleManager.get_union(scheduleManager.rooms,"rooms_name");
+
+                res.json(result.code, scheduleManager.rooms);
+            }).catch(function (result) {
+                //Log.info('Server::post(..) - responding ' + result.code);
+                res.json(result.code, result.body);
+            });
+        } catch (err) {
+            Log.error('Server::post(..) - responding 400');
+            res.json(400, {error: err.message});
+        }
     }
 }
