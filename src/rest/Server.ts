@@ -71,9 +71,9 @@ export default class Server {
                 // curl -is  http://localhost:4321/query
                 that.rest.get('/echo/:msg', Server.echo);
 
-                that.rest.get(/index/, restify.serveStatic({
-                    'directory':__dirname+'/public/',
-                    'default': 'index.html'
+                that.rest.get(/.*/, restify.serveStatic({
+                    "directory":__dirname + "/public",
+                    "default": "index.html"
                 }));
 
                 that.rest.put('/dataset/:id', Server.put);

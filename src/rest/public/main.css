@@ -1,16 +1,20 @@
+/*
 body {
     background-image: url("UBC.jpg");
     background-repeat: no-repeat;
     background-attachment: fixed;
 }   
+*/
+
 
 div{
     padding-top: 6px;
 }
-/*
+
 
 table, th, td {
     border: 1px solid black;
+    border-collapse: collapse;
 
 }
 
@@ -22,7 +26,8 @@ table{
 th, td {
     padding: 2px;
 }
-*/
-#course_explorer {height:1000px;overflow:auto;    background-color: rgba(255, 255, 255, 0.9);}
-#room_explorer {height:1000px; overflow:auto;    background-color: rgba(255, 255, 255, 0.9);}
-#room_scheduling {height:1000px;color: #fff; overflow:auto;     background-color: rgba(255, 255, 255, 0.9);}
+
+#course_explorer {height:1000px;overflow:hidden; }
+#room_explorer {height:1000px; overflow:auto;}
+#room_scheduling {height:1000px; overflow:auto;     background-color: rgba(255, 255, 255, 0.9);}
+

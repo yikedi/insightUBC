@@ -5,20 +5,20 @@
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <title>UBC Database</title>
-       
+
+        <!-- jQuery library -->
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+
         <!-- Latest compiled and minified CSS -->
-<!--        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">-->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
 
         <!-- Optional theme -->
-<!--        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">-->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
 
         <!-- Latest compiled and minified JavaScript -->
-<!--        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>-->
-        
-         <!-- jQuery library -->
-<!--        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>-->
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
 
-<!--        <link rel="stylesheet" href="main.css">-->
+        <link rel="stylesheet" href="main.css">
         <script src="submit.js"></script>
         <script src="form.js"></script>
 
@@ -245,6 +245,56 @@
         <div id="room_scheduling" class="container-fluid">
             <div style="height :50px" id = "top3"></div>
             <h1>room scheduling</h1>
+
+            <div class="col-sm-8" >
+                <div class="col-sm-12">
+                    <div class="col-sm-2">
+                        <input type="text" class="form-control" id = "distance_s" placeholder="Distance">
+                    </div>
+                    <div class="col-sm-1">
+                        <label>from</label>
+                    </div>
+                    <div class="col-sm-5">
+                        <input type="text" class="form-control" id = "building_distance_s" placeholder="Enter building name">
+                    </div>
+                    <div class="col-sm-2">
+                        <button class="btn btn-primary active" onclick=add_to_list("AND","courses")>Select all</button>
+                    </div>
+                    <div class="col-sm-1">
+                        <button class="btn btn-primary active" onclick=add_to_list("AND","courses")>></button>
+                    </div>
+                </div>
+
+
+                <div class="col-sm-12">
+                    <div class="col-sm-4">
+                        <input type="text" class="form-control" id ="dept_s"placeholder="Enter courses department shortname ">
+                    </div>
+                    <div class="col-sm-4">
+                        <input type="text" class="form-control" id = "cid_s" placeholder="Enter courses number, such as 121">
+                    </div>
+                    <div class="col-sm-2">
+                        <button class="btn btn-primary active" onclick=add_to_list("AND","courses")>Select all</button>
+                    </div>
+                    <div class="col-sm-1">
+                        <button class="btn btn-primary active" onclick=add_to_list("AND","courses")>></button>
+                    </div>
+                </div>
+                <div class = "col-sm-12">
+                    <div class="col-sm-4"></div>
+                    <div class="col-sm-2">
+                        <button class="btn btn-primary active" onclick=submit("OR","courses")>Make Schedule</button>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-4" >
+                <div id = "course_in_list"class="col-sm-6" >
+                    1111111111
+                </div>
+                <div id = "course_in_list" class="col-sm-6" >
+                    22222
+                </div>
+            </div>
         </div>
     </body>
 </html>
