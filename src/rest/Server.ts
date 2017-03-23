@@ -293,8 +293,174 @@ export default class Server {
         });
     }
 
-    public static get_courses_byname(){
-
+    public static get_courses_byname(req: restify.Request, res: restify.Response, next: restify.Next){
+        Log.trace('Server::post(..) - params: ' + JSON.stringify(req.body));
+        try {
+            Server.get_courses_byname_helper(req.body).then(function (result:any) {
+                //Log.info('Server::post(..) - responding ' + result.code);
+                scheduleManager.add_course_tolist(result);
+                res.json(result.code, result.body);
+            }).catch(function (result) {
+                //Log.info('Server::post(..) - responding ' + result.code);
+                res.json(result.code, result.body);
+            });
+        } catch (err) {
+            Log.error('Server::post(..) - responding 400');
+            res.json(400, {error: err.message});
+        }
+        return next();
     }
 
+
+    public static get_courses_bydept_helper(dept:any): Promise<InsightResponse>{
+        return new Promise((fulfill,reject)=>{
+            let courses=scheduleManager.get_courses_bydept(dept);
+            fulfill({code:200,body:courses});
+
+        });
+    }
+
+    public static get_courses_bydept(req: restify.Request, res: restify.Response, next: restify.Next){
+        Log.trace('Server::post(..) - params: ' + JSON.stringify(req.body));
+        try {
+            Server.get_courses_bydept_helper(req.body).then(function (result:any) {
+                //Log.info('Server::post(..) - responding ' + result.code);
+                scheduleManager.add_course_tolist(result);
+                res.json(result.code, result.body);
+            }).catch(function (result) {
+                //Log.info('Server::post(..) - responding ' + result.code);
+                res.json(result.code, result.body);
+            });
+        } catch (err) {
+            Log.error('Server::post(..) - responding 400');
+            res.json(400, {error: err.message});
+        }
+        return next();
+    }
+
+
+    public static get_courses_allcourse_helper(): Promise<InsightResponse>{
+        return new Promise((fulfill,reject)=>{
+            let courses=scheduleManager.get_all_courses();
+            fulfill({code:200,body:courses});
+
+        });
+    }
+
+    public static get_courses_allcourse(req: restify.Request, res: restify.Response, next: restify.Next){
+        Log.trace('Server::post(..) - params: ' + JSON.stringify(req.body));
+        try {
+            Server.get_courses_allcourse_helper().then(function (result:any) {
+                //Log.info('Server::post(..) - responding ' + result.code);
+                scheduleManager.add_course_tolist(result);
+                res.json(result.code, result.body);
+            }).catch(function (result) {
+                //Log.info('Server::post(..) - responding ' + result.code);
+                res.json(result.code, result.body);
+            });
+        } catch (err) {
+            Log.error('Server::post(..) - responding 400');
+            res.json(400, {error: err.message});
+        }
+        return next();
+    }
+
+    public static get_rooms_byname_helper(room_names:any[]): Promise<InsightResponse>{
+        return new Promise((fulfill,reject)=>{
+            let rooms=scheduleManager.get_rooms_byname(room_names);
+            fulfill({code:200,body:rooms});
+
+        });
+    }
+
+    public static get_rooms_byname(req: restify.Request, res: restify.Response, next: restify.Next){
+        Log.trace('Server::post(..) - params: ' + JSON.stringify(req.body));
+        try {
+            Server.get_rooms_byname_helper(req.body).then(function (result:any) {
+                //Log.info('Server::post(..) - responding ' + result.code);
+                scheduleManager.add_room_tolist(result);
+                res.json(result.code, result.body);
+            }).catch(function (result) {
+                //Log.info('Server::post(..) - responding ' + result.code);
+                res.json(result.code, result.body);
+            });
+        } catch (err) {
+            Log.error('Server::post(..) - responding 400');
+            res.json(400, {error: err.message});
+        }
+        return next();
+    }
+
+    public static get_rooms_bybuilding_helper(building_name:string): Promise<InsightResponse>{
+        return new Promise((fulfill,reject)=>{
+            let rooms=scheduleManager.get_rooms_bybuilding(building_name);
+            fulfill({code:200,body:rooms});
+
+        });
+    }
+
+    public static get_rooms_bybuilding(req: restify.Request, res: restify.Response, next: restify.Next){
+        Log.trace('Server::post(..) - params: ' + JSON.stringify(req.body));
+        try {
+            Server.get_rooms_bybuilding_helper(req.body).then(function (result:any) {
+                //Log.info('Server::post(..) - responding ' + result.code);
+                scheduleManager.add_room_tolist(result);
+                res.json(result.code, result.body);
+            }).catch(function (result) {
+                //Log.info('Server::post(..) - responding ' + result.code);
+                res.json(result.code, result.body);
+            });
+        } catch (err) {
+            Log.error('Server::post(..) - responding 400');
+            res.json(400, {error: err.message});
+        }
+        return next();
+    }
+
+
+
+    public static get_courses_allrooms_helper(): Promise<InsightResponse>{
+        return new Promise((fulfill,reject)=>{
+            let courses=scheduleManager.get_all_rooms();
+            fulfill({code:200,body:courses});
+
+        });
+    }
+
+    public static get_courses_allrooms(req: restify.Request, res: restify.Response, next: restify.Next){
+        Log.trace('Server::post(..) - params: ' + JSON.stringify(req.body));
+        try {
+            Server.get_courses_allrooms_helper().then(function (result:any) {
+                //Log.info('Server::post(..) - responding ' + result.code);
+                scheduleManager.add_room_tolist(result);
+                res.json(result.code, result.body);
+            }).catch(function (result) {
+                //Log.info('Server::post(..) - responding ' + result.code);
+                res.json(result.code, result.body);
+            });
+        } catch (err) {
+            Log.error('Server::post(..) - responding 400');
+            res.json(400, {error: err.message});
+        }
+        return next();
+    }
+
+
+    public static schedule(req: restify.Request, res: restify.Response, next: restify.Next)  {
+        Log.trace('Server::post(..) - params: ' + JSON.stringify(req.body));
+        try {
+            scheduleManager.schedule(scheduleManager.rooms,scheduleManager.courses).then(function (result:any) {
+                //Log.info('Server::post(..) - responding ' + result.code);
+                //scheduleManager.add_room_tolist(result);
+                res.json(result.code, result.body);
+            }).catch(function (result) {
+                //Log.info('Server::post(..) - responding ' + result.code);
+                res.json(result.code, result.body);
+            });
+        } catch (err) {
+            Log.error('Server::post(..) - responding 400');
+            res.json(400, {error: err.message});
+        }
+        return next();
+    }
 }
