@@ -17,7 +17,11 @@ function updateText(query,form,offset) {
     http.onreadystatechange = function () {
         console.log(count++);
         if(http.readyState == 1){
-            target_result.setAttribute("class","panel panel-warning");
+            if(form =="schedule"){
+                target_result.setAttribute("class","col-sm-12 panel panel-warning");
+            }else{
+                target_result.setAttribute("class","panel panel-warning");
+            }
             result_head.innerHTML = "Result";
             result_body.innerHTML = "loading";
         }
@@ -25,7 +29,11 @@ function updateText(query,form,offset) {
             var response = JSON.parse(http.response)["result"];
             var length = response.length;
             var return_html = document.createElement("table"); 
-            target_result.setAttribute("class","panel panel-success");
+            if(form =="schedule"){
+                target_result.setAttribute("class","col-sm-12 panel panel-success");
+            }else{
+                target_result.setAttribute("class","panel panel-success");
+            }
 
             var tr;
             if(length > 0){
@@ -57,7 +65,11 @@ function updateText(query,form,offset) {
                 result_body.innerHTML = "no result";
             }
         }else if(http.readyState == 4 && http.status != 200){
-            target_result.setAttribute("class","panel panel-danger");
+            if(form =="schedule"){
+                target_result.setAttribute("class","col-sm-12 panel panel-danger");
+            }else{
+                target_result.setAttribute("class","panel panel-danger");
+            }
             result_body.innerHTML = '';
             result_body.innerHTML = http.statusText + ":  "+http.responseText;
         }
