@@ -311,9 +311,10 @@ export default class Server {
         return next();
     }
 
-    public static get_courses_byname_helper(courses_name:any[]): Promise<InsightResponse>{
+    public static get_courses_byname_helper(courses_name:any): Promise<InsightResponse>{
         return new Promise((fulfill,reject)=>{
-            let courses=scheduleManager.get_courses_byname(courses_name);
+            let courses=scheduleManager.get_courses_byname(courses_name["course_name"]);
+            Log.trace(courses[0]);
             fulfill({code:200,body:courses});
 
         });
@@ -342,7 +343,7 @@ export default class Server {
 
     public static get_courses_bydept_helper(dept:any): Promise<InsightResponse>{
         return new Promise((fulfill,reject)=>{
-            let courses=scheduleManager.get_courses_bydept(dept);
+            let courses=scheduleManager.get_courses_bydept(dept["course_dept"]);
             fulfill({code:200,body:courses});
 
         });
@@ -378,7 +379,7 @@ export default class Server {
     }
 
     public static get_courses_allcourse(req: restify.Request, res: restify.Response, next: restify.Next){
-//        Log.trace('Server::post(..) - params: ' + JSON.stringify(req.body));
+        Log.trace('Server::post(..) - params: ' + JSON.stringify(req.body));
         try {
             Server.get_courses_allcourse_helper().then(function (result:any) {
                 //Log.info('Server::post(..) - responding ' + result.code);
@@ -425,9 +426,9 @@ export default class Server {
         return next();
     }
 
-    public static get_rooms_bybuilding_helper(building_name:string): Promise<InsightResponse>{
+    public static get_rooms_bybuilding_helper(building_name:any): Promise<InsightResponse>{
         return new Promise((fulfill,reject)=>{
-            let rooms=scheduleManager.get_rooms_bybuilding(building_name);
+            let rooms=scheduleManager.get_rooms_bybuilding(building_name["rooms_shortname"]);
             fulfill({code:200,body:rooms});
 
         });

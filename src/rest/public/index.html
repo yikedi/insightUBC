@@ -19,9 +19,10 @@
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
 
         <link rel="stylesheet" href="main.css">
+        <script src="add_to_list.js"></script>
         <script src="submit.js"></script>
         <script src="form.js"></script>
-        <script src="add_to_list.js"></script>
+
 
 
 
@@ -246,25 +247,6 @@
 
             <div class="col-sm-8" >
                 <div class="col-sm-12">
-                    <div class="col-sm-2">
-                        <input type="text" class="form-control" id = "distance_s" placeholder="Distance">
-                    </div>
-                    <div class="col-sm-1">
-                        <label>from</label>
-                    </div>
-                    <div class="col-sm-5">
-                        <input type="text" class="form-control" id = "building_distance_s" placeholder="Enter building name">
-                    </div>
-                    <div class="col-sm-2">
-                        <button class="btn btn-primary active" onclick=add_to_list({},"get_courses_allcourse","_get_allcourses")>Select all</button>
-                    </div>
-                    <div class="col-sm-1">
-                        <button class="btn btn-primary active" onclick=add_to_list("AND","courses")>></button>
-                    </div>
-                </div>
-
-
-                <div class="col-sm-12">
                     <div class="col-sm-4">
                         <input type="text" class="form-control" id ="dept_s"placeholder="Enter courses department shortname ">
                     </div>
@@ -272,26 +254,49 @@
                         <input type="text" class="form-control" id = "cid_s" placeholder="Enter courses number, such as 121">
                     </div>
                     <div class="col-sm-2">
+                        <button class="btn btn-primary active" 
+                                onclick=add_to_list({},"get_courses_allcourse","_get_allcourses")>Select all</button>
+                    </div>
+                    <div class="col-sm-1">
+                        <button class="btn btn-primary active" onclick=add_single_course()>></button>
+                    </div>
+                </div>
+
+
+                <div class="col-sm-12">
+                    <div class="col-sm-2">
+                        <input type="text" class="form-control" id = "distance_s" placeholder="Distance">
+                    </div>
+                    <div class="col-sm-1">
+                        <label>from</label>
+                    </div>
+                    <div class="col-sm-3">
+                        <input type="text" class="form-control" id = "building_s" placeholder="Enter building name">
+                    </div>
+                    <div class="col-sm-2">
+                        <input type="text" class="form-control" id = "rooms_nums" placeholder="Room number">
+                    </div>
+                    <div class="col-sm-2">
                         <button class="btn btn-primary active" onclick=add_to_list({},"query_get_allrooms","_get_allrooms")>Select all</button>
                     </div>
                     <div class="col-sm-1">
-                        <button class="btn btn-primary active" onclick=add_to_list("AND","courses")>></button>
+                        <button class="btn btn-primary active" onclick=add_single_room()>></button>
                     </div>
                 </div>
                 <div class = "col-sm-12">
                     <div class="col-sm-4"></div>
                     <div class="col-sm-2">
-                        <button class="btn btn-primary active" onclick=submit("OR","courses")>Make Schedule</button>
+                        <button class="btn btn-primary active" onclick=add_single_room()>Make Schedule</button>
                     </div>
                 </div>
             </div>
             <div class="col-sm-4" >
-                <div class="col-sm-6" >
+                <div class="col-sm-6" style ="height:1000px; overflow:auto;">
                     <table id = "course_in_list">
                         <th>course name</th>
                     </table>
                 </div>
-                <div class="col-sm-6" >
+                <div class="col-sm-6" style ="height:1000px; overflow:auto;">
                     <table id = "room_in_list">
                         <th>course name</th>
                     </table>
