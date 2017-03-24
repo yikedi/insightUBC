@@ -246,7 +246,7 @@
             <h1>room scheduling</h1>
 
             <div class="col-sm-8" >
-                <div class="col-sm-12">
+                <div class="col-sm-12" >
                     <div class="col-sm-4">
                         <input type="text" class="form-control" id ="dept_s"placeholder="Enter courses department shortname ">
                     </div>
@@ -261,8 +261,6 @@
                         <button class="btn btn-primary active" onclick=add_single_course()>></button>
                     </div>
                 </div>
-
-
                 <div class="col-sm-12">
                     <div class="col-sm-2">
                         <input type="text" class="form-control" id = "distance_s" placeholder="Distance">
@@ -286,19 +284,23 @@
                 <div class = "col-sm-12">
                     <div class="col-sm-4"></div>
                     <div class="col-sm-2">
-                        <button class="btn btn-primary active" onclick=add_single_room()>Make Schedule</button>
+                        <button class="btn btn-primary active" onclick= updateText({},"schedule","_schedule")>Make Schedule</button>
                     </div>
+                </div>
+                <div id = "result_s" class = "col-sm-12" style="background:#000000">
+                    <div class="panel-heading" id = "result_head_s"></div>
+                    <div class="panel-body" id = "result_body_s"></div>
                 </div>
             </div>
             <div class="col-sm-4" >
                 <div class="col-sm-6" style ="height:1000px; overflow:auto;">
                     <table id = "course_in_list">
-                        <th>course name</th>
+                        <th>Courses Name</th>
                     </table>
                 </div>
                 <div class="col-sm-6" style ="height:1000px; overflow:auto;">
                     <table id = "room_in_list">
-                        <th>course name</th>
+                        <th>Room Name</th>
                     </table>
                 </div>
             </div>

@@ -9,6 +9,11 @@ function updateText(query,form,offset) {
         result_head = document.getElementById("result_head_rooms");
         result_body = document.getElementById("result_body_rooms");
     }
+    if(form =="schedule"){
+        target_result = document.getElementById("result_s"); 
+        result_head = document.getElementById("result_head_s");
+        result_body = document.getElementById("result_body_s");
+    }
     http.onreadystatechange = function () {
         console.log(count++);
         if(http.readyState == 1){

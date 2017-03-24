@@ -53,7 +53,7 @@ function add_single_course(){
     var data = "";
     if(dept != "" && courses_id != ""){
         offset_single = "_get_courses_byname";
-        data = {"course_name":dept +"_"+courses_id};
+        data = {"course_name":[dept +"_"+courses_id]};
     }else if (dept != ""){
         offset_single = "_get_courses_bydept";
         data = {"course_dept":dept};
@@ -77,13 +77,13 @@ function add_single_room(){
     }
     var offset_single_r="";
     var data = "";
-    console.log(distance);
+    
     if(distance!="" && Building_name != ""){
         offset_single_r = "_get_rooms_bydistance";
-        data = {"distance":distance,"rooms_shortname":Building_name};
+        data = {"distance":distance,"building":Building_name};
     }else if (Building_name != "" && Room_number!=""){
         offset_single_r = "_get_rooms_byname";
-        data = {"rooms_shortname":Building_name,"rooms_number":Room_number};
+        data = {"rooms_list":[Building_name+"_"+Room_number]};
     }else if (Building_name != ""){
         offset_single_r = "_get_rooms_bybuilding";
         data = {"rooms_shortname":Building_name};

@@ -313,7 +313,7 @@ export default class Server {
 
     public static get_courses_byname_helper(courses_name:any): Promise<InsightResponse>{
         return new Promise((fulfill,reject)=>{
-            let courses=scheduleManager.get_courses_byname(courses_name["course_name"]);
+            let courses=scheduleManager.get_courses_byname(courses_name);
             Log.trace(courses[0]);
             fulfill({code:200,body:courses});
 
@@ -323,7 +323,7 @@ export default class Server {
     public static get_courses_byname(req: restify.Request, res: restify.Response, next: restify.Next){
 //        Log.trace('Server::post(..) - params: ' + JSON.stringify(req.body));
         try {
-            Server.get_courses_byname_helper(req.body).then(function (result:any) {
+            Server.get_courses_byname_helper(req.body["course_name"]).then(function (result:any) {
                 //Log.info('Server::post(..) - responding ' + result.code);
                 scheduleManager.add_course_tolist(result);
                 scheduleManager.courses=scheduleManager.get_union(scheduleManager.courses,"course_name");
@@ -343,7 +343,7 @@ export default class Server {
 
     public static get_courses_bydept_helper(dept:any): Promise<InsightResponse>{
         return new Promise((fulfill,reject)=>{
-            let courses=scheduleManager.get_courses_bydept(dept["course_dept"]);
+            let courses=scheduleManager.get_courses_bydept(dept);
             fulfill({code:200,body:courses});
 
         });
@@ -352,7 +352,7 @@ export default class Server {
     public static get_courses_bydept(req: restify.Request, res: restify.Response, next: restify.Next){
 //        Log.trace('Server::post(..) - params: ' + JSON.stringify(req.body));
         try {
-            Server.get_courses_bydept_helper(req.body).then(function (result:any) {
+            Server.get_courses_bydept_helper(req.body["course_dept"]).then(function (result:any) {
                 //Log.info('Server::post(..) - responding ' + result.code);
                 scheduleManager.add_course_tolist(result);
                 scheduleManager.courses=scheduleManager.get_union(scheduleManager.courses,"course_name");
@@ -398,7 +398,7 @@ export default class Server {
         return next();
     }
 
-    public static get_rooms_byname_helper(room_names:any[]): Promise<InsightResponse>{
+    public static get_rooms_byname_helper(room_names:any): Promise<InsightResponse>{
         return new Promise((fulfill,reject)=>{
             let rooms=scheduleManager.get_rooms_byname(room_names);
             fulfill({code:200,body:rooms});
@@ -409,7 +409,7 @@ export default class Server {
     public static get_rooms_byname(req: restify.Request, res: restify.Response, next: restify.Next){
 //        Log.trace('Server::post(..) - params: ' + JSON.stringify(req.body));
         try {
-            Server.get_rooms_byname_helper(req.body).then(function (result:any) {
+            Server.get_rooms_byname_helper(req.body["rooms_list"]).then(function (result:any) {
                 //Log.info('Server::post(..) - responding ' + result.code);
                 scheduleManager.add_room_tolist(result);
                 scheduleManager.rooms=scheduleManager.get_union(scheduleManager.rooms,"rooms_name");
@@ -428,7 +428,7 @@ export default class Server {
 
     public static get_rooms_bybuilding_helper(building_name:any): Promise<InsightResponse>{
         return new Promise((fulfill,reject)=>{
-            let rooms=scheduleManager.get_rooms_bybuilding(building_name["rooms_shortname"]);
+            let rooms=scheduleManager.get_rooms_bybuilding(building_name);
             fulfill({code:200,body:rooms});
 
         });
@@ -437,7 +437,7 @@ export default class Server {
     public static get_rooms_bybuilding(req: restify.Request, res: restify.Response, next: restify.Next){
 //        Log.trace('Server::post(..) - params: ' + JSON.stringify(req.body));
         try {
-            Server.get_rooms_bybuilding_helper(req.body).then(function (result:any) {
+            Server.get_rooms_bybuilding_helper(req.body["rooms_shortname"]).then(function (result:any) {
                 //Log.info('Server::post(..) - responding ' + result.code);
                 scheduleManager.add_room_tolist(result);
                 scheduleManager.rooms=scheduleManager.get_union(scheduleManager.rooms,"rooms_name");
