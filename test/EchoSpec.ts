@@ -3735,7 +3735,7 @@ describe("EchoSpec", function () {
     });
 
 
-    xit("test schedule 10 ", function (done) {
+    it("test schedule 10 ", function (done) {
         this.timeout(10000);
 
 
@@ -3744,10 +3744,11 @@ describe("EchoSpec", function () {
         s.setup_room().then(function (response) {
 
             let b1 = s.get_rooms_bybuilding("DMP");
-            let b2 = s.get_rooms_bydistance("DMP", 100);
+            let b2 = s.get_rooms_bydistance("DMP", 120);
 
             let b12 = b1.concat(b2);
             let u1 = s.get_union(b12, "rooms_name");
+            u1=s.get_union(b12,"rooms_name");
 
             let i1 = s.get_intersection(b12, "rooms_name");
             let i12 = i1.concat(u1);
@@ -3809,45 +3810,42 @@ describe("EchoSpec", function () {
                         .post('/query_get_courses_bydept')
                         .send(query)
                         .end(function () {
+                            query = "DMP_310";
                             chai.request("http://localhost:4321")
-                                .post('/query_get_courses_byname')
+                                .post('/query_get_rooms_byname')
                                 .send(query)
                                 .end(function () {
-                                    query = "DMP_310";
+
+                                    query = "DMP";
                                     chai.request("http://localhost:4321")
-                                        .post('/query_get_rooms_byname')
+                                        .post('/query_get_rooms_bydept')
                                         .send(query)
                                         .end(function () {
 
-                                            query = "DMP";
+                                            query = {"building": "DMP", "distance": 100};
                                             chai.request("http://localhost:4321")
-                                                .post('/query_get_rooms_bydept')
+                                                .post('/query_get_rooms_bydistance')
                                                 .send(query)
                                                 .end(function () {
-
                                                     query = {"building": "DMP", "distance": 100};
                                                     chai.request("http://localhost:4321")
-                                                        .post('/query_get_rooms_bydistance')
+                                                        .post('/query_schedule')
                                                         .send(query)
-                                                        .end(function () {
-                                                            query = {"building": "DMP", "distance": 100};
-                                                            chai.request("http://localhost:4321")
-                                                                .post('/query_schedule')
-                                                                .send(query)
-                                                                .end(function (result: any) {
-                                                                    console.log(result.code);
-                                                                    console.log(result.body);
-
-                                                                })
-                                                        });
-                                                })
-                                        }).catch(function () {
-                                        console.log("error adkfhasidfhaishdfaishfas");
-                                    });
-                                });
-
+                                                        .end(function (result: any) {
+                                                            console.log(result.code);
+                                                            console.log(result.body);
+                                                            done();
+                                                        })
+                                                });
+                                        })
+                                }).catch(function () {
+                                console.log("error adkfhasidfhaishdfaishfas");
+                                done();
+                            });
                         });
+
                 });
+
 
         });
 

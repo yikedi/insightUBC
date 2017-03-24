@@ -16,7 +16,7 @@ function add_to_list(query,form,offset) {
     http.onreadystatechange = function () {
         if (http.readyState == 4 && http.status == 200) {
             //console.log(http.response);
-            var response = JSON.parse(http.response)[0]["body"];
+            var response = JSON.parse(http.response)[0];
             var length = response.length;
             for(var j = 0; j < length; j++){
                 tr = document.createElement('tr');

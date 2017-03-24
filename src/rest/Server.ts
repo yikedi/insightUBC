@@ -325,7 +325,7 @@ export default class Server {
         try {
             Server.get_courses_byname_helper(req.body["course_name"]).then(function (result:any) {
                 //Log.info('Server::post(..) - responding ' + result.code);
-                scheduleManager.add_course_tolist(result);
+                scheduleManager.add_course_tolist(result.body);
                 scheduleManager.courses=scheduleManager.get_union(scheduleManager.courses,"course_name");
 
                 res.json(result.code, scheduleManager.courses);
@@ -354,7 +354,7 @@ export default class Server {
         try {
             Server.get_courses_bydept_helper(req.body["course_dept"]).then(function (result:any) {
                 //Log.info('Server::post(..) - responding ' + result.code);
-                scheduleManager.add_course_tolist(result);
+                scheduleManager.add_course_tolist(result.body);
                 scheduleManager.courses=scheduleManager.get_union(scheduleManager.courses,"course_name");
 
                 res.json(result.code, scheduleManager.courses);
@@ -379,11 +379,11 @@ export default class Server {
     }
 
     public static get_courses_allcourse(req: restify.Request, res: restify.Response, next: restify.Next){
-        Log.trace('Server::post(..) - params: ' + JSON.stringify(req.body));
+        Log.trace("get_all_courses_called");
         try {
             Server.get_courses_allcourse_helper().then(function (result:any) {
                 //Log.info('Server::post(..) - responding ' + result.code);
-                scheduleManager.add_course_tolist(result);
+                scheduleManager.add_course_tolist(result.body);
                 scheduleManager.courses=scheduleManager.get_union(scheduleManager.courses,"course_name");
 
                 res.json(result.code, scheduleManager.courses);
@@ -411,7 +411,7 @@ export default class Server {
         try {
             Server.get_rooms_byname_helper(req.body["rooms_list"]).then(function (result:any) {
                 //Log.info('Server::post(..) - responding ' + result.code);
-                scheduleManager.add_room_tolist(result);
+                scheduleManager.add_room_tolist(result.body);
                 scheduleManager.rooms=scheduleManager.get_union(scheduleManager.rooms,"rooms_name");
 
                 res.json(result.code, scheduleManager.rooms);
@@ -439,7 +439,7 @@ export default class Server {
         try {
             Server.get_rooms_bybuilding_helper(req.body["rooms_shortname"]).then(function (result:any) {
                 //Log.info('Server::post(..) - responding ' + result.code);
-                scheduleManager.add_room_tolist(result);
+                scheduleManager.add_room_tolist(result.body);
                 scheduleManager.rooms=scheduleManager.get_union(scheduleManager.rooms,"rooms_name");
 
                 res.json(result.code, scheduleManager.rooms);
@@ -456,7 +456,7 @@ export default class Server {
 
 
 
-    public static get_courses_allrooms_helper(): Promise<InsightResponse>{
+    public static get_rooms_allrooms_helper(): Promise<InsightResponse>{
         return new Promise((fulfill,reject)=>{
             let courses=scheduleManager.get_all_rooms();
             fulfill({code:200,body:courses});
@@ -467,9 +467,9 @@ export default class Server {
     public static get_courses_allrooms(req: restify.Request, res: restify.Response, next: restify.Next){
 //        Log.trace('Server::post(..) - params: ' + JSON.stringify(req.body));
         try {
-            Server.get_courses_allrooms_helper().then(function (result:any) {
+            Server.get_rooms_allrooms_helper().then(function (result:any) {
                 //Log.info('Server::post(..) - responding ' + result.code);
-                scheduleManager.add_room_tolist(result);
+                scheduleManager.add_room_tolist(result.body);
                 scheduleManager.rooms=scheduleManager.get_union(scheduleManager.rooms,"rooms_name");
 
                 res.json(result.code, scheduleManager.rooms);
@@ -518,7 +518,7 @@ export default class Server {
         try {
             Server.get_rooms_bydistance_helper(req.body["building"],req.body["distance"]).then(function (result:any) {
                 //Log.info('Server::post(..) - responding ' + result.code);
-                scheduleManager.add_room_tolist(result);
+                scheduleManager.add_room_tolist(result.body);
                 scheduleManager.rooms=scheduleManager.get_union(scheduleManager.rooms,"rooms_name");
 
                 res.json(result.code, scheduleManager.rooms);
