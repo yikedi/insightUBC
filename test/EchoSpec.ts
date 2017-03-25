@@ -3559,7 +3559,7 @@ describe("EchoSpec", function () {
 
     });
 
-    xit("test schedule 6", function (done) {
+    it("test schedule 6", function (done) {
         this.timeout(10000);
 
 
@@ -3568,20 +3568,24 @@ describe("EchoSpec", function () {
         s.setup_room().then(function (response) {
 
             console.log(response.code);
-            let b1 = s.get_rooms_bybuilding("DMP");
-            //let b2=s.get_rooms_bybuilding("PHRM");
-            let c1 = s.get_courses_byname(["cpsc_666"]);
+            s.setup_course().then(function (response:any) {
+                let b1 = s.get_rooms_bybuilding("DMP");
+                //let b2=s.get_rooms_bybuilding("PHRM");
+                let c1 = s.get_courses_bydept("cpsc");
 
-            s.add_course_tolist(c1);
-            s.add_room_tolist(b1);
-            //s.add_room_tolist(b2);
+                s.add_course_tolist(c1);
+                s.add_room_tolist(b1);
+                //s.add_room_tolist(b2);
 
-            s.schedule(s.rooms, s.courses).then(function (response: any) {
-                console.log(response.code);
-                console.log(response.body["Events"]);
-                console.log(response.body["Unscheduled"]);
-                done();
+                s.schedule(s.rooms, s.courses).then(function (response: any) {
+                    console.log(response.code);
+                    console.log(s.rooms);
+                    console.log(response.body["Events"]);
+                    console.log(response.body["Unscheduled"]);
+                    done();
+                });
             });
+
 
 
         }).catch(function (err) {
@@ -3776,7 +3780,7 @@ describe("EchoSpec", function () {
     });
 
 
-    it("test post", function (done) {
+    xit("test post", function (done) {
         this.timeout(20000);
         let query = {
             "WHERE": {},

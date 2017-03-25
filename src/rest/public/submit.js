@@ -26,7 +26,12 @@ function updateText(query,form,offset) {
             result_body.innerHTML = "loading";
         }
         if (http.readyState == 4 && http.status == 200) {
-            var response = JSON.parse(http.response)["result"];
+            var response = ""; 
+            if(form =="schedule"){
+                response = JSON.parse(http.response);
+            }else{
+                response = JSON.parse(http.response)["result"];
+            }
             var length = response.length;
             var return_html = document.createElement("table"); 
             if(form =="schedule"){

@@ -88,7 +88,7 @@ export default class ScheduleManager {
                 //courses=this.get_union(courses,"course_name");
                 courses = sortby_id(courses, "size");
                 //rooms=this.get_union(rooms,"room_name");
-                rooms = sortby_id(rooms, "seats");
+                rooms = sortby_id(rooms, "rooms_seats");
 
                 // console.log(courses);
                 // console.log(rooms);
@@ -104,7 +104,7 @@ export default class ScheduleManager {
                             let course_name = course["course_name"];
 
                             if (course["num_section"] > 0) {
-                                if (Number(course["size"]) <= Number(room["seats"])) {
+                                if (Number(course["size"]) <= Number(room["rooms_seats"])) {
                                     event.day = "M/W/F";
                                     event.start_time = i + 8 + ": 00";
                                     event.hour = 1;
@@ -134,7 +134,7 @@ export default class ScheduleManager {
                             let course = courses[k];
                             let course_name = course["course_name"];
                             if (course["num_section"] > 0) {
-                                if (Number(course["size"]) <= Number(room["seats"])) {
+                                if (Number(course["size"]) <= Number(room["rooms_seats"])) {
 
                                     let time: string;
                                     if ((i / 1.5) % 2 == 0) {
