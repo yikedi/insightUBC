@@ -3580,8 +3580,8 @@ describe("EchoSpec", function () {
                 s.schedule(s.rooms, s.courses).then(function (response: any) {
                     console.log(response.code);
                     console.log(s.rooms);
-                    console.log(response.body["Events"]);
-                    console.log(response.body["Unscheduled"]);
+                    //console.log(response.body["Events"]);
+                    //console.log(response.body["Unscheduled"]);
                     done();
                 });
             });

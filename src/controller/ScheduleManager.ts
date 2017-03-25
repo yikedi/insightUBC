@@ -109,7 +109,7 @@ export default class ScheduleManager {
                                     event.start_time = i + 8 + ": 00";
                                     event.hour = 1;
                                     event.course = course_name;
-                                    event.room = room["rooms_shortname"];
+                                    event.room = room["rooms_name"];
                                     course["num_section"] = course["num_section"] - 1;
                                     events.push(event);
 
@@ -147,7 +147,7 @@ export default class ScheduleManager {
                                     event.start_time = time;
                                     event.hour = 1.5;
                                     event.course = course_name;
-                                    event.room = room["rooms_shortname"];
+                                    event.room = room["rooms_name"];
                                     course["num_section"] = course["num_section"] - 1;
                                     courses[k]["num_section"] = courses[k]["num_section"] - 1;
                                     events.push(event);
@@ -164,6 +164,7 @@ export default class ScheduleManager {
                         unscheduled_courses.push(item);
                     }
                 }
+                console.log(events);
                 fulfill({code: 200, body: {"Events": events, "Unscheduled": unscheduled_courses}});
             }
             catch (err) {

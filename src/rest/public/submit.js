@@ -28,7 +28,7 @@ function updateText(query,form,offset) {
         if (http.readyState == 4 && http.status == 200) {
             var response = ""; 
             if(form =="schedule"){
-                response = JSON.parse(http.response);
+                response = JSON.parse(http.response)["Events"];
             }else{
                 response = JSON.parse(http.response)["result"];
             }
@@ -64,7 +64,9 @@ function updateText(query,form,offset) {
                     return_html.appendChild(tr);
                 }
                 result_body.innerHTML = '';
+                result_body.innerHTML = "Unscheduled: " + JSON.parse(http.response)["Unscheduled"].length;
                 result_body.appendChild(return_html);
+                
             }else{
                 result_body.innerHTML = '';
                 result_body.innerHTML = "no result";
