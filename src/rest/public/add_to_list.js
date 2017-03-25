@@ -1,42 +1,44 @@
 function add_to_list(query,form,offset) {
-    var http = new XMLHttpRequest();    
-    var return_html = document.getElementById("course_in_list"); 
-    var header = "Courses Name";
-    if(form == "query_get_allrooms"){
-        return_html = document.getElementById("room_in_list");
-        header = "Room Name";
-    }
-    return_html.innerHTML="";
-    var tr;
-    tr = document.createElement('tr');
-    var th = document.createElement("th");
-    th.innerHTML = header;
-    tr.appendChild(th);
-    return_html.appendChild(tr);
-    http.onreadystatechange = function () {
-        if (http.readyState == 4 && http.status == 200) {
-            var response = JSON.parse(http.response);
-            var length = response.length;
-            for(var j = 0; j < length; j++){
-                tr = document.createElement('tr');
-                th = document.createElement("td");
-                if(form =="query_get_allrooms"){
-                    th.innerHTML = response[j]["rooms_name"];
-                }
-                if(form =="get_courses_allcourse"){
-                    th.innerHTML = response[j]["course_name"];
-                }
-
-                tr.appendChild(th);
-                return_html.appendChild(tr);
-            }
-
+    if(offset!=""){
+        var http = new XMLHttpRequest();    
+        var return_html = document.getElementById("course_in_list"); 
+        var header = "Courses Name";
+        if(form == "query_get_allrooms"){
+            return_html = document.getElementById("room_in_list");
+            header = "Room Name";
         }
-    }
+        return_html.innerHTML="";
+        var tr;
+        tr = document.createElement('tr');
+        var th = document.createElement("th");
+        th.innerHTML = header;
+        tr.appendChild(th);
+        return_html.appendChild(tr);
+        http.onreadystatechange = function () {
+            if (http.readyState == 4 && http.status == 200) {
+                var response = JSON.parse(http.response);
+                var length = response.length;
+                for(var j = 0; j < length; j++){
+                    tr = document.createElement('tr');
+                    th = document.createElement("td");
+                    if(form =="query_get_allrooms"){
+                        th.innerHTML = response[j]["rooms_name"];
+                    }
+                    if(form =="get_courses_allcourse"){
+                        th.innerHTML = response[j]["course_name"];
+                    }
 
-    http.open("POST","http://localhost:4321/query"+offset,true);
-    http.setRequestHeader("Content-Type", "application/json");
-    http.send(JSON.stringify(query));
+                    tr.appendChild(th);
+                    return_html.appendChild(tr);
+                }
+                clear();
+            }
+        }
+
+        http.open("POST","http://localhost:4321/query"+offset,true);
+        http.setRequestHeader("Content-Type", "application/json");
+        http.send(JSON.stringify(query));
+    }
 };
 
 function add_single_course(){
@@ -76,7 +78,7 @@ function add_single_room(){
     }
     var offset_single_r="";
     var data = "";
-    
+
     if(distance!="" && Building_name != ""){
         offset_single_r = "_get_rooms_bydistance";
         data = {"distance":distance,"building":Building_name};
@@ -89,4 +91,12 @@ function add_single_room(){
     }
     add_to_list(data,"query_get_allrooms",offset_single_r);
 
+}
+
+function clear(){
+    document.getElementById("dept_s").value = "";
+    document.getElementById("cid_s").value="";
+    document.getElementById("distance_s").value ="";
+    document.getElementById("building_s").value ="";
+    document.getElementById("rooms_nums").value ="";
 }

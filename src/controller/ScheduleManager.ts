@@ -620,13 +620,9 @@ export default class ScheduleManager {
     }
 
     add_course_tolist(courses: any[]) {
-        console.log(this.courses.length+" 1");
-        //console.log(courses[0].length);
-        console.log(courses.length);
+
         this.courses = this.courses.concat(courses);
-        console.log(this.courses.length+" 2");
         this.courses = this.get_union(this.courses, "course_name");
-        console.log(this.courses.length+" 3");
     }
 
     add_room_tolist(rooms: any[]) {
@@ -672,8 +668,18 @@ export default class ScheduleManager {
         return ret_list;
     }
 
+    public clear_course_list(){
+        this.courses=[];
+    }
+
+    public clear_room_list(){
+        this.rooms=[];
+    }
+
 
 }
+
+
 
 
 // this code is taken from stack overflow

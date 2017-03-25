@@ -100,6 +100,10 @@ export default class Server {
 
                 that.rest.post('/query_schedule',Server.schedule);
 
+                that.rest.post('/query_clear_courses',Server.clear_courses);
+
+                that.rest.post('/query_clear_room',Server.clear_rooms);
+
 
 
 
@@ -313,9 +317,13 @@ export default class Server {
 
     public static get_courses_byname_helper(courses_name:any): Promise<InsightResponse>{
         return new Promise((fulfill,reject)=>{
-            let courses=scheduleManager.get_courses_byname(courses_name);
-            Log.trace(courses[0]);
-            fulfill({code:200,body:courses});
+            try {
+                let courses = scheduleManager.get_courses_byname(courses_name);
+                fulfill({code: 200, body: courses});
+            }catch (err){
+                reject({code:400,body:err.message});
+            }
+
 
         });
     }
@@ -343,8 +351,12 @@ export default class Server {
 
     public static get_courses_bydept_helper(dept:any): Promise<InsightResponse>{
         return new Promise((fulfill,reject)=>{
-            let courses=scheduleManager.get_courses_bydept(dept);
-            fulfill({code:200,body:courses});
+            try {
+                let courses = scheduleManager.get_courses_bydept(dept);
+                fulfill({code: 200, body: courses});
+            }catch (err){
+                reject({code:400,body:err.message});
+            }
 
         });
     }
@@ -372,8 +384,12 @@ export default class Server {
 
     public static get_courses_allcourse_helper(): Promise<InsightResponse>{
         return new Promise((fulfill,reject)=>{
-            let courses=scheduleManager.get_all_courses();
-            fulfill({code:200,body:courses});
+            try {
+                let courses = scheduleManager.get_all_courses();
+                fulfill({code: 200, body: courses});
+            }catch (err){
+                reject({code:400,body:err.message});
+            }
 
         });
     }
@@ -400,8 +416,12 @@ export default class Server {
 
     public static get_rooms_byname_helper(room_names:any): Promise<InsightResponse>{
         return new Promise((fulfill,reject)=>{
-            let rooms=scheduleManager.get_rooms_byname(room_names);
-            fulfill({code:200,body:rooms});
+            try {
+                let rooms = scheduleManager.get_rooms_byname(room_names);
+                fulfill({code: 200, body: rooms});
+            }catch (err){
+                reject({code:400,body:err.message});
+            }
 
         });
     }
@@ -428,8 +448,12 @@ export default class Server {
 
     public static get_rooms_bybuilding_helper(building_name:any): Promise<InsightResponse>{
         return new Promise((fulfill,reject)=>{
-            let rooms=scheduleManager.get_rooms_bybuilding(building_name);
-            fulfill({code:200,body:rooms});
+            try {
+                let rooms = scheduleManager.get_rooms_bybuilding(building_name);
+                fulfill({code: 200, body: rooms});
+            }catch (err){
+                reject({code:400,body:err.message});
+            }
 
         });
     }
@@ -458,8 +482,12 @@ export default class Server {
 
     public static get_rooms_allrooms_helper(): Promise<InsightResponse>{
         return new Promise((fulfill,reject)=>{
-            let courses=scheduleManager.get_all_rooms();
-            fulfill({code:200,body:courses});
+            try {
+                let courses = scheduleManager.get_all_rooms();
+                fulfill({code: 200, body: courses});
+            }catch (err){
+                reject({code:400,body:err.message});
+            }
 
         });
     }
@@ -531,4 +559,15 @@ export default class Server {
             res.json(400, {error: err.message});
         }
     }
+
+    public static clear_courses(req: restify.Request, res: restify.Response, next: restify.Next){
+        scheduleManager.clear_course_list();
+        res.json(200,"");
+    }
+
+    public static clear_rooms(req: restify.Request, res: restify.Response, next: restify.Next){
+        scheduleManager.clear_room_list();
+        res.json(200,"");
+    }
+
 }
