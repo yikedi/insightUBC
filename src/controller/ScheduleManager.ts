@@ -90,6 +90,10 @@ export default class ScheduleManager {
                 //rooms=this.get_union(rooms,"room_name");
                 rooms = sortby_id(rooms, "rooms_seats");
 
+                let section_counts:any[]=[];
+                for (let item of courses){
+                    section_counts.push(item["num_section"]);
+                }
                 // console.log(courses);
                 // console.log(rooms);
 
@@ -103,14 +107,14 @@ export default class ScheduleManager {
                             let course = courses[k];
                             let course_name = course["course_name"];
 
-                            if (course["num_section"] > 0) {
+                            if (section_counts[k] > 0) {
                                 if (Number(course["size"]) <= Number(room["rooms_seats"])) {
                                     event.day = "M/W/F";
                                     event.start_time = i + 8 + ": 00";
                                     event.hour = 1;
                                     event.course = course_name;
                                     event.room = room["rooms_name"];
-                                    course["num_section"] = course["num_section"] - 1;
+                                    section_counts[k]=section_counts[k]-1;
                                     events.push(event);
 
                                     break;
@@ -133,7 +137,7 @@ export default class ScheduleManager {
                         for (let k = j; k < courses.length; k++) {
                             let course = courses[k];
                             let course_name = course["course_name"];
-                            if (course["num_section"] > 0) {
+                            if (section_counts[k] > 0) {
                                 if (Number(course["size"]) <= Number(room["rooms_seats"])) {
 
                                     let time: string;
@@ -148,8 +152,8 @@ export default class ScheduleManager {
                                     event.hour = 1.5;
                                     event.course = course_name;
                                     event.room = room["rooms_name"];
-                                    course["num_section"] = course["num_section"] - 1;
-                                    courses[k]["num_section"] = courses[k]["num_section"] - 1;
+
+                                    section_counts[k]=section_counts[k]-1;
                                     events.push(event);
                                     break;
                                 }
@@ -165,7 +169,8 @@ export default class ScheduleManager {
                     }
                 }
                 console.log(events);
-                fulfill({code: 200, body: {"Events": events, "Unscheduled": unscheduled_courses}});
+                let quality=unscheduled_courses.length/courses.length;
+                fulfill({code: 200, body: {"Events": events, "Unscheduled": unscheduled_courses,"Quality":quality}});
             }
             catch (err) {
                 reject({code: 400, body: "error in schedule 142 " + err.message});

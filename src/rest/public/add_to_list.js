@@ -16,6 +16,7 @@ function add_to_list(query,form,offset) {
         return_html.appendChild(tr);
         http.onreadystatechange = function () {
             if (http.readyState == 4 && http.status == 200) {
+                rightright();
                 var response = JSON.parse(http.response);
                 var length = response.length;
                 for(var j = 0; j < length; j++){
@@ -31,15 +32,35 @@ function add_to_list(query,form,offset) {
                     tr.appendChild(th);
                     return_html.appendChild(tr);
                 }
-                clear();
+                if(form == "query_get_allrooms"){
+                    clear_r();
+                }else{
+                    clear_c();
+                }
+            }
+            if (http.readyState == 4 && http.status == 400){
+                wrongwrong();
             }
         }
 
         http.open("POST","http://localhost:4321/query"+offset,true);
         http.setRequestHeader("Content-Type", "application/json");
         http.send(JSON.stringify(query));
+    }else{
+        wrongwrong();
     }
 };
+
+function wrongwrong(){
+    target_result = document.getElementById("result_s_temp"); 
+    target_result.innerHTML = "wrong filter";
+}
+
+function rightright(){
+    target_result = document.getElementById("result_s_temp"); 
+    target_result.innerHTML = "";
+}
+
 
 function add_single_course(){
     var dept ="";
@@ -94,8 +115,15 @@ function add_single_room(){
 }
 
 function clear(){
+    clear_c();
+    clear_r();
+}
+
+function clear_c(){
     document.getElementById("dept_s").value = "";
-    document.getElementById("cid_s").value="";
+    document.getElementById("cid_s").value= "";
+}
+function clear_r(){
     document.getElementById("distance_s").value ="";
     document.getElementById("building_s").value ="";
     document.getElementById("rooms_nums").value ="";
