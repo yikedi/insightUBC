@@ -163,9 +163,9 @@ export default class ScheduleManager {
                 }
 
                 let unscheduled_courses: any[] = [];
-                for (let item of courses) {
-                    if (item["num_section"] > 0) {
-                        unscheduled_courses.push(item);
+                for (let i=0;i<courses.length;i++) {
+                    if (section_counts[i] > 0) {
+                        unscheduled_courses.push(courses[i]);
                     }
                 }
                 console.log(events);
