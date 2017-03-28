@@ -290,8 +290,8 @@ export default class ScheduleManager {
             }
 
             let section_left: number = 0;
-            for (let item of section_counts) {
-                section_left = item;
+            for (let i=0;i<section_counts.length;i++) {
+                section_left+= section_counts[i];
             }
 
             let quality = section_left / total_section;
@@ -316,32 +316,32 @@ export default class ScheduleManager {
         let left_count = response.body["Unscheduled_section_count"];
         let near_building = distance_matrix[center_building];
 
-
-            for (let building of near_building) {
-                if (left_count>0){
-                    break;
-                }
-                let length_before=this.rooms.length;
-                this.add_room_tolist(this.get_rooms_bybuilding(building));
-                if (this.rooms.length>length_before) {
+        for (let building of near_building) {
+            if (left_count == 0) {
+                break;
+            } else {
+                let length_before = this.rooms.length;
+                this.add_room_tolist(this.get_rooms_bybuilding(building["building"]));
+                if (this.rooms.length > length_before) {
                     response = this.schedule_helper(this.rooms, this.courses);
                     left_count = response.body["Unscheduled_section_count"];
                 }
-
             }
+
+        }
         return response;
 
     }
 
-    schedule_rest(center_building:string):Promise<InsightResponse>{
-        return new Promise((fulfill,reject)=>{
-           let response:any=this.schedule_rest_helper(center_building) ;
-           if (response.code==200){
-               fulfill(response);
-           }
-           else {
-               reject(response);
-           }
+    schedule_rest(center_building: string): Promise<InsightResponse> {
+        return new Promise((fulfill, reject) => {
+            let response: any = this.schedule_rest_helper(center_building);
+            if (response.code == 200) {
+                fulfill(response);
+            }
+            else {
+                reject(response);
+            }
         });
     }
 

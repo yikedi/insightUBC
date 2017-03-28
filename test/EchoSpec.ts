@@ -3580,7 +3580,7 @@ describe("EchoSpec", function () {
                 s.schedule(s.rooms, s.courses).then(function (response: any) {
                     console.log(response.code);
                     console.log(s.rooms);
-                    //console.log(response.body["Events"]);
+                    console.log(response.body["Events"]);
                     //console.log(response.body["Unscheduled"]);
                     done();
                 });
@@ -3595,6 +3595,40 @@ describe("EchoSpec", function () {
 
     });
 
+    it("test schedule_rest 6.1", function (done) {
+        this.timeout(10000);
+
+
+        var s = new ScheduleManager();
+
+        s.setup_room().then(function (response) {
+
+            console.log(response.code);
+            s.setup_course().then(function (response:any) {
+                let b1 = s.get_rooms_bybuilding("DMP");
+                let c1 = s.get_courses_bydept("cpsc");
+
+                s.add_course_tolist(c1);
+                s.add_room_tolist(b1);
+                //s.add_room_tolist(b2);
+
+                s.schedule_rest("DMP").then(function (response: any) {
+                    console.log(response.code);
+                    console.log(s.rooms.length);
+                    console.log(response.body["Events"]);
+                    console.log(response.body["Unscheduled"].length);
+                    done();
+                });
+            });
+
+
+
+        }).catch(function (err) {
+            console.log(err.message);
+            done();
+        });
+
+    });
 
     xit("test schedule 7", function (done) {
         this.timeout(10000);
@@ -3739,7 +3773,7 @@ describe("EchoSpec", function () {
     });
 
 
-    it("test schedule 10 ", function (done) {
+    xit("test schedule 10 ", function (done) {
         this.timeout(10000);
 
 
@@ -3803,59 +3837,7 @@ describe("EchoSpec", function () {
 
 
 
-    xit("test post 2", function (done) {
-        this.timeout(20000);
-        let query: any = ["cpsc_310"];
-        server.start().then(function () {
-            chai.request("http://localhost:4321")
-                .post('/query_get_courses_byname')
-                .send(query)
-                .end(function () {
-                    query = "CPSC";
-                    chai.request("http://localhost:4321")
-                        .post('/query_get_courses_bydept')
-                        .send(query)
-                        .end(function () {
-                            query = "DMP_310";
-                            chai.request("http://localhost:4321")
-                                .post('/query_get_rooms_byname')
-                                .send(query)
-                                .end(function () {
 
-                                    query = "DMP";
-                                    chai.request("http://localhost:4321")
-                                        .post('/query_get_rooms_bydept')
-                                        .send(query)
-                                        .end(function () {
-
-                                            query = {"building": "DMP", "distance": 100};
-                                            chai.request("http://localhost:4321")
-                                                .post('/query_get_rooms_bydistance')
-                                                .send(query)
-                                                .end(function () {
-                                                    query = {"building": "DMP", "distance": 100};
-                                                    chai.request("http://localhost:4321")
-                                                        .post('/query_schedule')
-                                                        .send(query)
-                                                        .end(function (result: any) {
-                                                            console.log(result.code);
-                                                            console.log(result.body);
-                                                            done();
-                                                        })
-                                                });
-                                        })
-                                }).catch(function () {
-                                console.log("error adkfhasidfhaishdfaishfas");
-                                done();
-                            });
-                        });
-
-                });
-
-
-        });
-
-    });
     function check_order(list: any[], order: string[], dir: string): boolean {
 
 
