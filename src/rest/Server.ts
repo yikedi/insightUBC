@@ -66,6 +66,7 @@ export default class Server {
                 // provides the echo service
                 // curl -is  http://localhost:4321/query
                 that.rest.get('/echo/:msg', Server.echo);
+                
 
                 that.rest.get(/.*/, restify.serveStatic({
                     directory:__dirname+'/public/',
