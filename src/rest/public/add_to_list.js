@@ -2,10 +2,10 @@ function add_to_list(query,form,offset) {
     if(offset!=""){
         var http = new XMLHttpRequest();    
         var return_html = document.getElementById("course_in_list"); 
-        var header = "Courses Name";
+        var header = "Courses";
         if(form == "query_get_allrooms"){
             return_html = document.getElementById("room_in_list");
-            header = "Room Name";
+            header = "Rooms";
         }
         return_html.innerHTML="";
         var tr;
@@ -23,10 +23,10 @@ function add_to_list(query,form,offset) {
                     tr = document.createElement('tr');
                     th = document.createElement("td");
                     if(form =="query_get_allrooms"){
-                        th.innerHTML = response[j]["rooms_name"];
+                        th.innerHTML = "room name: "+response[j]["rooms_name"]+"<br/>room size: "+response[j]["rooms_seats"];
                     }
                     if(form =="get_courses_allcourse"){
-                        th.innerHTML = response[j]["course_name"];
+                        th.innerHTML = "course name: "+response[j]["course_name"]+"<br/>num_section: "+response[j]["num_section"]+"<br/>size: "+response[j]["size"];
                     }
 
                     tr.appendChild(th);
