@@ -168,7 +168,7 @@ export default class ScheduleManager {
                         unscheduled_courses.push(courses[i]);
                     }
                 }
-                console.log(events);
+
                 let quality=unscheduled_courses.length/courses.length;
                 fulfill({code: 200, body: {"Events": events, "Unscheduled": unscheduled_courses,"Quality":quality}});
             }
@@ -523,6 +523,16 @@ export default class ScheduleManager {
         }
         let course_in_dept = dept_num[dept];
         courses_list = this.get_courses_byname(course_in_dept);
+        return courses_list;
+    }
+
+    get_courses_bynum(course_num:number):any[]{
+        let courses_list=[];
+        if (isUndefined(num_dept[course_num])){
+            throw Error("Invalid course number "+course_num);
+        }
+        let courses_with_num=num_dept[course_num];
+        courses_list=this.get_courses_byname(courses_with_num);
         return courses_list;
     }
 

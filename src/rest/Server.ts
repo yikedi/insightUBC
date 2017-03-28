@@ -84,6 +84,8 @@ export default class Server {
 
                 that.rest.post('/query_get_courses_bydept',Server.get_courses_bydept);
 
+                that.rest.post('/query_get_courses_bunum',Server.get_courses_bynum);
+
                 that.rest.post('/query_get_allcourses',Server.get_courses_allcourse);
 
                 that.rest.post('/query_get_rooms_byname',Server.get_rooms_byname);
@@ -99,6 +101,8 @@ export default class Server {
                 that.rest.post('/query_clear_courses',Server.clear_courses);
 
                 that.rest.post('/query_clear_room',Server.clear_rooms);
+
+
 
 
 
@@ -359,10 +363,43 @@ export default class Server {
         });
     }
 
+
     public static get_courses_bydept(req: restify.Request, res: restify.Response, next: restify.Next){
 //        Log.trace('Server::post(..) - params: ' + JSON.stringify(req.body));
         try {
             Server.get_courses_bydept_helper(req.body["course_dept"]).then(function (result:any) {
+                //Log.info('Server::post(..) - responding ' + result.code);
+                scheduleManager.add_course_tolist(result.body);
+                scheduleManager.courses=scheduleManager.get_union(scheduleManager.courses,"course_name");
+
+                res.json(result.code, scheduleManager.courses);
+            }).catch(function (result) {
+                //Log.info('Server::post(..) - responding ' + result.code);
+                res.json(result.code, result.body);
+            });
+        } catch (err) {
+            Log.error('Server::post(..) - responding 400');
+            res.json(400, {error: err.message});
+        }
+        return next();
+    }
+
+    public static get_courses_bynum_helper(num:any): Promise<InsightResponse>{
+        return new Promise((fulfill,reject)=>{
+            try {
+                let courses = scheduleManager.get_courses_bynum(num);
+                fulfill({code: 200, body: courses});
+            }catch (err){
+                reject({code:400,body:err.message});
+            }
+
+        });
+    }
+
+    public static get_courses_bynum(req: restify.Request, res: restify.Response, next: restify.Next){
+//        Log.trace('Server::post(..) - params: ' + JSON.stringify(req.body));
+        try {
+            Server.get_courses_bynum_helper(req.body["course_num"]).then(function (result:any) {
                 //Log.info('Server::post(..) - responding ' + result.code);
                 scheduleManager.add_course_tolist(result.body);
                 scheduleManager.courses=scheduleManager.get_union(scheduleManager.courses,"course_name");
@@ -489,6 +526,8 @@ export default class Server {
 
         });
     }
+
+
 
     public static get_courses_allrooms(req: restify.Request, res: restify.Response, next: restify.Next){
 //        Log.trace('Server::post(..) - params: ' + JSON.stringify(req.body));
