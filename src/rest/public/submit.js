@@ -64,9 +64,11 @@ function updateText(query,form,offset) {
                     return_html.appendChild(tr);
                 }
                 result_body.innerHTML = '';
-                result_body.innerHTML = "Quality: " + JSON.parse(http.response)["Quality"];
+                if(form =="schedule"){
+                    result_body.innerHTML = "Quality: " + JSON.parse(http.response)["Quality"];
+                }
                 result_body.appendChild(return_html);
-                
+
             }else{
                 result_body.innerHTML = '';
                 result_body.innerHTML = "no result";
