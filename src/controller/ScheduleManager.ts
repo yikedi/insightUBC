@@ -83,113 +83,266 @@ export default class ScheduleManager {
 
         return new Promise((fulfill, reject) => {
 
-            try {
-                let events: Event[] = [];
-                //courses=this.get_union(courses,"course_name");
-                courses = sortby_id(courses, "size");
-                //rooms=this.get_union(rooms,"room_name");
-                rooms = sortby_id(rooms, "rooms_seats");
+            // try {
+            //     let events: Event[] = [];
+            //     courses = sortby_id(courses, "size");
+            //     rooms = sortby_id(rooms, "rooms_seats");
+            //
+            //     let section_counts: any[] = [];
+            //     for (let item of courses) {
+            //         section_counts.push(item["num_section"]);
+            //     }
+            //
+            //     let total_section: number = 0
+            //     for (let item of section_counts) {
+            //         total_section += item;
+            //     }
+            //
+            //     // course on MWF
+            //     for (let i = 0; i < 17 - 8; i++) {
+            //
+            //         for (let j = 0; j < rooms.length; j++) {
+            //             let event = new Event();
+            //             let room = rooms[j];
+            //             for (let k = j; k < courses.length; k++) {
+            //                 let course = courses[k];
+            //                 let course_name = course["course_name"];
+            //
+            //                 if (section_counts[k] > 0) {
+            //                     if (Number(course["size"]) <= Number(room["rooms_seats"])) {
+            //                         event.day = "M/W/F";
+            //                         event.start_time = i + 8 + ": 00";
+            //                         event.hour = 1;
+            //                         event.course = course_name;
+            //                         event.room = room["rooms_name"];
+            //                         section_counts[k] = section_counts[k] - 1;
+            //                         events.push(event);
+            //
+            //                         break;
+            //                     }
+            //                     else {
+            //                         //console.log("room "+ room["room_name"]+" is not big enough");
+            //                     }
+            //                 }
+            //             }
+            //
+            //         }
+            //     }
+            //
+            //     // course on T TH
+            //     for (let i = 0; i < 17 - 8; i += 1.5) {
+            //
+            //         for (let j = 0; j < rooms.length; j++) {
+            //             let event = new Event();
+            //             let room = rooms[j];
+            //             for (let k = j; k < courses.length; k++) {
+            //                 let course = courses[k];
+            //                 let course_name = course["course_name"];
+            //                 if (section_counts[k] > 0) {
+            //                     if (Number(course["size"]) <= Number(room["rooms_seats"])) {
+            //
+            //                         let time: string;
+            //                         if ((i / 1.5) % 2 == 0) {
+            //                             time = i + 8 + ": 00";
+            //                         }
+            //                         else {
+            //                             time = i - 0.5 + 8 + ": 30";
+            //                         }
+            //                         event.day = "T/TH";
+            //                         event.start_time = time;
+            //                         event.hour = 1.5;
+            //                         event.course = course_name;
+            //                         event.room = room["rooms_name"];
+            //
+            //                         section_counts[k] = section_counts[k] - 1;
+            //                         events.push(event);
+            //                         break;
+            //                     }
+            //                 }
+            //             }
+            //         }
+            //     }
+            //
+            //     let unscheduled_courses: any[] = [];
+            //     for (let i = 0; i < courses.length; i++) {
+            //         if (section_counts[i] > 0) {
+            //             unscheduled_courses.push(courses[i]);
+            //         }
+            //     }
+            //
+            //     let section_left: number = 0;
+            //     for (let item of section_counts) {
+            //         section_left = item;
+            //     }
+            //
+            //     let quality = section_left / total_section;
+            //     fulfill({code: 200,
+            //         body: {
+            //             "Events": events,
+            //             "Unscheduled": unscheduled_courses,
+            //             "Quality": quality,
+            //             "Unscheduled_section_count": section_left
+            //         }
+            //     });
+            // }
+            // catch (err) {
+            //     reject({code: 400, body: "error in schedule 142 " + err.message});
+            // }
 
-                let section_counts:any[]=[];
-                for (let item of courses){
-                    section_counts.push(item["num_section"]);
-                }
-
-                let total_section:number=0
-                for (let item of section_counts){
-                    total_section+=item;
-                }
-
-                // console.log(courses);
-                // console.log(rooms);
-
-                // course on MWF
-                for (let i = 0; i < 17 - 8; i++) {
-
-                    for (let j = 0; j < rooms.length; j++) {
-                        let event = new Event();
-                        let room = rooms[j];
-                        for (let k = j; k < courses.length; k++) {
-                            let course = courses[k];
-                            let course_name = course["course_name"];
-
-                            if (section_counts[k] > 0) {
-                                if (Number(course["size"]) <= Number(room["rooms_seats"])) {
-                                    event.day = "M/W/F";
-                                    event.start_time = i + 8 + ": 00";
-                                    event.hour = 1;
-                                    event.course = course_name;
-                                    event.room = room["rooms_name"];
-                                    section_counts[k]=section_counts[k]-1;
-                                    events.push(event);
-
-                                    break;
-                                }
-                                else {
-                                    //console.log("room "+ room["room_name"]+" is not big enough");
-                                }
-                            }
-                        }
-
-                    }
-                }
-
-                // course on T TH
-                for (let i = 0; i < 17 - 8; i += 1.5) {
-
-                    for (let j = 0; j < rooms.length; j++) {
-                        let event = new Event();
-                        let room = rooms[j];
-                        for (let k = j; k < courses.length; k++) {
-                            let course = courses[k];
-                            let course_name = course["course_name"];
-                            if (section_counts[k] > 0) {
-                                if (Number(course["size"]) <= Number(room["rooms_seats"])) {
-
-                                    let time: string;
-                                    if ((i / 1.5) % 2 == 0) {
-                                        time = i + 8 + ": 00";
-                                    }
-                                    else {
-                                        time = i - 0.5 + 8 + ": 30";
-                                    }
-                                    event.day = "T/TH";
-                                    event.start_time = time;
-                                    event.hour = 1.5;
-                                    event.course = course_name;
-                                    event.room = room["rooms_name"];
-
-                                    section_counts[k]=section_counts[k]-1;
-                                    events.push(event);
-                                    break;
-                                }
-                            }
-                        }
-                    }
-                }
-
-                let unscheduled_courses: any[] = [];
-                for (let i=0;i<courses.length;i++) {
-                    if (section_counts[i] > 0) {
-                        unscheduled_courses.push(courses[i]);
-                    }
-                }
-
-                let section_left:number=0;
-                for (let item of section_counts){
-                    section_left=item;
-                }
-
-                let quality=section_left/total_section;
-                fulfill({code: 200, body: {"Events": events, "Unscheduled": unscheduled_courses,"Quality":quality}});
+            let response = this.schedule_helper(rooms, courses);
+            if (response.code == 200) {
+                fulfill(response);
             }
-            catch (err) {
-                reject({code: 400, body: "error in schedule 142 " + err.message});
+            else {
+                reject(response);
             }
-
         });
 
 
+    }
+
+    schedule_helper(rooms: any[], courses: any[]): InsightResponse {
+        try {
+            let events: Event[] = [];
+            courses = sortby_id(courses, "size");
+            rooms = sortby_id(rooms, "rooms_seats");
+
+            let section_counts: any[] = [];
+            for (let item of courses) {
+                section_counts.push(item["num_section"]);
+            }
+
+            let total_section: number = 0
+            for (let item of section_counts) {
+                total_section += item;
+            }
+
+            // course on MWF
+            for (let i = 0; i < 17 - 8; i++) {
+
+                for (let j = 0; j < rooms.length; j++) {
+                    let event = new Event();
+                    let room = rooms[j];
+                    for (let k = j; k < courses.length; k++) {
+                        let course = courses[k];
+                        let course_name = course["course_name"];
+
+                        if (section_counts[k] > 0) {
+                            if (Number(course["size"]) <= Number(room["rooms_seats"])) {
+                                event.day = "M/W/F";
+                                event.start_time = i + 8 + ": 00";
+                                event.hour = 1;
+                                event.course = course_name;
+                                event.room = room["rooms_name"];
+                                section_counts[k] = section_counts[k] - 1;
+                                events.push(event);
+
+                                break;
+                            }
+                            else {
+                                //console.log("room "+ room["room_name"]+" is not big enough");
+                            }
+                        }
+                    }
+
+                }
+            }
+
+            // course on T TH
+            for (let i = 0; i < 17 - 8; i += 1.5) {
+
+                for (let j = 0; j < rooms.length; j++) {
+                    let event = new Event();
+                    let room = rooms[j];
+                    for (let k = j; k < courses.length; k++) {
+                        let course = courses[k];
+                        let course_name = course["course_name"];
+                        if (section_counts[k] > 0) {
+                            if (Number(course["size"]) <= Number(room["rooms_seats"])) {
+
+                                let time: string;
+                                if ((i / 1.5) % 2 == 0) {
+                                    time = i + 8 + ": 00";
+                                }
+                                else {
+                                    time = i - 0.5 + 8 + ": 30";
+                                }
+                                event.day = "T/TH";
+                                event.start_time = time;
+                                event.hour = 1.5;
+                                event.course = course_name;
+                                event.room = room["rooms_name"];
+
+                                section_counts[k] = section_counts[k] - 1;
+                                events.push(event);
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+
+            let unscheduled_courses: any[] = [];
+            for (let i = 0; i < courses.length; i++) {
+                if (section_counts[i] > 0) {
+                    unscheduled_courses.push(courses[i]);
+                }
+            }
+
+            let section_left: number = 0;
+            for (let item of section_counts) {
+                section_left = item;
+            }
+
+            let quality = section_left / total_section;
+            return ({
+                code: 200,
+                body: {
+                    "Events": events,
+                    "Unscheduled": unscheduled_courses,
+                    "Quality": quality,
+                    "Unscheduled_section_count": section_left
+                }
+            });
+        }
+        catch (err) {
+            return ({code: 400, body: "error in schedule 142 " + err.message});
+        }
+    }
+
+    schedule_rest_helper(center_building: string): any {
+
+        let response: any = this.schedule_helper(this.rooms, this.courses);
+        let left_count = response.body["Unscheduled_section_count"];
+        let near_building = distance_matrix[center_building];
+
+
+            for (let building of near_building) {
+                if (left_count>0){
+                    break;
+                }
+                let length_before=this.rooms.length;
+                this.add_room_tolist(this.get_rooms_bybuilding(building));
+                if (this.rooms.length>length_before) {
+                    response = this.schedule_helper(this.rooms, this.courses);
+                    left_count = response.body["Unscheduled_section_count"];
+                }
+
+            }
+        return response;
+
+    }
+
+    schedule_rest(center_building:string):Promise<InsightResponse>{
+        return new Promise((fulfill,reject)=>{
+           let response:any=this.schedule_rest_helper(center_building) ;
+           if (response.code==200){
+               fulfill(response);
+           }
+           else {
+               reject(response);
+           }
+        });
     }
 
 
@@ -537,13 +690,13 @@ export default class ScheduleManager {
         return courses_list;
     }
 
-    get_courses_bynum(course_num:number):any[]{
-        let courses_list=[];
-        if (isUndefined(num_dept[course_num])){
-            throw Error("Invalid course number "+course_num);
+    get_courses_bynum(course_num: number): any[] {
+        let courses_list = [];
+        if (isUndefined(num_dept[course_num])) {
+            throw Error("Invalid course number " + course_num);
         }
-        let courses_with_num=num_dept[course_num];
-        courses_list=this.get_courses_byname(courses_with_num);
+        let courses_with_num = num_dept[course_num];
+        courses_list = this.get_courses_byname(courses_with_num);
         return courses_list;
     }
 
@@ -694,18 +847,16 @@ export default class ScheduleManager {
         return ret_list;
     }
 
-    public clear_course_list(){
-        this.courses=[];
+    public clear_course_list() {
+        this.courses = [];
     }
 
-    public clear_room_list(){
-        this.rooms=[];
+    public clear_room_list() {
+        this.rooms = [];
     }
 
 
 }
-
-
 
 
 // this code is taken from stack overflow
