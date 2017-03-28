@@ -64,7 +64,7 @@ function updateText(query,form,offset) {
                     return_html.appendChild(tr);
                 }
                 result_body.innerHTML = '';
-                result_body.innerHTML = "Unscheduled: " + JSON.parse(http.response)["Unscheduled"].length;
+                result_body.innerHTML = "Quality: " + JSON.parse(http.response)["Quality"];
                 result_body.appendChild(return_html);
                 
             }else{

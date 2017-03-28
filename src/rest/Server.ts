@@ -72,8 +72,8 @@ export default class Server {
                 that.rest.get('/echo/:msg', Server.echo);
 
                 that.rest.get(/.*/, restify.serveStatic({
-                    'directory':__dirname+'/public/',
-                    'default': 'index.html'
+                    directory:__dirname+'/public/',
+                    default: 'index.html'
                 }));
 
                 that.rest.put('/dataset/:id', Server.put);
@@ -113,8 +113,10 @@ export default class Server {
                 // Other endpoints will go here
 
                 Server.perform_setup().then( ()=> {
+                    Log.trace("in perform setup_1");
                     that.rest.listen(that.port, function () {
-                        //Log.info('Server::start() - restify listening: ' + that.rest.url);s
+                        //Log.info('Server::start() - restify listening: ' + that.rest.url);
+                        Log.trace("after perform setup_2");
                         fulfill(true);
                     });
                 });
@@ -122,7 +124,7 @@ export default class Server {
 
                 that.rest.on('error', function (err: string) {
                     // catches errors in restify start; unusual syntax due to internal node not using normal exceptions here
-                    //Log.info('Server::start() - restify ERROR: ' + err);
+                    Log.info('Server::start() - restify ERROR: ' + err);
                     reject(err);
                 });
             } catch (err) {

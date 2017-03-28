@@ -27,7 +27,7 @@ th, td {
     padding: 2px;
 }
 
-#course_explorer {height:1000px;overflow:hidden; }
+#course_explorer {height:1000px;overflow:auto; }
 #room_explorer {height:1000px; overflow:auto;}
 #room_scheduling {height:1000px; overflow:auto;     background-color: rgba(255, 255, 255, 0.9);}
 
