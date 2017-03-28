@@ -94,6 +94,12 @@ export default class ScheduleManager {
                 for (let item of courses){
                     section_counts.push(item["num_section"]);
                 }
+
+                let total_section:number=0
+                for (let item of section_counts){
+                    total_section+=item;
+                }
+
                 // console.log(courses);
                 // console.log(rooms);
 
@@ -169,7 +175,12 @@ export default class ScheduleManager {
                     }
                 }
 
-                let quality=unscheduled_courses.length/courses.length;
+                let section_left:number=0;
+                for (let item of section_counts){
+                    section_left=item;
+                }
+
+                let quality=section_left/total_section;
                 fulfill({code: 200, body: {"Events": events, "Unscheduled": unscheduled_courses,"Quality":quality}});
             }
             catch (err) {
