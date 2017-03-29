@@ -3573,6 +3573,7 @@ describe("EchoSpec", function () {
                 //let b2=s.get_rooms_bybuilding("PHRM");
                 let c1 = s.get_courses_bydept("cpsc");
 
+
                 s.add_course_tolist(c1);
                 s.add_room_tolist(b1);
                 //s.add_room_tolist(b2);

@@ -80,7 +80,7 @@ export default class ScheduleManager {
 
     schedule(rooms: any[], courses: any[]): Promise<InsightResponse> {
 
-
+        //console.log(num_dept);
         return new Promise((fulfill, reject) => {
 
             // try {
@@ -458,14 +458,16 @@ export default class ScheduleManager {
 
                     if (id == prev_id) {
                         let dept = item["courses_dept"];
-                        ret_obj[prev_id].push(dept);
+                        let course_name=dept+"_"+prev_id;
+                        ret_obj[prev_id].push(course_name);
                     }
                     else {
 
                         prev_id = id;
                         let dept = item["courses_dept"];
                         ret_obj[prev_id] = [];
-                        ret_obj[prev_id].push(dept);
+                        let course_name=dept+"_"+prev_id;
+                        ret_obj[prev_id].push(course_name);
                     }
                 }
 
