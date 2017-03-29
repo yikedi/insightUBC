@@ -65,7 +65,10 @@ function updateText(query,form,offset) {
                 }
                 result_body.innerHTML = '';
                 if(form =="schedule"){
-                    result_body.innerHTML = "Quality: " + JSON.parse(http.response)["Quality"];
+                    result_body.innerHTML = "Quality: " + JSON.parse(http.response)["Quality"] + "<br/> scheduled: " + JSON.parse(http.response)["Events"].length +"<br/> unscheduled: "+ JSON.parse(http.response)["Unscheduled"].length;
+                    for(var k = 0; k < JSON.parse(http.response)["Unscheduled"].length;k++){
+                        result_body.innerHTML = result_body.innerHTML + ", "+JSON.parse(http.response)["Unscheduled"][k]["course_name"];
+                    }
                 }
                 result_body.appendChild(return_html);
 

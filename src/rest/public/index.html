@@ -100,15 +100,32 @@
                 </div>
 
                 <div class = "col-sm-10">
-                    <label class="col-sm-2">Order by</label>
+                    <label class="col-sm-1">Order by</label>
                     <div class="col-sm-2">
                         <select  id = "courses_order_dir">
                             <option value ="UP">Ascending</option>
                             <option value ="DOWN">Descending</option>
                         </select>
                     </div>
-                    <div class="col-sm-4">
-                        <select multiple id = "courses_order_by" size = "3">
+                    <div class="col-sm-2">
+                        <select id = "courses_order_by_1">
+                            <option value = "">-------------------</option>
+                            <option value ="courses_fail">Number of fails</option>
+                            <option value="courses_pass">Number of passes</option>
+                            <option value="courses_avg">Courses average</option>
+                        </select>
+                    </div>
+                    <div class="col-sm-2">
+                        <select id = "courses_order_by_2">
+                            <option value = "">-------------------</option>
+                            <option value ="courses_fail">Number of fails</option>
+                            <option value="courses_pass">Number of passes</option>
+                            <option value="courses_avg">Courses average</option>
+                        </select>
+                    </div>
+                    <div class="col-sm-2">
+                        <select id = "courses_order_by_3">
+                            <option value = "">-------------------</option>
                             <option value ="courses_fail">Number of fails</option>
                             <option value="courses_pass">Number of passes</option>
                             <option value="courses_avg">Courses average</option>
@@ -282,10 +299,11 @@
                     </div>
                 </div>
                 <div class = "col-sm-12">
-                    <div class="col-sm-1"></div>
+                    <div class = "col-sm-1"></div>
                     <div class="col-sm-3">
-                        <button class="btn btn-primary active" onclick= updateText("{}","schedule","_schedule")>Make Schedule</button>
-                    </div>                   
+                        <button class="btn btn-primary active" onclick= updateText("{}","schedule","_schedule")>Make Schedule
+                        </button>
+                    </div>                  
                     <div class="col-sm-2">
                         <button class="btn btn-primary active" onclick= add_to_list({},"get_courses_allcourse","_clear_courses")>clear courses</button>
                     </div>
@@ -293,6 +311,15 @@
                         <button class="btn btn-primary active" onclick= add_to_list({},"query_get_allrooms","_clear_room")>clear rooms</button>
                     </div>
                 </div>
+                <div class="col-sm-12">
+                    <div class="col-sm-6">
+                        <input type="text" class="form-control" id ="center_b"placeholder="Enter center building">
+                    </div>
+                    <div class="col-sm-2">
+                        <button class="btn btn-primary active" onclick= extra("schedule","_schedule_rest")>Reschedule based on center building</button>
+                    </div> 
+                </div>
+
                 <div class = "col-sm-5"></div>
                 <div id = "result_s_temp" class = "col-sm-7" style = "color:red"></div>
                 <div id = "result_s" class = "col-sm-12">

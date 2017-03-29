@@ -2,15 +2,17 @@ function initial(form,and_or) {
     offset = "";
     if(form == "rooms"){
         do_it = false;
-        order_by = {"value":""}
+        order_by_1 = {"value":""}        
+        order_by_2 = {"value":""}        
+        order_by_3 = {"value":""}
         res_colunm = document.getElementById("res_column_rooms");
         is_list = [];
         com_list = [];
         distance_f ="";
         if(document.getElementById("building_distance").value!="" &&document.getElementById("distance").value!="" ){
-           distance_f = {"building_name":document.getElementById("building_distance").value.toUpperCase(),
-                      "distance":Number(document.getElementById("distance").value),
-                     "and_or":and_or};
+            distance_f = {"building_name":document.getElementById("building_distance").value.toUpperCase(),
+                          "distance":Number(document.getElementById("distance").value),
+                          "and_or":and_or};
             offset = "_rooms_distance";
         }
         if(document.getElementById("building_name").value!= ""){
@@ -37,7 +39,9 @@ function initial(form,and_or) {
     }
     if (form == "courses") {
         do_it = false;
-        order_by = document.getElementById("courses_order_by");
+        order_by_1 = document.getElementById("courses_order_by_1");
+        order_by_2 = document.getElementById("courses_order_by_2");
+        order_by_3 = document.getElementById("courses_order_by_3");
         order_dir = document.getElementById("courses_order_dir");
         res_colunm = document.getElementById("res_column");
         is_list = [];
@@ -87,14 +91,18 @@ function submit(AndOr, form) {
 }
 
 function setupORDER(query){
-    if(order_by.value!=""){
+    if(order_by_1.value!="" || order_by_1.value!=""||order_by_1.value!=""){
         query["OPTIONS"]["ORDER"]={};
         query["OPTIONS"]["ORDER"]["dir"]= order_dir.value;
         query["OPTIONS"]["ORDER"]["keys"]= [];
-        for (var i = 0; i < order_by.options.length; i++) {
-            if(order_by.options[i].selected){
-                query["OPTIONS"]["ORDER"]["keys"].push(order_by.options[i].value);
-            }
+        if(order_by_1.value!=""){
+             query["OPTIONS"]["ORDER"]["keys"].push(order_by_1.value);
+        }
+        if(order_by_2.value!=""){
+            query["OPTIONS"]["ORDER"]["keys"].push(order_by_2.value);
+        }
+        if(order_by_3.value!=""){
+            query["OPTIONS"]["ORDER"]["keys"].push(order_by_3.value);
         }
     }
 }

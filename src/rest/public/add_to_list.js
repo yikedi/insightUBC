@@ -79,6 +79,9 @@ function add_single_course(){
     }else if (dept != ""){
         offset_single = "_get_courses_bydept";
         data = {"course_dept":dept};
+    }else if(courses_id !=""){
+        offset_single = "_get_courses_bunum";
+        data = {"course_num":courses_id};
     }
     add_to_list(data,"get_courses_allcourse",offset_single);
 
@@ -127,4 +130,10 @@ function clear_r(){
     document.getElementById("distance_s").value ="";
     document.getElementById("building_s").value ="";
     document.getElementById("rooms_nums").value ="";
+}
+
+function extra(form, offset){
+    query = {};
+    query["building_name"]=document.getElementById("center_b").value.toUpperCase();
+    updateText(JSON.stringify(query),form,offset);
 }
