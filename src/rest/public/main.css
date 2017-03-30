@@ -27,7 +27,7 @@ th, td {
     padding: 2px;
 }
 
-#course_explorer {height:1000px;overflow:auto; border:3px solid black; }
-#room_explorer {height:1000px; overflow:auto; border:3px solid black;}
-#room_scheduling {height:1000px; overflow:auto; border:3px solid black;}
+#course_explorer {width: 100%; height:1000px;overflow:auto; border:3px solid black; }
+#room_explorer {width: 100%;height:1000px; overflow:auto; border:3px solid black;}
+#room_scheduling {width: 100%;height:1000px; overflow:auto; border:3px solid black;}
 
